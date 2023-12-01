@@ -16,6 +16,9 @@ class BaseModel(models.Model):
 class Role(BaseModel):
     role_name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.role_name
+
 
 class ConfirmStatus(BaseModel):
     confirm_status_value = models.CharField(max_length=255)
@@ -28,7 +31,7 @@ class User(AbstractUser):
     confirm_status = models.ForeignKey(ConfirmStatus, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.confirm_status
+        return self.username
 
 
 class Account(BaseModel):
