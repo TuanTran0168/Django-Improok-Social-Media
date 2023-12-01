@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-# TuanTran's import
+# TuanTran's import & configure
 import pymysql
 pymysql.install_as_MySQLdb()
+
+AUTH_USER_MODEL = 'social_media.User'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
