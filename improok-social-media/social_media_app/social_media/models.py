@@ -37,8 +37,8 @@ class User(AbstractUser):
 class Account(BaseModel):
     phone_number = models.CharField(max_length=255, unique=True, null=True)
     date_of_birth = models.DateTimeField(null=True)
-    avatar = models.CharField(max_length=255, null=True)
-    cover_avatar = models.CharField(max_length=255, null=True)
+    avatar = models.ImageField(upload_to="accounts/avatar/%Y/%m", null=True, blank=True)
+    cover_avatar = models.ImageField(upload_to="accounts/cover_avatar/%Y/%m", null=True, blank=True)
     account_status = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
@@ -78,7 +78,7 @@ class PostReaction(BaseModel):
 
 
 class PostImage(BaseModel):
-    post_image_url = models.CharField(max_length=255)
+    post_image_url = models.ImageField(upload_to="post_images/%Y/%m", null=True, blank=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -87,6 +87,7 @@ class PostImage(BaseModel):
 
 class Comment(BaseModel):
     comment_content = models.CharField(max_length=255)
+    comment_image_url = models.ImageField(upload_to="comments/%Y/%m", null=True, blank=True)
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
