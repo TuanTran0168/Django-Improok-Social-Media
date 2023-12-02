@@ -119,7 +119,7 @@ CREATE TABLE `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_social_media_user_id` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `django_admin_log` (
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
-INSERT INTO `django_admin_log` VALUES (1,'2023-12-01 18:34:13.494895','1','Accept',1,'[{\"added\": {}}]',24,1),(2,'2023-12-01 18:34:16.943835','2','Deny',1,'[{\"added\": {}}]',24,1),(3,'2023-12-01 18:39:40.200105','1','0345809638',1,'[{\"added\": {}}]',22,1),(4,'2023-12-02 08:40:35.940138','2','tuan1',1,'[{\"added\": {}}]',6,1),(5,'2023-12-02 08:44:48.826140','2','012345678',1,'[{\"added\": {}}]',22,1),(6,'2023-12-02 08:59:26.504961','1','Bài Post đầu tiên',1,'[{\"added\": {}}]',8,1),(7,'2023-12-02 08:59:44.367475','2','Bài Post thứ 2',1,'[{\"added\": {}}]',8,1),(8,'2023-12-02 08:59:55.372086','3','Bài Post thứ 3',1,'[{\"added\": {}}]',8,1),(9,'2023-12-02 09:00:17.497283','4','Bài Post 1 của tuan1',1,'[{\"added\": {}}]',8,1),(10,'2023-12-02 09:00:24.823636','5','Bài Post 2 của tuan1',1,'[{\"added\": {}}]',8,1);
+INSERT INTO `django_admin_log` VALUES (1,'2023-12-01 18:34:13.494895','1','Accept',1,'[{\"added\": {}}]',24,1),(2,'2023-12-01 18:34:16.943835','2','Deny',1,'[{\"added\": {}}]',24,1),(3,'2023-12-01 18:39:40.200105','1','0345809638',1,'[{\"added\": {}}]',22,1),(4,'2023-12-02 08:40:35.940138','2','tuan1',1,'[{\"added\": {}}]',6,1),(5,'2023-12-02 08:44:48.826140','2','012345678',1,'[{\"added\": {}}]',22,1),(6,'2023-12-02 08:59:26.504961','1','Bài Post đầu tiên',1,'[{\"added\": {}}]',8,1),(7,'2023-12-02 08:59:44.367475','2','Bài Post thứ 2',1,'[{\"added\": {}}]',8,1),(8,'2023-12-02 08:59:55.372086','3','Bài Post thứ 3',1,'[{\"added\": {}}]',8,1),(9,'2023-12-02 09:00:17.497283','4','Bài Post 1 của tuan1',1,'[{\"added\": {}}]',8,1),(10,'2023-12-02 09:00:24.823636','5','Bài Post 2 của tuan1',1,'[{\"added\": {}}]',8,1),(11,'2023-12-02 09:37:35.330205','3','tuan2',1,'[{\"added\": {}}]',6,1),(12,'2023-12-02 09:38:17.012091','3','36262312312',1,'[{\"added\": {}}]',22,1),(13,'2023-12-02 09:40:27.725469','3','36262312312',2,'[{\"changed\": {\"fields\": [\"Avatar\", \"Cover avatar\"]}}]',22,1),(14,'2023-12-02 09:41:22.623053','4','tuan3',1,'[{\"added\": {}}]',6,1),(15,'2023-12-02 09:41:45.641061','4','3626',1,'[{\"added\": {}}]',22,1),(16,'2023-12-02 10:24:12.975364','1','LIKE',1,'[{\"added\": {}}]',10,1),(17,'2023-12-02 10:24:16.629628','2','LOVE',1,'[{\"added\": {}}]',10,1),(18,'2023-12-02 10:24:19.811735','3','HAHA',1,'[{\"added\": {}}]',10,1),(19,'2023-12-02 10:24:44.983909','4','SAD',1,'[{\"added\": {}}]',10,1),(20,'2023-12-02 10:25:21.285378','5','ANGRY',1,'[{\"added\": {}}]',10,1),(21,'2023-12-02 10:25:46.257505','1','PostReaction object (1)',1,'[{\"added\": {}}]',18,1),(22,'2023-12-02 10:28:37.712588','1','Bài viết hay thế',1,'[{\"added\": {}}]',21,1),(23,'2023-12-02 10:48:22.975522','2','Bài viết hay thế 1',1,'[{\"added\": {}}]',21,1),(24,'2023-12-02 10:49:49.595723','6','<p><u><em><strong>Post n&agrave;y đăng bằng ckeditor</strong></em></u></p>',1,'[{\"added\": {}}]',8,1);
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +171,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,7 +180,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2023-12-01 18:04:14.999092'),(2,'contenttypes','0002_remove_content_type_name','2023-12-01 18:04:15.045969'),(3,'auth','0001_initial','2023-12-01 18:04:15.234298'),(4,'auth','0002_alter_permission_name_max_length','2023-12-01 18:04:15.312827'),(5,'auth','0003_alter_user_email_max_length','2023-12-01 18:04:15.312827'),(6,'auth','0004_alter_user_username_opts','2023-12-01 18:04:15.328450'),(7,'auth','0005_alter_user_last_login_null','2023-12-01 18:04:15.328450'),(8,'auth','0006_require_contenttypes_0002','2023-12-01 18:04:15.344076'),(9,'auth','0007_alter_validators_add_error_messages','2023-12-01 18:04:15.344076'),(10,'auth','0008_alter_user_username_max_length','2023-12-01 18:04:15.359702'),(11,'auth','0009_alter_user_last_name_max_length','2023-12-01 18:04:15.359702'),(12,'auth','0010_alter_group_name_max_length','2023-12-01 18:04:15.391361'),(13,'auth','0011_update_proxy_permissions','2023-12-01 18:04:15.391361'),(14,'auth','0012_alter_user_first_name_max_length','2023-12-01 18:04:15.406985'),(15,'social_media','0001_initial','2023-12-01 18:04:16.913187'),(16,'admin','0001_initial','2023-12-01 18:04:17.007389'),(17,'admin','0002_logentry_remove_auto_add','2023-12-01 18:04:17.038600'),(18,'admin','0003_logentry_add_action_flag_choices','2023-12-01 18:04:17.054226'),(19,'sessions','0001_initial','2023-12-01 18:04:17.085876'),(20,'social_media','0002_account_alumniaccount_confirmstatus_groupaccount_and_more','2023-12-01 18:04:18.669855'),(21,'social_media','0003_account_account_status','2023-12-01 18:04:18.732760'),(22,'social_media','0004_comment_comment_image_url_alter_account_avatar_and_more','2023-12-02 08:55:20.720259');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2023-12-01 18:04:14.999092'),(2,'contenttypes','0002_remove_content_type_name','2023-12-01 18:04:15.045969'),(3,'auth','0001_initial','2023-12-01 18:04:15.234298'),(4,'auth','0002_alter_permission_name_max_length','2023-12-01 18:04:15.312827'),(5,'auth','0003_alter_user_email_max_length','2023-12-01 18:04:15.312827'),(6,'auth','0004_alter_user_username_opts','2023-12-01 18:04:15.328450'),(7,'auth','0005_alter_user_last_login_null','2023-12-01 18:04:15.328450'),(8,'auth','0006_require_contenttypes_0002','2023-12-01 18:04:15.344076'),(9,'auth','0007_alter_validators_add_error_messages','2023-12-01 18:04:15.344076'),(10,'auth','0008_alter_user_username_max_length','2023-12-01 18:04:15.359702'),(11,'auth','0009_alter_user_last_name_max_length','2023-12-01 18:04:15.359702'),(12,'auth','0010_alter_group_name_max_length','2023-12-01 18:04:15.391361'),(13,'auth','0011_update_proxy_permissions','2023-12-01 18:04:15.391361'),(14,'auth','0012_alter_user_first_name_max_length','2023-12-01 18:04:15.406985'),(15,'social_media','0001_initial','2023-12-01 18:04:16.913187'),(16,'admin','0001_initial','2023-12-01 18:04:17.007389'),(17,'admin','0002_logentry_remove_auto_add','2023-12-01 18:04:17.038600'),(18,'admin','0003_logentry_add_action_flag_choices','2023-12-01 18:04:17.054226'),(19,'sessions','0001_initial','2023-12-01 18:04:17.085876'),(20,'social_media','0002_account_alumniaccount_confirmstatus_groupaccount_and_more','2023-12-01 18:04:18.669855'),(21,'social_media','0003_account_account_status','2023-12-01 18:04:18.732760'),(22,'social_media','0004_comment_comment_image_url_alter_account_avatar_and_more','2023-12-02 08:55:20.720259'),(23,'social_media','0005_alter_account_avatar_alter_account_cover_avatar_and_more','2023-12-02 10:46:14.458045');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,7 +236,7 @@ CREATE TABLE `social_media_account` (
   KEY `social_media_account_role_id_d1ccc1de_fk_social_media_role_id` (`role_id`),
   CONSTRAINT `social_media_account_role_id_d1ccc1de_fk_social_media_role_id` FOREIGN KEY (`role_id`) REFERENCES `social_media_role` (`id`),
   CONSTRAINT `social_media_account_user_id_30063586_fk_social_media_user_id` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +245,7 @@ CREATE TABLE `social_media_account` (
 
 LOCK TABLES `social_media_account` WRITE;
 /*!40000 ALTER TABLE `social_media_account` DISABLE KEYS */;
-INSERT INTO `social_media_account` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'0345809638','2002-08-28 18:37:49.000000','Cho null=True rồi mà sao bắt lạ z???','Cho null=True rồi mà sao bắt lạ z???',1,1,1),(2,'2023-12-02','2023-12-02','2023-12-02',1,'012345678','2023-12-02 08:44:27.000000','accounts/avatar/2023/12/Ảnh_của_tui.jpg','accounts/cover_avatar/2023/12/Ảnh_của_tui_1.jpg',3,2,1);
+INSERT INTO `social_media_account` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'0345809638','2002-08-28 18:37:49.000000','Cho null=True rồi mà sao bắt lạ z???','Cho null=True rồi mà sao bắt lạ z???',1,1,1),(2,'2023-12-02','2023-12-02','2023-12-02',1,'012345678','2023-12-02 08:44:27.000000','images/accounts/avatar/2023/12/Ảnh_của_tui.jpg','images/accounts/cover_avatar/2023/12/Ảnh_của_tui_1.jpg',3,2,1),(3,'2023-12-02','2023-12-02','2023-12-02',1,'36262312312','2023-12-02 09:38:16.000000','images/accounts/avatar/2023/12/Screenshot_2023-12-02_163517.png','images/accounts/cover_avatar/2023/12/Screenshot_2023-12-02_163517.png',3,3,0),(4,'2023-12-02','2023-12-02','2023-12-02',1,'3626','2023-12-02 09:41:44.000000','images/accounts/avatar/2023/12/FURINA.png','images/accounts/cover_avatar/2023/12/FURINA.png',2,4,0);
 /*!40000 ALTER TABLE `social_media_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,7 +301,7 @@ CREATE TABLE `social_media_comment` (
   KEY `social_media_comment_account_id_3fe640d0_fk_social_me` (`account_id`),
   CONSTRAINT `social_media_comment_account_id_3fe640d0_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
   CONSTRAINT `social_media_comment_post_id_200ffcb6_fk_social_media_post_id` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,6 +310,7 @@ CREATE TABLE `social_media_comment` (
 
 LOCK TABLES `social_media_comment` WRITE;
 /*!40000 ALTER TABLE `social_media_comment` DISABLE KEYS */;
+INSERT INTO `social_media_comment` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'Bài viết hay thế',1,2,'images/comments/2023/12/Screenshot_2023-12-02_163517.png'),(2,'2023-12-02','2023-12-02','2023-12-02',1,'Bài viết hay thế 1',2,2,'images/comments/2023/12/FURINA.png');
 /*!40000 ALTER TABLE `social_media_comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,13 +446,13 @@ CREATE TABLE `social_media_post` (
   `updated_date` date DEFAULT NULL,
   `deleted_date` date DEFAULT NULL,
   `active` tinyint(1) NOT NULL,
-  `post_content` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `comment_lock` tinyint(1) NOT NULL,
   `account_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `social_media_post_account_id_40a73edf_fk_social_media_account_id` (`account_id`),
   CONSTRAINT `social_media_post_account_id_40a73edf_fk_social_media_account_id` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -460,7 +461,7 @@ CREATE TABLE `social_media_post` (
 
 LOCK TABLES `social_media_post` WRITE;
 /*!40000 ALTER TABLE `social_media_post` DISABLE KEYS */;
-INSERT INTO `social_media_post` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post đầu tiên',0,1),(2,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post thứ 2',0,1),(3,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post thứ 3',0,1),(4,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post 1 của tuan1',0,2),(5,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post 2 của tuan1',0,2);
+INSERT INTO `social_media_post` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post đầu tiên',0,1),(2,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post thứ 2',0,1),(3,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post thứ 3',0,1),(4,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post 1 của tuan1',0,2),(5,'2023-12-02','2023-12-02','2023-12-02',1,'Bài Post 2 của tuan1',0,2),(6,'2023-12-02','2023-12-02','2023-12-02',1,'<p><u><em><strong>Post n&agrave;y đăng bằng ckeditor</strong></em></u></p>',0,1);
 /*!40000 ALTER TABLE `social_media_post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -549,7 +550,7 @@ CREATE TABLE `social_media_postreaction` (
   CONSTRAINT `social_media_postrea_account_id_64ecc229_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
   CONSTRAINT `social_media_postrea_post_id_33171a86_fk_social_me` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`),
   CONSTRAINT `social_media_postrea_reaction_id_b79c36c9_fk_social_me` FOREIGN KEY (`reaction_id`) REFERENCES `social_media_reaction` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -558,6 +559,7 @@ CREATE TABLE `social_media_postreaction` (
 
 LOCK TABLES `social_media_postreaction` WRITE;
 /*!40000 ALTER TABLE `social_media_postreaction` DISABLE KEYS */;
+INSERT INTO `social_media_postreaction` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,1,2,1);
 /*!40000 ALTER TABLE `social_media_postreaction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -609,7 +611,7 @@ CREATE TABLE `social_media_reaction` (
   `active` tinyint(1) NOT NULL,
   `reaction_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -618,6 +620,7 @@ CREATE TABLE `social_media_reaction` (
 
 LOCK TABLES `social_media_reaction` WRITE;
 /*!40000 ALTER TABLE `social_media_reaction` DISABLE KEYS */;
+INSERT INTO `social_media_reaction` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'LIKE'),(2,'2023-12-02','2023-12-02','2023-12-02',1,'LOVE'),(3,'2023-12-02','2023-12-02','2023-12-02',1,'HAHA'),(4,'2023-12-02','2023-12-02','2023-12-02',1,'SAD'),(5,'2023-12-02','2023-12-02','2023-12-02',1,'ANGRY');
 /*!40000 ALTER TABLE `social_media_reaction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -862,7 +865,7 @@ CREATE TABLE `social_media_user` (
   UNIQUE KEY `username` (`username`),
   KEY `social_media_user_confirm_status_id_2faf8343_fk_social_me` (`confirm_status_id`),
   CONSTRAINT `social_media_user_confirm_status_id_2faf8343_fk_social_me` FOREIGN KEY (`confirm_status_id`) REFERENCES `social_media_confirmstatus` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -871,7 +874,7 @@ CREATE TABLE `social_media_user` (
 
 LOCK TABLES `social_media_user` WRITE;
 /*!40000 ALTER TABLE `social_media_user` DISABLE KEYS */;
-INSERT INTO `social_media_user` VALUES (1,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=','2023-12-02 08:22:22.502431',1,'admin','','','tuantran@gmail.com',1,1,'2023-12-01 18:04:49.275061',1),(2,'654321',NULL,0,'tuan1','Tuan','Tran','tuan1@gmail.com',0,1,'2023-12-02 08:39:37.000000',1);
+INSERT INTO `social_media_user` VALUES (1,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=','2023-12-02 08:22:22.502431',1,'admin','','','tuantran@gmail.com',1,1,'2023-12-01 18:04:49.275061',1),(2,'654321',NULL,0,'tuan1','Tuan','Tran','tuan1@gmail.com',0,1,'2023-12-02 08:39:37.000000',1),(3,'123456',NULL,0,'tuan2','Tuan 2','Tran','tuan2@gmail.com',0,1,'2023-12-02 09:37:01.000000',1),(4,'123',NULL,0,'tuan3','Tuan 3','Tran','tuan3@gmail.com',0,1,'2023-12-02 09:40:58.000000',1);
 /*!40000 ALTER TABLE `social_media_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -940,4 +943,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-02 16:09:55
+-- Dump completed on 2023-12-02 17:55:54

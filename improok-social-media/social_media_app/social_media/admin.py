@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import Role, ConfirmStatus, User, Account, AlumniAccount, Post, PostSurvey
+from .models import Role, ConfirmStatus, User, Account, AlumniAccount, Post, PostSurvey, Reaction, PostReaction, \
+    PostImage, Comment
 
 
 class RoleAdmin(admin.ModelAdmin):
@@ -40,6 +41,12 @@ class AccountAdmin(admin.ModelAdmin):
                 '<img src="/static/{url}" width="120" />'.format(url=account.cover_avatar.name)
             )
 
+    # class Media:
+    #     css = {
+    #         'all': ('/static/css/style.css',)
+    #     }
+    #     js = ('/static/js/script.js',)
+
 
 class AlumniAccountAdmin(admin.ModelAdmin):
     list_display = ['id', 'alumni_account_code']
@@ -51,9 +58,30 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ['comment_lock']
 
 
+class ReactionAdmin(admin.ModelAdmin):
+    list_filter = ['reaction_name']
+
+
+class PostReactionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'post_id', 'reaction_id', 'account_id']
+
+
+class PostImageAdmin(admin.ModelAdmin):
+    list_display = ['id', 'post_image_url', 'post_id']
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'account_id', 'comment_content', 'comment_image_url', 'post_id']
+    search_fields = ['comment_content']
+
+
 admin.site.register(Role, RoleAdmin)
 admin.site.register(ConfirmStatus, ConfirmStatusAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(AlumniAccount, AlumniAccountAdmin)
 admin.site.register(Post, PostAdmin)
+admin.site.register(Reaction, ReactionAdmin)
+admin.site.register(PostReaction, PostReactionAdmin)
+admin.site.register(PostImage, PostImageAdmin)
+admin.site.register(Comment, CommentAdmin)

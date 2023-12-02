@@ -19,6 +19,8 @@ pymysql.install_as_MySQLdb()
 
 AUTH_USER_MODEL = 'social_media.User'
 
+CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -44,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social_media.apps.SocialMediaConfig'
+    'social_media.apps.SocialMediaConfig',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 MIDDLEWARE = [

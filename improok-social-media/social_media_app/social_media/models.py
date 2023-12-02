@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -56,7 +57,7 @@ class AlumniAccount(BaseModel):
 
 
 class Post(BaseModel):
-    post_content = models.CharField(max_length=255)
+    post_content = RichTextField()
     comment_lock = models.BooleanField(default=False)
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
 
