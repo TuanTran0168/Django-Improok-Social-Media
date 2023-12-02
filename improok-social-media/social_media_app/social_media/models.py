@@ -100,7 +100,7 @@ class PostSurvey(BaseModel):
     post_survey_title = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    post_survey_status = models.BooleanField()
+    is_closed = models.BooleanField(default=False)
     post = models.OneToOneField(Post, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -117,6 +117,7 @@ class SurveyQuestionType(BaseModel):
 class SurveyQuestion(BaseModel):
     question_content = models.CharField(max_length=255)
     question_order = models.IntegerField()
+    is_required = models.BooleanField(default=False)
     post_survey = models.ForeignKey(PostSurvey, on_delete=models.CASCADE)
     survey_question_type = models.ForeignKey(SurveyQuestionType, on_delete=models.CASCADE)
 
@@ -137,19 +138,29 @@ class SurveyResponse(BaseModel):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     post_survey = models.ForeignKey(PostSurvey, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.account.user.username + ' - ' + self.post_survey.post_survey_title
+
 
 class SurveyAnswer(BaseModel):
-    question_option_value = models.CharField(max_length=255)
+    question_option_value = models.CharField(max_length=10000, null=True, blank=True)
     survey_question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE)
     survey_response = models.ForeignKey(SurveyResponse, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.question_option_value
+        if not self.question_option_value:
+            return 'Not input text type' + \
+                   ' (' + self.survey_question.question_content + ' - ' + self.survey_response.__str__() + ') '
+        else:
+            return self.question_option_value
 
 
 class SurveyAnswerOption(BaseModel):
     survey_question_option = models.ForeignKey(SurveyQuestionOption, on_delete=models.CASCADE)
     survey_answer = models.ForeignKey(SurveyAnswer, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.survey_answer.__str__() + self.survey_question_option.__str__()
 
 
 class PostInvitation(BaseModel):

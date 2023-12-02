@@ -19,6 +19,7 @@ pymysql.install_as_MySQLdb()
 
 AUTH_USER_MODEL = 'social_media.User'
 
+# Tạm thời không dùng cái upload file bằng ckeditor
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

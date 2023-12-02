@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.utils.html import mark_safe
 
 from .models import Role, ConfirmStatus, User, Account, AlumniAccount, Post, PostSurvey, Reaction, PostReaction, \
-    PostImage, Comment
+    PostImage, Comment, SurveyQuestionType, SurveyQuestion, SurveyQuestionOption, SurveyResponse, SurveyAnswer, \
+    SurveyAnswerOption, PostInvitation, InvitationGroup, GroupAccount, InvitationAccount
 
 
 class RoleAdmin(admin.ModelAdmin):
@@ -22,7 +23,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ['id', 'phone_number', 'user_id', 'role_id', 'user', 'account_status']
+    list_display = ['id', 'phone_number', 'role', 'user', 'account_status']
     search_fields = ['phone_number']
     list_filter = ['role_id', 'account_status']
     readonly_fields = ['show_avatar', 'show_cover_avatar']
@@ -63,7 +64,7 @@ class ReactionAdmin(admin.ModelAdmin):
 
 
 class PostReactionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'post_id', 'reaction_id', 'account_id']
+    list_display = ['id', 'post_id', 'post', 'reaction', 'account']
 
 
 class PostImageAdmin(admin.ModelAdmin):
@@ -73,6 +74,51 @@ class PostImageAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'account_id', 'comment_content', 'comment_image_url', 'post_id']
     search_fields = ['comment_content']
+
+
+class PostSurveyAdmin(admin.ModelAdmin):
+    list_display = ['id', 'post_survey_title', 'start_time', 'end_time', 'is_closed', 'post']
+    search_fields = ['post_survey_title']
+
+
+class SurveyQuestionTypeAdmin(admin.ModelAdmin):
+    pass
+
+
+class SurveyQuestionAdmin(admin.ModelAdmin):
+    pass
+
+
+class SurveyQuestionOptionAdmin(admin.ModelAdmin):
+    pass
+
+
+class SurveyResponseAdmin(admin.ModelAdmin):
+    pass
+
+
+class SurveyAnswerAdmin(admin.ModelAdmin):
+    pass
+
+
+class SurveyAnswerOptionAdmin(admin.ModelAdmin):
+    pass
+
+
+class PostInvitationAdmin(admin.ModelAdmin):
+    pass
+
+
+class InvitationGroupAdmin(admin.ModelAdmin):
+    pass
+
+
+class GroupAccountAdmin(admin.ModelAdmin):
+    pass
+
+
+class InvitationAccountAdmin(admin.ModelAdmin):
+    pass
 
 
 admin.site.register(Role, RoleAdmin)
@@ -85,3 +131,14 @@ admin.site.register(Reaction, ReactionAdmin)
 admin.site.register(PostReaction, PostReactionAdmin)
 admin.site.register(PostImage, PostImageAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(PostSurvey, PostSurveyAdmin)
+admin.site.register(SurveyQuestionType, SurveyQuestionTypeAdmin)
+admin.site.register(SurveyQuestion, SurveyQuestionAdmin)
+admin.site.register(SurveyQuestionOption, SurveyQuestionOptionAdmin)
+admin.site.register(SurveyResponse, SurveyResponseAdmin)
+admin.site.register(SurveyAnswer, SurveyAnswerAdmin)
+admin.site.register(SurveyAnswerOption, SurveyAnswerOptionAdmin)
+admin.site.register(PostInvitation, PostInvitationAdmin)
+admin.site.register(InvitationGroup, InvitationGroupAdmin)
+admin.site.register(GroupAccount, GroupAccountAdmin)
+admin.site.register(InvitationAccount, InvitationAccountAdmin)
