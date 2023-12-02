@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import mark_safe
 
 from .models import Role, ConfirmStatus, User, Account, AlumniAccount, Post, PostSurvey
 
@@ -23,6 +24,21 @@ class AccountAdmin(admin.ModelAdmin):
     list_display = ['id', 'phone_number', 'user_id', 'role_id', 'user', 'account_status']
     search_fields = ['phone_number']
     list_filter = ['role_id', 'account_status']
+    readonly_fields = ['show_avatar', 'show_cover_avatar']
+
+    @staticmethod
+    def show_avatar(account):
+        if account:
+            return mark_safe(
+                '<img src="/static/{url}" width="120" />'.format(url=account.avatar.name)
+            )
+
+    @staticmethod
+    def show_cover_avatar(account):
+        if account:
+            return mark_safe(
+                '<img src="/static/{url}" width="120" />'.format(url=account.cover_avatar.name)
+            )
 
 
 class AlumniAccountAdmin(admin.ModelAdmin):
