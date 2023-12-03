@@ -1,3 +1,5 @@
+import math
+
 from django.contrib import admin
 from django.utils.html import mark_safe
 
@@ -53,10 +55,23 @@ class AlumniAccountAdmin(admin.ModelAdmin):
     list_display = ['id', 'alumni_account_code']
 
 
+class PostImageInLineAdmin(admin.TabularInline):
+    model = PostImage
+
+
+class PostSurveyInLineAdmin(admin.TabularInline):
+    model = PostSurvey
+
+
+class PostInvitationInLineAdmin(admin.TabularInline):
+    model = PostInvitation
+
+
 class PostAdmin(admin.ModelAdmin):
     list_display = ['id', 'post_content', 'comment_lock', 'account']
     search_fields = ['post_content', 'account']
     list_filter = ['comment_lock']
+    inlines = [PostImageInLineAdmin, PostSurveyInLineAdmin, PostInvitationInLineAdmin]
 
 
 class ReactionAdmin(admin.ModelAdmin):
@@ -76,17 +91,26 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ['comment_content']
 
 
+class SurveyQuestionInLineAdmin(admin.TabularInline):
+    model = SurveyQuestion
+
+
 class PostSurveyAdmin(admin.ModelAdmin):
     list_display = ['id', 'post_survey_title', 'start_time', 'end_time', 'is_closed', 'post']
     search_fields = ['post_survey_title']
+    inlines = [SurveyQuestionInLineAdmin]
 
 
 class SurveyQuestionTypeAdmin(admin.ModelAdmin):
     pass
 
 
+class SurveyQuestionOptionInLineAdmin(admin.TabularInline):
+    model = SurveyQuestionOption
+
+
 class SurveyQuestionAdmin(admin.ModelAdmin):
-    pass
+    inlines = [SurveyQuestionOptionInLineAdmin]
 
 
 class SurveyQuestionOptionAdmin(admin.ModelAdmin):

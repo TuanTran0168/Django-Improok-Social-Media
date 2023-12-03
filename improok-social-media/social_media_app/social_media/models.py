@@ -83,7 +83,7 @@ class PostImage(BaseModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.post_image_url
+        return self.post_image_url.name
 
 
 class Comment(BaseModel):
