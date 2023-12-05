@@ -43,6 +43,8 @@ class Account(BaseModel):
     account_status = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
+    group_account = models.ManyToManyField('InvitationGroup')
+    invitation_account = models.ManyToManyField('PostInvitation')
 
     def __str__(self):
         return self.phone_number
@@ -87,7 +89,7 @@ class PostImage(BaseModel):
 
 
 class Comment(BaseModel):
-    comment_content = models.CharField(max_length=255)
+    comment_content = models.TextField()
     comment_image_url = models.ImageField(upload_to="images/comments/%Y/%m", null=True, blank=True)
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -115,7 +117,7 @@ class SurveyQuestionType(BaseModel):
 
 
 class SurveyQuestion(BaseModel):
-    question_content = models.CharField(max_length=255)
+    question_content = models.TextField()
     question_order = models.IntegerField()
     is_required = models.BooleanField(default=False)
     post_survey = models.ForeignKey(PostSurvey, on_delete=models.CASCADE)
@@ -126,9 +128,10 @@ class SurveyQuestion(BaseModel):
 
 
 class SurveyQuestionOption(BaseModel):
-    question_option_value = models.CharField(max_length=255)
+    question_option_value = models.TextField()
     question_option_order = models.IntegerField()
     survey_question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE)
+    survey_answer_option = models.ManyToManyField('SurveyAnswer')
 
     def __str__(self):
         return self.question_option_value
@@ -155,12 +158,12 @@ class SurveyAnswer(BaseModel):
             return self.question_option_value
 
 
-class SurveyAnswerOption(BaseModel):
-    survey_question_option = models.ForeignKey(SurveyQuestionOption, on_delete=models.CASCADE)
-    survey_answer = models.ForeignKey(SurveyAnswer, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.survey_answer.__str__() + self.survey_question_option.__str__()
+# class SurveyAnswerOption(BaseModel):
+#     survey_question_option = models.ForeignKey(SurveyQuestionOption, on_delete=models.CASCADE)
+#     survey_answer = models.ForeignKey(SurveyAnswer, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return self.survey_answer.__str__() + self.survey_question_option.__str__()
 
 
 class PostInvitation(BaseModel):
@@ -180,11 +183,11 @@ class InvitationGroup(BaseModel):
         return self.invitation_group_name
 
 
-class GroupAccount(BaseModel):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    invitation_group = models.ForeignKey(InvitationGroup, on_delete=models.CASCADE)
+# class GroupAccount(BaseModel):
+#     account = models.ForeignKey(Account, on_delete=models.CASCADE)
+#     invitation_group = models.ForeignKey(InvitationGroup, on_delete=models.CASCADE)
 
 
-class InvitationAccount(BaseModel):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    post_invitation = models.ForeignKey(PostInvitation, on_delete=models.CASCADE)
+# class InvitationAccount(BaseModel):
+#     account = models.ForeignKey(Account, on_delete=models.CASCADE)
+#     post_invitation = models.ForeignKey(PostInvitation, on_delete=models.CASCADE)
