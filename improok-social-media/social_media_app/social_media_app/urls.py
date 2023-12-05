@@ -19,5 +19,6 @@ from django.urls import path, re_path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('__debug__/', include('debug_toolbar.urls')),
     # re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),  # Tạm thời không dùng cái upload file bằng ckeditor
 ]

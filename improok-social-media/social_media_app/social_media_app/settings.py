@@ -27,6 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 MEDIA_ROOT = '%s/social_media/static/' % BASE_DIR
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -49,7 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_media.apps.SocialMediaConfig',
     'ckeditor',
-    'ckeditor_uploader'
+    'ckeditor_uploader',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'social_media_app.urls'
