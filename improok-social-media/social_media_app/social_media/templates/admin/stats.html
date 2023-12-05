@@ -1,0 +1,60 @@
+{% extends 'admin/base_site.html' %}
+
+
+{% block content %}
+
+<h1>THỐNG KÊ MẠNG XÃ HỘI TRỰC TUYẾN</h1>
+
+<div>{{ stats }}</div>
+
+<ul>
+    {% for s in stats %}
+    <li><strong>{{ s.id }} - {{ s.user__username }}:</strong> {{ s.count }}</li>
+    {% endfor %}
+</ul>
+
+<div style="width: 700px">
+    <canvas id="firstStats"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let labels = [];
+    let values = [];
+
+    {% for s in stats %}
+    values.push({{ s.count }})
+    labels.push('{{ s.user__username }}')
+    {% endfor %}
+
+    window.onload = () => {
+        const ctx = document.getElementById('firstStats');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '# Số lượng bài Post của các Account',
+            data: values,
+            borderWidth: 1,
+            backgroundColor: [
+              'rgb(255, 99, 132)',
+              'rgb(54, 162, 235)',
+              'rgb(255, 205, 86)'
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+</script>
+
+{% endblock %}

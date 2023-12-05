@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 
+from social_media.admin import my_admin_site
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+    path('admin/', my_admin_site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
     # re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),  # Tạm thời không dùng cái upload file bằng ckeditor
 ]

@@ -1,11 +1,34 @@
 import math
 
 from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.urls import path
 from django.utils.html import mark_safe
 
+from social_media import dao
 from .models import Role, ConfirmStatus, User, Account, AlumniAccount, Post, PostSurvey, Reaction, PostReaction, \
     PostImage, Comment, SurveyQuestionType, SurveyQuestion, SurveyQuestionOption, SurveyResponse, SurveyAnswer, \
     PostInvitation, InvitationGroup
+
+
+class SocialMediaAppAdminSite(admin.AdminSite):
+    site_header = 'HỆ THỐNG MẠNG XÃ HỘI TRỰC TUYẾN'
+    index_title = 'Tuấn Trần Django administration'
+
+    def get_urls(self):
+        return [
+                   path('stats-admin/', self.stats_view) # Cái này là url
+               ] + super().get_urls()
+
+    @staticmethod
+    def stats_view(request):
+        # Cái này dẫn tới folder templates/
+        return TemplateResponse(request, 'admin/stats.html', {
+            'stats': dao.count_posts_by_account()
+        })
+
+
+my_admin_site = SocialMediaAppAdminSite(name='TuanTranAdmin')
 
 
 class RoleAdmin(admin.ModelAdmin):
@@ -157,24 +180,24 @@ class InvitationAccountAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Role, RoleAdmin)
-admin.site.register(ConfirmStatus, ConfirmStatusAdmin)
-admin.site.register(User, UserAdmin)
-admin.site.register(Account, AccountAdmin)
-admin.site.register(AlumniAccount, AlumniAccountAdmin)
-admin.site.register(Post, PostAdmin)
-admin.site.register(Reaction, ReactionAdmin)
-admin.site.register(PostReaction, PostReactionAdmin)
-admin.site.register(PostImage, PostImageAdmin)
-admin.site.register(Comment, CommentAdmin)
-admin.site.register(PostSurvey, PostSurveyAdmin)
-admin.site.register(SurveyQuestionType, SurveyQuestionTypeAdmin)
-admin.site.register(SurveyQuestion, SurveyQuestionAdmin)
-admin.site.register(SurveyQuestionOption, SurveyQuestionOptionAdmin)
-admin.site.register(SurveyResponse, SurveyResponseAdmin)
-admin.site.register(SurveyAnswer, SurveyAnswerAdmin)
+my_admin_site.register(Role, RoleAdmin)
+my_admin_site.register(ConfirmStatus, ConfirmStatusAdmin)
+my_admin_site.register(User, UserAdmin)
+my_admin_site.register(Account, AccountAdmin)
+my_admin_site.register(AlumniAccount, AlumniAccountAdmin)
+my_admin_site.register(Post, PostAdmin)
+my_admin_site.register(Reaction, ReactionAdmin)
+my_admin_site.register(PostReaction, PostReactionAdmin)
+my_admin_site.register(PostImage, PostImageAdmin)
+my_admin_site.register(Comment, CommentAdmin)
+my_admin_site.register(PostSurvey, PostSurveyAdmin)
+my_admin_site.register(SurveyQuestionType, SurveyQuestionTypeAdmin)
+my_admin_site.register(SurveyQuestion, SurveyQuestionAdmin)
+my_admin_site.register(SurveyQuestionOption, SurveyQuestionOptionAdmin)
+my_admin_site.register(SurveyResponse, SurveyResponseAdmin)
+my_admin_site.register(SurveyAnswer, SurveyAnswerAdmin)
 # admin.site.register(SurveyAnswerOption, SurveyAnswerOptionAdmin)
-admin.site.register(PostInvitation, PostInvitationAdmin)
-admin.site.register(InvitationGroup, InvitationGroupAdmin)
+my_admin_site.register(PostInvitation, PostInvitationAdmin)
+my_admin_site.register(InvitationGroup, InvitationGroupAdmin)
 # admin.site.register(GroupAccount, GroupAccountAdmin)
 # admin.site.register(InvitationAccount, InvitationAccountAdmin)
