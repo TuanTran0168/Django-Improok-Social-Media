@@ -54,7 +54,9 @@ INSTALLED_APPS = [
     'social_media.apps.SocialMediaConfig',
     'ckeditor',
     'ckeditor_uploader',
-    'debug_toolbar'
+    'debug_toolbar',
+    'rest_framework',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
