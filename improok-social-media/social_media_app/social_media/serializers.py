@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Role, User, Post, Account, PostImage
+from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -21,9 +21,16 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class InvitationGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvitationGroup
+        fields = '__all__'
+
+
 class AccountSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
     cover_avatar = serializers.SerializerMethodField(source='cover_avatar')
+    group_account = InvitationGroupSerializer(many=True)
 
     def get_avatar(self, account):
         if account.avatar:
@@ -56,4 +63,19 @@ class PostImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostImage
+        fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    comment_image_url = serializers.SerializerMethodField(source='comment_image_url')
+
+    def get_comment_image_url(self, comment):
+        if comment.comment_image_url:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri('/static/%s' % comment.comment_image_url.name)
+        return '/static/%s' % comment.comment_image_url.name
+
+    class Meta:
+        model = Comment
         fields = '__all__'
