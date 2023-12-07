@@ -65,13 +65,13 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView):
 
 
 class AccountModelViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Account.objects.all()
     serializer_class = AccountSerializer
     pagination_class = MyPageSize
 
 
 class AccountViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Account.objects.filter(active=True).all()
+    queryset = Account.objects.select_related('role', 'user').filter(active=True).all()
     serializer_class = AccountSerializer
     pagination_class = MyPageSize
 

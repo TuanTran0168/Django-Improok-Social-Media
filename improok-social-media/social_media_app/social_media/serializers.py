@@ -13,6 +13,21 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+        extra_kwargs = {'password': {'write_only': True}} # Không có cho xem password :)
+
+    # Cái này xài bên giao diện admin của django nó không băm :))) để mò thêm
+    def create(self, validated_data):
+        data = validated_data.copy()
+        user = User(**data)
+        user.set_password(user.password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        return super().update(instance, validated_data)
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -30,7 +45,11 @@ class InvitationGroupSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
     cover_avatar = serializers.SerializerMethodField(source='cover_avatar')
-    group_account = InvitationGroupSerializer(many=True)
+    # Xài cái này tốn tận 2 truy vấn để lấy group account ra từ cái khóa ngoại
+    # Qua bên views xài select_related() ngon hơn (foreign key)
+    group_account = InvitationGroupSerializer(many=True) # Cái này Many To Many
+    role = RoleSerializer()
+    user = UserSerializer()
 
     def get_avatar(self, account):
         if account.avatar:
