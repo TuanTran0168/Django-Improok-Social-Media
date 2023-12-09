@@ -1,11 +1,12 @@
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response
 
 from .models import Role, User, Post, Account, PostImage, Comment
 from .paginators import PostPagination, MyPageSize
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
-    CommentSerializer
+    CommentSerializer, CreateAccountSerializer
 
 
 class RoleViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -13,10 +14,10 @@ class RoleViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = RoleSerializer
 
 
-class UserModelViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    pagination_class = MyPageSize
+# class UserModelViewSet(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     pagination_class = MyPageSize
 
 
 class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -25,10 +26,10 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
     pagination_class = MyPageSize
 
 
-class PostModelViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    pagination_class = PostPagination
+# class PostModelViewSet(viewsets.ModelViewSet):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+#     pagination_class = PostPagination
 
 
 class PostViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -64,22 +65,29 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView):
         return queries
 
 
-class AccountModelViewSet(viewsets.ModelViewSet):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    pagination_class = MyPageSize
+# class AccountModelViewSet(viewsets.ModelViewSet):
+#     queryset = Account.objects.all()
+#     serializer_class = AccountSerializer
+#     pagination_class = MyPageSize
 
 
-class AccountViewSet(viewsets.ViewSet, generics.ListAPIView):
+class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView):
     queryset = Account.objects.select_related('role', 'user').filter(active=True).all()
     serializer_class = AccountSerializer
     pagination_class = MyPageSize
+    parser_classes = [MultiPartParser, ]
+
+    # Override lại để dùng cái Serializer create
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateAccountSerializer
+        return self.serializer_class
 
 
-class PostImageModelViewSet(viewsets.ModelViewSet):
-    queryset = PostImage.objects.all()
-    serializer_class = PostImageSerializer
-    pagination_class = MyPageSize
+# class PostImageModelViewSet(viewsets.ModelViewSet):
+#     queryset = PostImage.objects.all()
+#     serializer_class = PostImageSerializer
+#     pagination_class = MyPageSize
 
 
 class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -88,10 +96,10 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView):
     pagination_class = MyPageSize
 
 
-class CommentModelViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    pagination_class = MyPageSize
+# class CommentModelViewSet(viewsets.ModelViewSet):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
+#     pagination_class = MyPageSize
 
 
 class CommentViewSet(viewsets.ViewSet, generics.ListAPIView):
