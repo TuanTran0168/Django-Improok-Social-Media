@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status, permissions
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response
@@ -24,6 +24,7 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # class PostModelViewSet(viewsets.ModelViewSet):

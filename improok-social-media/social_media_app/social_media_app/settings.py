@@ -19,6 +19,8 @@ pymysql.install_as_MySQLdb()
 
 AUTH_USER_MODEL = 'social_media.User'
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 # Tạm thời không dùng cái upload file bằng ckeditor
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
 
@@ -30,6 +32,20 @@ MEDIA_ROOT = '%s/social_media/static/' % BASE_DIR
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework.parsers.JSONParser',
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
+
+# Oauth2
+CLIENT_ID = 'zDnklZ6ztQVU0X4DOQEymwV96MfWhW3Hk2VHq3D9'
+CLIENT_SECRET = 'Wo2j1Qn6UKI691i30hmc4gZ7JCTazZ18KXNne7n2IYihCYoEw3PozWTtPc0CkiKZHtMBxOFTWISj83R5cSODQbCh9uTmNb5eefA4W9TwZmzI0D0smpz6bBf8CgSNnYDj'
+#
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -56,10 +72,13 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'debug_toolbar',
     'rest_framework',
-    'drf_yasg'
+    'drf_yasg',
+    'oauth2_provider',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
