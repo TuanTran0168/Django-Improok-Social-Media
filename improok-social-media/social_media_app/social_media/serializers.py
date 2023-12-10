@@ -3,10 +3,38 @@ from rest_framework import serializers
 from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment
 
 
+# Role
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = '__all__'
+
+
+# User
+class CreateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'first_name', 'last_name', 'email']
+
+    # Cái này xài bên giao diện admin của django nó không băm :))) để mò thêm
+    def create(self, validated_data):
+        data = validated_data.copy()
+        user = User(**data)
+        user.set_password(user.password)
+        user.save()
+        return user
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['password', 'first_name', 'last_name', 'email']
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        return super().update(instance, validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -30,17 +58,33 @@ class UserSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+# Post
+class CreatePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['post_content', 'account']
+
+
+class UpdatePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['post_content', 'comment_lock']
+
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
 
 
+# InvitationGroup
 class InvitationGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvitationGroup
         fields = '__all__'
 
+
+# Account
 
 # Serializer dùng để tạo riêng
 # Vì Cái AccountSerializer kia dùng để hiển thị đã serializer luôn các object bên phía ForeignKey rồi
@@ -54,6 +98,15 @@ class CreateAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ['phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user', 'role']
+
+
+class UpdateAccountSerializer(serializers.ModelSerializer):
+    role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
+    date_of_birth = serializers.DateField(format='%Y-%m-%d')
+
+    class Meta:
+        model = Account
+        fields = ['phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'role']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -114,6 +167,18 @@ class AccountSerializer(serializers.ModelSerializer):
 #         model = CreateAccountSerializer.Meta.model
 #         fields = CreateAccountSerializer.Meta.fields + ['id', 'group_account', 'invitation_account']
 
+# PostImage
+class CreatePostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['post_image_url', 'post']
+
+
+class UpdatePostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['post_image_url']  # Cái này lỏ rồi
+
 
 class PostImageSerializer(serializers.ModelSerializer):
     post_image_url = serializers.SerializerMethodField(source='post_image_url')
@@ -128,6 +193,19 @@ class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImage
         fields = '__all__'
+
+
+# Comment
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['comment_content', 'comment_image_url', 'account', 'post']
+
+
+class UpdateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['comment_content', 'comment_image_url']
 
 
 class CommentSerializer(serializers.ModelSerializer):
