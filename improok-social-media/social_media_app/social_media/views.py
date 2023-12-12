@@ -32,6 +32,10 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             return UpdateUserSerializer
         return self.serializer_class
 
+    @action(methods=['get'], detail=False, url_path='current-user')
+    def current_user(self, request):
+        return Response(UserSerializer(request.user).data)
+
 
 # Post
 class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
