@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
@@ -35,6 +36,16 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     @action(methods=['get'], detail=False, url_path='current-user')
     def current_user(self, request):
         return Response(UserSerializer(request.user).data)
+
+    @action(methods=['GET'], detail=True, url_path='account')
+    def get_account_by_user_id(self, request, pk):
+        try:
+            # Lạy chúa thì ra đây là truy vấn ngược của OneToOne :)))
+            user = self.get_object()
+            account = user.account
+            return Response(AccountSerializer(account, context={'request': request}).data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'detail': 'Account not found!!!'}, status=status.HTTP_404_NOT_FOUND)
 
 
 # Post
