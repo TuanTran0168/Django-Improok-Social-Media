@@ -4,18 +4,26 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response
 
-from .models import Role, User, Post, Account, PostImage, Comment
+from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction
 from .paginators import PostPagination, MyPageSize
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
-    UpdateCommentSerializer, UpdateAccountSerializer
+    UpdateCommentSerializer, UpdateAccountSerializer, ConfirmStatusSerializer, AlumniAccountSerializer, \
+    CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
+    CreatePostReactionSerializer, UpdatePostReactionSerializer
 
 
 # Role
 class RoleViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
+
+
+# ConfirmStatus
+class ConfirmStatusViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = ConfirmStatus.objects.all()
+    serializer_class = ConfirmStatusSerializer
 
 
 # User
@@ -98,6 +106,28 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         return queries
 
 
+# Reaction
+class ReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = Reaction.objects.filter(active=True).all()
+    serializer_class = ReactionSerializer
+    pagination_class = MyPageSize
+
+
+# PostReaction
+class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                          generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = PostReaction.objects.select_related('account', 'post', 'reaction').filter(active=True).all()
+    serializer_class = PostReactionSerializer
+    pagination_class = MyPageSize
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreatePostReactionSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdatePostReactionSerializer
+        return self.serializer_class
+
+
 # Account
 class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                      generics.UpdateAPIView, generics.DestroyAPIView):
@@ -112,6 +142,21 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
             return CreateAccountSerializer
         if self.action.__eq__('update') or self.action.__eq__('partial_update'):
             return UpdateAccountSerializer
+        return self.serializer_class
+
+
+# AlumniAccount
+class AlumniAccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                           generics.UpdateAPIView):
+    queryset = AlumniAccount.objects.all()
+    serializer_class = AlumniAccountSerializer
+
+    # Override lại để dùng cái Serializer create, update
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateAlumniAccountSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdateAlumniAccountSerializer
         return self.serializer_class
 
 

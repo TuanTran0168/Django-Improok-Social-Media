@@ -1,12 +1,20 @@
 from rest_framework import serializers
 
-from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment
+from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment, ConfirmStatus, AlumniAccount, \
+    Reaction, PostReaction
 
 
 # Role
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
+        fields = '__all__'
+
+
+# ConfirmStatus
+class ConfirmStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConfirmStatus
         fields = '__all__'
 
 
@@ -74,6 +82,53 @@ class UpdatePostSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+        fields = '__all__'
+
+
+# Reaction
+class ReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reaction
+        fields = '__all__'
+
+
+# PostReaction
+class AccountSerializerForPostReaction(serializers.ModelSerializer):
+    role = RoleSerializer()
+    user = UserSerializer()
+
+    class Meta:
+        model = Account
+        fields = ['id', 'phone_number', 'avatar', 'user', 'role']
+
+    # Truy cập trường role_name trong trường Role và username trong User của Account (chỉ để hiển thị cho ĐẸP)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['role'] = representation['role']['role_name']
+        representation['user'] = 'id:' + str(representation['user']['id']) + \
+                                 '/username:' + representation['user']['username']
+        return representation
+
+
+class CreatePostReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostReaction
+        fields = ['reaction', 'post', 'account']
+
+
+class UpdatePostReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostReaction
+        fields = ['reaction', 'post']
+
+
+class PostReactionSerializer(serializers.ModelSerializer):
+    account = AccountSerializerForPostReaction()
+    reaction = ReactionSerializer()
+    post = PostSerializer()
+
+    class Meta:
+        model = PostReaction
         fields = '__all__'
 
 
@@ -166,6 +221,26 @@ class AccountSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = CreateAccountSerializer.Meta.model
 #         fields = CreateAccountSerializer.Meta.fields + ['id', 'group_account', 'invitation_account']
+
+
+# AlumniAccount
+class CreateAlumniAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlumniAccount
+        fields = ['alumni_account_code', 'account']
+
+
+class UpdateAlumniAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlumniAccount
+        fields = ['alumni_account_code']
+
+
+class AlumniAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlumniAccount
+        fields = '__all__'
+
 
 # PostImage
 class CreatePostImageSerializer(serializers.ModelSerializer):
