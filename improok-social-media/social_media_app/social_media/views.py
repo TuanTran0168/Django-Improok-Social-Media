@@ -13,7 +13,7 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     UpdateCommentSerializer, UpdateAccountSerializer, ConfirmStatusSerializer, AlumniAccountSerializer, \
     CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
     CreatePostReactionSerializer, UpdatePostReactionSerializer, InvitationGroupSerializer, \
-    CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer
+    CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer, AccountSerializerForInvitationGroup
 
 
 # Role
@@ -41,6 +41,26 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
         if self.action.__eq__('update') or self.action.__eq__('partial_update'):
             return UpdateInvitationGroupSerializer
         return self.serializer_class
+
+    @action(methods=['GET'], detail=True, url_path='accounts')
+    def get_accounts(self, request, pk):
+        accounts = self.get_object().accounts.filter(active=True).all()
+        return Response(AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+    # BUG CHƯA XÀI ĐƯỢC - XÀI LỖI RÁNG CHỊU
+    @action(methods=['POST'], detail=True, url_path='add_account')
+    def add_account(self, request, pk):
+        invitation_group = self.get_object()
+        account_id = request.data.get('account_id')
+
+        try:
+            account = Account.objects.get(id=account_id)
+            invitation_group.accounts.add(account)
+            invitation_group.save()
+            return Response(status=status.HTTP_200_OK)
+        except Account.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 # User
@@ -162,9 +182,16 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='posts')
-    def get_post_images(self, request, pk):
+    def get_posts_by_account(self, request, pk):
         posts = self.get_object().post_set.filter(active=True).all()
         return Response(PostSerializer(posts, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=True, url_path='invitation_groups')
+    def get_invitation_groups_by_account(self, request, pk):
+        # ManyToMany query ngược
+        invitation_groups = self.get_object().invitationgroup_set.filter(active=True).all()
+        return Response(InvitationGroupSerializer(invitation_groups, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
 

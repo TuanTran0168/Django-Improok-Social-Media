@@ -156,20 +156,21 @@ class SurveyAnswerOptionAdmin(admin.ModelAdmin):
     pass
 
 
-class AccountInLineAdmin(admin.TabularInline):
-    model = Account.invitation_account.through
+# class AccountInLineAdmin(admin.TabularInline):
+#     model = Account.invitation_account.through
 
 
 class PostInvitationAdmin(admin.ModelAdmin):
-    inlines = [AccountInLineAdmin]
+    # inlines = [AccountInLineAdmin]
+    pass
 
-
-class AccountInLineAdmin(admin.TabularInline):
-    model = Account.group_account.through
+# class AccountInLineAdmin(admin.TabularInline):
+#     model = Account.group_account.through
 
 
 class InvitationGroupAdmin(admin.ModelAdmin):
-    inlines = [AccountInLineAdmin]
+    pass
+    # inlines = [AccountInLineAdmin]
 
 
 class GroupAccountAdmin(admin.ModelAdmin):

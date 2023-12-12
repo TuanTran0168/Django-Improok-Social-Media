@@ -43,8 +43,6 @@ class Account(BaseModel):
     account_status = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
-    group_account = models.ManyToManyField('InvitationGroup')
-    invitation_account = models.ManyToManyField('PostInvitation')
 
     def __str__(self):
         return self.phone_number
@@ -171,6 +169,7 @@ class PostInvitation(BaseModel):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     post = models.OneToOneField(Post, on_delete=models.CASCADE)
+    accounts = models.ManyToManyField('Account')
 
     def __str__(self):
         return self.event_name
@@ -178,6 +177,7 @@ class PostInvitation(BaseModel):
 
 class InvitationGroup(BaseModel):
     invitation_group_name = models.CharField(max_length=255)
+    accounts = models.ManyToManyField('Account')
 
     def __str__(self):
         return self.invitation_group_name

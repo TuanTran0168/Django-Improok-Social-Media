@@ -19,6 +19,29 @@ class ConfirmStatusSerializer(serializers.ModelSerializer):
 
 
 # InvitationGroup
+class AccountSerializerForInvitationGroup(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField(source='avatar')
+    cover_avatar = serializers.SerializerMethodField(source='cover_avatar')
+
+    def get_avatar(self, account):
+        if account.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri('/static/%s' % account.avatar.name)
+        return '/static/%s' % account.avatar.name
+
+    def get_cover_avatar(self, account):
+        if account.cover_avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri('/static/%s' % account.cover_avatar.name)
+        return '/static/%s' % account.cover_avatar.name
+
+    class Meta:
+        model = Account
+        fields = '__all__'
+
+
 class CreateInvitationGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvitationGroup
@@ -179,7 +202,6 @@ class UpdateAccountSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
     cover_avatar = serializers.SerializerMethodField(source='cover_avatar')
-    group_account = InvitationGroupSerializer(many=True)  # Cái này Many To Many
     # Xài cái many=True này tốn tận 2 tới 4 câu query
     # để lấy role, user ra từ cái khóa ngoại
     # Qua bên views xài select_related() ngon hơn (foreign key) vì nó INNER_JOIN (debug toolbar check)
