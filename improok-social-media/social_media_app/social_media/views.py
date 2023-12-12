@@ -4,14 +4,16 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response
 
-from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction
+from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
+    InvitationGroup
 from .paginators import PostPagination, MyPageSize
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
     UpdateCommentSerializer, UpdateAccountSerializer, ConfirmStatusSerializer, AlumniAccountSerializer, \
     CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
-    CreatePostReactionSerializer, UpdatePostReactionSerializer
+    CreatePostReactionSerializer, UpdatePostReactionSerializer, InvitationGroupSerializer, \
+    CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer
 
 
 # Role
@@ -24,6 +26,21 @@ class RoleViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 class ConfirmStatusViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = ConfirmStatus.objects.all()
     serializer_class = ConfirmStatusSerializer
+
+
+# InvitationGroup
+class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                             generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = InvitationGroup.objects.filter(active=True)
+    serializer_class = InvitationGroupSerializer
+    pagination_class = MyPageSize
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateInvitationGroupSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdateInvitationGroupSerializer
+        return self.serializer_class
 
 
 # User
@@ -143,6 +160,12 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
         if self.action.__eq__('update') or self.action.__eq__('partial_update'):
             return UpdateAccountSerializer
         return self.serializer_class
+
+    @action(methods=['GET'], detail=True, url_path='posts')
+    def get_post_images(self, request, pk):
+        posts = self.get_object().post_set.filter(active=True).all()
+        return Response(PostSerializer(posts, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
 
 
 # AlumniAccount

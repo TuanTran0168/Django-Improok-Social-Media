@@ -4,7 +4,7 @@ from rest_framework import routers
 
 from .views import RoleViewSet, UserViewSet, PostViewSet, \
     AccountViewSet, PostImageViewSet, CommentViewSet, ConfirmStatusViewSet, AlumniAccountViewSet, ReactionViewSet, \
-    PostReactionViewSet
+    PostReactionViewSet, InvitationGroupViewSet
 
 router = routers.DefaultRouter()
 router.register('roles', RoleViewSet, basename='roles')
@@ -27,6 +27,8 @@ router.register('alumni_accounts', AlumniAccountViewSet, basename='alumni_accoun
 router.register('post_images', PostImageViewSet, basename='post_images')
 
 router.register('comment', CommentViewSet, basename='comment')
+
+router.register('invitation_groups', InvitationGroupViewSet, basename='invitation_groups')
 
 urlpatterns = [
     path('', include(router.urls)),

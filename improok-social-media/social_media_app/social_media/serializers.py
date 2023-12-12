@@ -18,6 +18,25 @@ class ConfirmStatusSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# InvitationGroup
+class CreateInvitationGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvitationGroup
+        fields = ['invitation_group_name']
+
+
+class UpdateInvitationGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvitationGroup
+        fields = ['invitation_group_name']
+
+
+class InvitationGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvitationGroup
+        fields = '__all__'
+
+
 # User
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -132,13 +151,6 @@ class PostReactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# InvitationGroup
-class InvitationGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InvitationGroup
-        fields = '__all__'
-
-
 # Account
 
 # Serializer dùng để tạo riêng
@@ -191,6 +203,7 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = '__all__'
+        # fields = ['invitation_group_account', 'role', 'user', 'avatar', 'cover_avatar']
 
 
 # Ở CreateAccountSerializer lỡ chỉnh date_of_birth thành Date chứ không phải DateTime nên lỗi :)))
