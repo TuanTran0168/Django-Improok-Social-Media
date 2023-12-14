@@ -1,24 +1,24 @@
 from rest_framework import serializers
 
 from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment, ConfirmStatus, AlumniAccount, \
-    Reaction, PostReaction
+    Reaction, PostReaction, PostInvitation
 
 
-# Role
+# -Role-
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = '__all__'
 
 
-# ConfirmStatus
+# -ConfirmStatus-
 class ConfirmStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConfirmStatus
         fields = '__all__'
 
 
-# InvitationGroup
+# -InvitationGroup-
 class AccountSerializerForInvitationGroup(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
     cover_avatar = serializers.SerializerMethodField(source='cover_avatar')
@@ -60,7 +60,7 @@ class InvitationGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# User
+# -User-
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -108,7 +108,7 @@ class UserSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-# Post
+# -Post-
 class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -127,14 +127,14 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Reaction
+# -Reaction-
 class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reaction
         fields = '__all__'
 
 
-# PostReaction
+# -PostReaction-
 class AccountSerializerForPostReaction(serializers.ModelSerializer):
     role = RoleSerializer()
     user = UserSerializer()
@@ -174,7 +174,7 @@ class PostReactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Account
+# -Account-
 
 # Serializer dùng để tạo riêng
 # Vì Cái AccountSerializer kia dùng để hiển thị đã serializer luôn các object bên phía ForeignKey rồi
@@ -258,7 +258,7 @@ class AccountSerializer(serializers.ModelSerializer):
 #         fields = CreateAccountSerializer.Meta.fields + ['id', 'group_account', 'invitation_account']
 
 
-# AlumniAccount
+# -AlumniAccount-
 class CreateAlumniAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = AlumniAccount
@@ -277,7 +277,7 @@ class AlumniAccountSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# PostImage
+# -PostImage-
 class CreatePostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImage
@@ -305,7 +305,7 @@ class PostImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Comment
+# -Comment-
 class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -330,4 +330,23 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+        fields = '__all__'
+
+
+# -PostInvitation-
+class CreatePostInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostInvitation
+        fields = ['event_name', 'start_time', 'end_time', 'post']
+
+
+class UpdatePostInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostInvitation
+        fields = ['event_name', 'start_time', 'end_time']
+
+
+class PostInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostInvitation
         fields = '__all__'

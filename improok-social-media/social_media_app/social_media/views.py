@@ -9,7 +9,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response
 
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
-    InvitationGroup
+    InvitationGroup, PostInvitation
 from .paginators import PostPagination, MyPageSize
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
@@ -17,9 +17,11 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     UpdateCommentSerializer, UpdateAccountSerializer, ConfirmStatusSerializer, AlumniAccountSerializer, \
     CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
     CreatePostReactionSerializer, UpdatePostReactionSerializer, InvitationGroupSerializer, \
-    CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer, AccountSerializerForInvitationGroup
+    CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer, AccountSerializerForInvitationGroup, \
+    PostInvitationSerializer, CreatePostInvitationSerializer, UpdatePostInvitationSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
-    add_or_update_accounts_from_invitation_group
+    add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
+    delete_accounts_from_post_invitation
 
 
 # -Role-
@@ -56,6 +58,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='accounts')
+    @method_decorator(decorator=header_authorization, name='accounts')
     def get_accounts(self, request, pk):
         accounts = self.get_object().accounts.filter(active=True).all()
         return Response(AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
@@ -339,3 +342,70 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
         if self.action.__eq__('update') or self.action.__eq__('partial_update'):
             return UpdateCommentSerializer
         return self.serializer_class
+
+
+# -PostInvitation-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
+class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                            generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = PostInvitation.objects.filter(active=True).all()
+    serializer_class = PostInvitationSerializer
+    pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreatePostInvitationSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdatePostInvitationSerializer
+        return self.serializer_class
+
+    @action(methods=['GET'], detail=True, url_path='accounts')
+    @method_decorator(decorator=header_authorization, name='accounts')
+    def get_accounts(self, request, pk):
+        accounts = self.get_object().accounts.filter(active=True).all()
+        return Response(AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=True, url_path='add_or_update_accounts')
+    @method_decorator(decorator=add_or_update_accounts_from_post_invitation, name='add_or_update_accounts')
+    def add_or_update_accounts(self, request, pk):
+        try:
+            post_invitation = self.get_object()
+            list_account_id = request.data.get('list_account_id', [])
+            accounts = Account.objects.filter(id__in=list_account_id)
+            if len(accounts) != len(list_account_id):
+                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+
+            post_invitation.accounts.add(*accounts)
+            post_invitation.save()
+
+            return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['POST'], detail=True, url_path='delete_accounts')
+    @method_decorator(decorator=delete_accounts_from_post_invitation, name='delete_account')
+    def delete_account(self, request, pk):
+        try:
+            post_invitation = self.get_object()
+            list_account_id = request.data.get('list_account_id', [])
+            accounts = post_invitation.accounts.filter(id__in=list_account_id)
+            if len(accounts) != len(list_account_id):
+                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+
+            post_invitation.accounts.remove(*accounts)
+            post_invitation.save()
+
+            return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
