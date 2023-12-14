@@ -67,7 +67,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
     #     except Account.DoesNotExist:
     #         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @action(methods=['POST'], detail=True, url_path='add_accounts')
+    @action(methods=['POST'], detail=True, url_path='add_and_update_accounts')
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -82,7 +82,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             required=['list_account_id'],
         ),
         responses={
-            status.HTTP_200_OK: openapi.Response(
+            status.HTTP_201_CREATED: openapi.Response(
                 description='Success',
                 schema=InvitationGroupSerializer,
             ),
@@ -94,7 +94,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             ),
         }
     )
-    def add_account(self, request, pk):
+    def add_and_update_accounts(self, request, pk):
         try:
             invitation_group = self.get_object()
             list_account_id = request.data.get('list_account_id', [])
@@ -108,10 +108,54 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             invitation_group.accounts.add(*accounts)  # Truyền lẻ từng account vào nhanh hơn truyền list accounts vào
             invitation_group.save()
 
-            return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_200_OK)
+            return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['POST'], detail=True, url_path='delete_accounts')
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'list_account_id': openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(type=openapi.TYPE_INTEGER),
+                    description='List of account IDs',
+                    example=[1, 2, 3]
+                ),
+            },
+            required=['list_account_id'],
+        ),
+        responses={
+            status.HTTP_204_NO_CONTENT: openapi.Response(
+                description='Success',
+                schema=InvitationGroupSerializer,
+            ),
+            status.HTTP_400_BAD_REQUEST: openapi.Response(
+                description='Bad request',
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
+                description='Internal server error',
+            ),
+        }
+    )
+    def delete_account(self, request, pk):
+        try:
+            invitation_group = self.get_object()
+            list_account_id = request.data.get('list_account_id', [])
+            accounts = invitation_group.accounts.filter(id__in=list_account_id)
+            if len(accounts) != len(list_account_id):
+                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+
+            invitation_group.accounts.remove(*accounts)
+            invitation_group.save()
+
+            return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # User
