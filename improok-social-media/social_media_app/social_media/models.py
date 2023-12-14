@@ -169,7 +169,7 @@ class PostInvitation(BaseModel):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     post = models.OneToOneField(Post, on_delete=models.CASCADE)
-    accounts = models.ManyToManyField('Account')
+    accounts = models.ManyToManyField('Account', blank=True)
 
     def __str__(self):
         return self.event_name
@@ -177,7 +177,7 @@ class PostInvitation(BaseModel):
 
 class InvitationGroup(BaseModel):
     invitation_group_name = models.CharField(max_length=255)
-    accounts = models.ManyToManyField('Account')
+    accounts = models.ManyToManyField('Account', blank=True)
 
     def __str__(self):
         return self.invitation_group_name

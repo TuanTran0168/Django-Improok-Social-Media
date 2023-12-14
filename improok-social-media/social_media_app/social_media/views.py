@@ -1,6 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response
 
@@ -48,19 +51,67 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
         return Response(AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
-    # BUG CHƯA XÀI ĐƯỢC - XÀI LỖI RÁNG CHỊU
-    @action(methods=['POST'], detail=True, url_path='add_account')
-    def add_account(self, request, pk):
-        invitation_group = self.get_object()
-        account_id = request.data.get('account_id')
+    # {
+    #   "account_id": 7
+    # }
+    # @action(methods=['POST'], detail=True, url_path='add_account')
+    # def add_account(self, request, pk):
+    #     invitation_group = self.get_object()
+    #     account_id = request.data.get('account_id')
+    #
+    #     try:
+    #         account = Account.objects.get(id=account_id)
+    #         invitation_group.accounts.add(account)
+    #         invitation_group.save()
+    #         return Response(status=status.HTTP_200_OK)
+    #     except Account.DoesNotExist:
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    @action(methods=['POST'], detail=True, url_path='add_accounts')
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'list_account_id': openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(type=openapi.TYPE_INTEGER),
+                    description='List of account IDs',
+                    example=[1, 2, 3]
+                ),
+            },
+            required=['list_account_id'],
+        ),
+        responses={
+            status.HTTP_200_OK: openapi.Response(
+                description='Success',
+                schema=InvitationGroupSerializer,
+            ),
+            status.HTTP_400_BAD_REQUEST: openapi.Response(
+                description='Bad request',
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
+                description='Internal server error',
+            ),
+        }
+    )
+    def add_account(self, request, pk):
         try:
-            account = Account.objects.get(id=account_id)
-            invitation_group.accounts.add(account)
+            invitation_group = self.get_object()
+            list_account_id = request.data.get('list_account_id', [])
+            # Truy vấn mấy tài khoản cần thêm này ra
+            # Nếu mấy cái mới lấy ra mà không trùng với danh sách cần thêm thì khỏi :)))
+            accounts = Account.objects.filter(id__in=list_account_id)
+            if len(accounts) != len(list_account_id):
+                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+
+            invitation_group.accounts.add(*accounts)  # Truyền lẻ từng account vào nhanh hơn truyền list accounts vào
             invitation_group.save()
-            return Response(status=status.HTTP_200_OK)
-        except Account.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+
+            return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # User
@@ -91,6 +142,9 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             return Response(AccountSerializer(account, context={'request': request}).data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'detail': 'Account not found!!!'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # Post
