@@ -2,7 +2,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 
-from .serializers import InvitationGroupSerializer, PostInvitationSerializer
+from .serializers import InvitationGroupSerializer, PostInvitationSerializer, EmailSerializer
 
 header_authorization = swagger_auto_schema(
     manual_parameters=[
@@ -159,5 +159,9 @@ delete_accounts_from_post_invitation = swagger_auto_schema(
             description='Internal server error',
         ),
     }
+)
 
+send_email = swagger_auto_schema(
+    request_body=EmailSerializer,
+    responses={status.HTTP_200_OK: 'Success', status.HTTP_400_BAD_REQUEST: 'Error'}
 )

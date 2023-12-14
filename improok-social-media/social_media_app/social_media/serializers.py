@@ -350,3 +350,15 @@ class PostInvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostInvitation
         fields = '__all__'
+
+
+class EmailSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+    subject = serializers.CharField(max_length=100)
+    message = serializers.CharField()
+    recipient_list = serializers.ListField(child=serializers.EmailField())

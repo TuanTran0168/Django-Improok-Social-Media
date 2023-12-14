@@ -1,10 +1,10 @@
 from django.urls import path, re_path, include
 from rest_framework import routers
-# from social_media import views
 
 from .views import RoleViewSet, UserViewSet, PostViewSet, \
     AccountViewSet, PostImageViewSet, CommentViewSet, ConfirmStatusViewSet, AlumniAccountViewSet, ReactionViewSet, \
-    PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet
+    PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet, SendEmailView
+
 
 router = routers.DefaultRouter()
 router.register('roles', RoleViewSet, basename='roles')
@@ -34,4 +34,5 @@ router.register('post_invitations', PostInvitationViewSet, basename='post_invita
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('send-email/', SendEmailView.as_view(), name='send-email'),
 ]

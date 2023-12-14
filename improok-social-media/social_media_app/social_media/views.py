@@ -1,12 +1,14 @@
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, generics, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import NotFound
 from rest_framework.parsers import MultiPartParser
-from rest_framework.views import Response
+from rest_framework.views import Response, APIView
 
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
     InvitationGroup, PostInvitation
@@ -18,10 +20,10 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
     CreatePostReactionSerializer, UpdatePostReactionSerializer, InvitationGroupSerializer, \
     CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer, AccountSerializerForInvitationGroup, \
-    PostInvitationSerializer, CreatePostInvitationSerializer, UpdatePostInvitationSerializer
+    PostInvitationSerializer, CreatePostInvitationSerializer, UpdatePostInvitationSerializer, EmailSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
-    delete_accounts_from_post_invitation
+    delete_accounts_from_post_invitation, send_email
 
 
 # -Role-
@@ -409,3 +411,26 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
         except Exception as e:
             error_message = str(e)
             return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Tại sao tách decor ra nó lại bị lỗi AttributeError: 'SendEmailView' object has no attribute 'data'
+# Nhưng gắn @swagger_auto_schema trực tiếp thì không bị?
+# Bí ẩn zậy!
+# @method_decorator(decorator=send_email, name='post')
+class SendEmailView(APIView):
+    @staticmethod
+    @swagger_auto_schema(
+        request_body=EmailSerializer
+    )
+    def post(request, format=None):
+        serializer = EmailSerializer(data=request.data)
+        if serializer.is_valid():
+            subject = serializer.validated_data['subject']
+            message = serializer.validated_data['message']
+            recipient_list = serializer.validated_data['recipient_list']
+
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+
+            return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
