@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, generics, status, permissions
@@ -17,26 +18,35 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
     CreatePostReactionSerializer, UpdatePostReactionSerializer, InvitationGroupSerializer, \
     CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer, AccountSerializerForInvitationGroup
+from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
+    add_or_update_accounts_from_invitation_group
 
 
-# Role
+# -Role-
 class RoleViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
 
 
-# ConfirmStatus
+# -ConfirmStatus-
 class ConfirmStatusViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = ConfirmStatus.objects.all()
     serializer_class = ConfirmStatusSerializer
 
 
-# InvitationGroup
+# -InvitationGroup-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                              generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = InvitationGroup.objects.filter(active=True)
     serializer_class = InvitationGroupSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -51,50 +61,9 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
         return Response(AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
-    # {
-    #   "account_id": 7
-    # }
-    # @action(methods=['POST'], detail=True, url_path='add_account')
-    # def add_account(self, request, pk):
-    #     invitation_group = self.get_object()
-    #     account_id = request.data.get('account_id')
-    #
-    #     try:
-    #         account = Account.objects.get(id=account_id)
-    #         invitation_group.accounts.add(account)
-    #         invitation_group.save()
-    #         return Response(status=status.HTTP_200_OK)
-    #     except Account.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-
-    @action(methods=['POST'], detail=True, url_path='add_and_update_accounts')
-    @swagger_auto_schema(
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'list_account_id': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                    description='List of account IDs',
-                    example=[1, 2, 3]
-                ),
-            },
-            required=['list_account_id'],
-        ),
-        responses={
-            status.HTTP_201_CREATED: openapi.Response(
-                description='Success',
-                schema=InvitationGroupSerializer,
-            ),
-            status.HTTP_400_BAD_REQUEST: openapi.Response(
-                description='Bad request',
-            ),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
-                description='Internal server error',
-            ),
-        }
-    )
-    def add_and_update_accounts(self, request, pk):
+    @action(methods=['POST'], detail=True, url_path='add_or_update_accounts')
+    @method_decorator(decorator=add_or_update_accounts_from_invitation_group, name='add_or_update_accounts')
+    def add_or_update_accounts(self, request, pk):
         try:
             invitation_group = self.get_object()
             list_account_id = request.data.get('list_account_id', [])
@@ -114,32 +83,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(methods=['POST'], detail=True, url_path='delete_accounts')
-    @swagger_auto_schema(
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'list_account_id': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                    description='List of account IDs',
-                    example=[1, 2, 3]
-                ),
-            },
-            required=['list_account_id'],
-        ),
-        responses={
-            status.HTTP_204_NO_CONTENT: openapi.Response(
-                description='Success',
-                schema=InvitationGroupSerializer,
-            ),
-            status.HTTP_400_BAD_REQUEST: openapi.Response(
-                description='Bad request',
-            ),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
-                description='Internal server error',
-            ),
-        }
-    )
+    @method_decorator(decorator=delete_accounts_from_invitation_group, name='delete_account')
     def delete_account(self, request, pk):
         try:
             invitation_group = self.get_object()
@@ -158,12 +102,19 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# User
+# -User-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView,
                   generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
@@ -174,10 +125,16 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
         return self.serializer_class
 
     @action(methods=['get'], detail=False, url_path='current-user')
+    @method_decorator(decorator=header_authorization, name='current-user')
     def current_user(self, request):
-        return Response(UserSerializer(request.user).data)
+        return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
+        # if request.user.is_authenticated:
+        #     return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
+        # else:
+        #     return Response({'detail': 'User is not authenticated.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     @action(methods=['GET'], detail=True, url_path='account')
+    @method_decorator(decorator=header_authorization, name='get_account_by_user_id')
     def get_account_by_user_id(self, request, pk):
         try:
             # Lạy chúa thì ra đây là truy vấn ngược của OneToOne :)))
@@ -191,14 +148,19 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# Post
+# -Post-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                   generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = Post.objects.filter(active=True).all()
     serializer_class = PostSerializer
     pagination_class = PostPagination
-
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -213,6 +175,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     # Nếu xài cái def comments(self, request, pk) luôn thì khỏi url_path
     # Nhức nhức cái đầu ghê :v
     @action(methods=['GET'], detail=True, url_path='comments')
+    @method_decorator(decorator=header_authorization, name='get_comments')
     def get_comments(self, request, pk):
         comments = self.get_object().comment_set.filter(active=True).all()
 
@@ -222,6 +185,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                         status=status.HTTP_200_OK)
 
     @action(methods=['GET'], detail=True, url_path='post-images')
+    @method_decorator(decorator=header_authorization, name='get_post_images')
     def get_post_images(self, request, pk):
         post_images = self.get_object().postimage_set.filter(active=True).all()
         return Response(PostImageSerializer(post_images, many=True, context={'request': request}).data,
@@ -241,19 +205,26 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         return queries
 
 
-# Reaction
+# -Reaction-
 class ReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Reaction.objects.filter(active=True).all()
     serializer_class = ReactionSerializer
     pagination_class = MyPageSize
 
 
-# PostReaction
+# -PostReaction-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                           generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = PostReaction.objects.select_related('account', 'post', 'reaction').filter(active=True).all()
     serializer_class = PostReactionSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -263,13 +234,20 @@ class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
         return self.serializer_class
 
 
-# Account
+# -Account-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                      generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = Account.objects.select_related('role', 'user').filter(active=True).all()
     serializer_class = AccountSerializer
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
+    permission_classes = [permissions.IsAuthenticated]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
@@ -280,12 +258,14 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='posts')
+    @method_decorator(decorator=header_authorization, name='get_posts_by_account')
     def get_posts_by_account(self, request, pk):
         posts = self.get_object().post_set.filter(active=True).all()
         return Response(PostSerializer(posts, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
     @action(methods=['GET'], detail=True, url_path='invitation_groups')
+    @method_decorator(decorator=header_authorization, name='get_invitation_groups_by_account')
     def get_invitation_groups_by_account(self, request, pk):
         # ManyToMany query ngược
         invitation_groups = self.get_object().invitationgroup_set.filter(active=True).all()
@@ -293,11 +273,18 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                         status=status.HTTP_200_OK)
 
 
-# AlumniAccount
+# -AlumniAccount-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class AlumniAccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
-                           generics.UpdateAPIView):
+                           generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = AlumniAccount.objects.all()
     serializer_class = AlumniAccountSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
@@ -308,15 +295,20 @@ class AlumniAccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retr
         return self.serializer_class
 
 
-# PostImage
+# -PostImage-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                        generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = PostImage.objects.filter(active=True).all()
     serializer_class = PostImageSerializer
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
-
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -326,15 +318,20 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
         return self.serializer_class
 
 
-# Comment
+# -Comment-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                      generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = Comment.objects.filter(active=True).all()
     serializer_class = CommentSerializer
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
-
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
