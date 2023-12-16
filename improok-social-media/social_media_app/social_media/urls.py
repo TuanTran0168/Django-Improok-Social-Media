@@ -3,8 +3,8 @@ from rest_framework import routers
 
 from .views import RoleViewSet, UserViewSet, PostViewSet, \
     AccountViewSet, PostImageViewSet, CommentViewSet, ConfirmStatusViewSet, AlumniAccountViewSet, ReactionViewSet, \
-    PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet, SendEmailView
-
+    PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet, SendEmailView, PostSurveyViewSet, \
+    SurveyQuestionViewSet, SurveyQuestionOptionViewSet
 
 router = routers.DefaultRouter()
 router.register('roles', RoleViewSet, basename='roles')
@@ -31,6 +31,12 @@ router.register('comment', CommentViewSet, basename='comment')
 router.register('invitation_groups', InvitationGroupViewSet, basename='invitation_groups')
 
 router.register('post_invitations', PostInvitationViewSet, basename='post_invitations')
+
+router.register('post_surveys', PostSurveyViewSet, basename='post_surveys')
+
+router.register('survey_questions', SurveyQuestionViewSet, basename='survey_questions')
+
+router.register('survey_question_options', SurveyQuestionOptionViewSet, basename='survey_question_options')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment, ConfirmStatus, AlumniAccount, \
-    Reaction, PostReaction, PostInvitation
+    Reaction, PostReaction, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption
 
 
 # -Role-
@@ -352,6 +352,68 @@ class PostInvitationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# -PostSurvey-
+class CreatePostSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostSurvey
+        fields = ['post_survey_title', 'start_time', 'end_time', 'post']
+
+
+class UpdatePostSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostSurvey
+        fields = ['post_survey_title', 'start_time', 'end_time', 'is_closed']
+
+
+class PostSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostSurvey
+        fields = '__all__'
+
+
+# -SurveyQuestion-
+
+class CreateSurveyQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestion
+        fields = ['is_required', 'question_content', 'question_order', 'post_survey', 'survey_question_type']
+
+
+class UpdateSurveyQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestion
+        # survey_question_type có nên cho đổi sau khi đăng bài không ta?
+        # Vì nếu đổi từ dạng multi choice về input text thì phải hủy hết các lựa chọn (SurveyQuestionOption)
+        fields = ['is_required', 'question_content', 'question_order', 'survey_question_type']
+
+
+class SurveyQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestion
+        fields = '__all__'
+
+
+# -SurveyQuestionOption-
+class CreateSurveyQuestionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionOption
+        fields = ['question_option_value', 'question_option_order', 'survey_question']
+
+
+class UpdateSurveyQuestionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionOption
+        fields = ['question_option_value', 'question_option_order']
+
+
+class SurveyQuestionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionOption
+        fields = '__all__'
+
+
+# -other serializer-
+# -Email-
 class EmailSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass

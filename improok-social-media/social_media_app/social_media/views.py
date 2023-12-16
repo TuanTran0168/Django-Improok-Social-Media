@@ -11,7 +11,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response, APIView
 
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
-    InvitationGroup, PostInvitation
+    InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption
 from .paginators import PostPagination, MyPageSize
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
@@ -20,10 +20,13 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateAlumniAccountSerializer, UpdateAlumniAccountSerializer, ReactionSerializer, PostReactionSerializer, \
     CreatePostReactionSerializer, UpdatePostReactionSerializer, InvitationGroupSerializer, \
     CreateInvitationGroupSerializer, UpdateInvitationGroupSerializer, AccountSerializerForInvitationGroup, \
-    PostInvitationSerializer, CreatePostInvitationSerializer, UpdatePostInvitationSerializer, EmailSerializer
+    PostInvitationSerializer, CreatePostInvitationSerializer, UpdatePostInvitationSerializer, EmailSerializer, \
+    PostSurveySerializer, CreatePostSurveySerializer, UpdatePostSurveySerializer, SurveyQuestionSerializer, \
+    CreateSurveyQuestionSerializer, UpdateSurveyQuestionSerializer, SurveyQuestionOptionSerializer, \
+    CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
-    delete_accounts_from_post_invitation, send_email
+    delete_accounts_from_post_invitation, send_email, warning_api
 
 
 # -Role-
@@ -413,6 +416,86 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
             return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# -PostSurvey-
+class PostSurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                        generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = PostSurvey.objects.filter(active=True).all()
+    serializer_class = PostSurveySerializer
+    pagination_class = MyPageSize
+
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreatePostSurveySerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdatePostSurveySerializer
+        return self.serializer_class
+
+    @action(methods=['GET'], detail=True, url_path='survey_question')
+    def get_survey_questions(self, request, pk):
+        survey_questions = self.get_object().surveyquestion_set.filter(active=True).all()
+        return Response(SurveyQuestionSerializer(survey_questions, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+    # ERROR
+    @action(methods=['POST'], detail=True, url_path='create_survey_questions')
+    @method_decorator(decorator=warning_api, name='create_survey_questions')
+    def create_survey_questions(self, request, pk):
+        post_survey = self.get_object()
+
+        # {
+        #   "question_content": "What is your favorite color?",
+        #   "is_required": true,
+        #   "survey_question_type": "1"
+        # }
+        # Cannot assign "1": "SurveyQuestion.survey_question_type" must be a "SurveyQuestionType" instance
+        # Thằng SurveyQuestion này không chịu cái id của survey_question_type
+        # Do nó cần gửi cả 1 instance của object :)))
+        # Thôi tách ra Srializer riêng cho ròi :)
+
+        survey_questions = SurveyQuestion(question_content=request.data['question_content'],
+                                          post_survey=post_survey,
+                                          is_required=request.data['is_required'],
+                                          survey_question_type=request.data['survey_question_type']
+                                          )
+        return Response(SurveyQuestionSerializer(survey_questions, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+
+# -SurveyQuestion-
+class SurveyQuestionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                            generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = SurveyQuestion.objects.filter(active=True).all()
+    serializer_class = SurveyQuestionSerializer
+    pagination_class = MyPageSize
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateSurveyQuestionSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdateSurveyQuestionSerializer
+        return self.serializer_class
+
+
+# -SurveyQuestionOption-
+class SurveyQuestionOptionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView,
+                                  generics.CreateAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = SurveyQuestionOption.objects.filter(active=True).all()
+    serializer_class = SurveyQuestionOptionSerializer
+    pagination_class = MyPageSize
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateSurveyQuestionOptionSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdateSurveyQuestionOptionSerializer
+        return self.serializer_class
+
+
+# -other views-
+
+# -Email-
 # Tại sao tách decor ra nó lại bị lỗi AttributeError: 'SendEmailView' object has no attribute 'data'
 # Nhưng gắn @swagger_auto_schema trực tiếp thì không bị?
 # Bí ẩn zậy!

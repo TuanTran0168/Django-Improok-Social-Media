@@ -17,6 +17,17 @@ header_authorization = swagger_auto_schema(
     order=['Authorization', 'header']  # Sao nó không lên đầu tiên???
 )
 
+warning_api = swagger_auto_schema(
+    manual_parameters=[
+        openapi.Parameter(
+            name='WARNING!!!',
+            in_=openapi.TYPE_STRING,
+            type=openapi.TYPE_STRING,
+            description='API NÀY CHƯA CÓ XÀI ĐƯỢC ĐÂU, ĐỪNG CÓ FETCH :)',
+        )
+    ],
+)
+
 add_or_update_accounts_from_invitation_group = swagger_auto_schema(
     manual_parameters=[
         openapi.Parameter(
