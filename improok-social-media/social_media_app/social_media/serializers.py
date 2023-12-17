@@ -44,15 +44,19 @@ class AccountSerializerForInvitationGroup(serializers.ModelSerializer):
 
 
 class CreateInvitationGroupSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = InvitationGroup
-        fields = ['invitation_group_name']
+        fields = ['id', 'invitation_group_name']
 
 
 class UpdateInvitationGroupSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = InvitationGroup
-        fields = ['invitation_group_name']
+        fields = ['id', 'invitation_group_name']
 
 
 class InvitationGroupSerializer(serializers.ModelSerializer):
@@ -63,9 +67,11 @@ class InvitationGroupSerializer(serializers.ModelSerializer):
 
 # -User-
 class CreateUserSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email']
 
     # Cái này xài bên giao diện admin của django nó không băm :))) để mò thêm
     def create(self, validated_data):
@@ -77,9 +83,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = User
-        fields = ['password', 'first_name', 'last_name', 'email']
+        fields = ['id', 'password', 'first_name', 'last_name', 'email']
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
@@ -111,15 +119,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 # -Post-
 class CreatePostSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = Post
-        fields = ['post_content', 'account']
+        fields = ['id', 'post_content', 'account']
 
 
 class UpdatePostSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = Post
-        fields = ['post_content', 'comment_lock']
+        fields = ['id', 'post_content', 'comment_lock']
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -154,15 +166,19 @@ class AccountSerializerForPostReaction(serializers.ModelSerializer):
 
 
 class CreatePostReactionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostReaction
-        fields = ['reaction', 'post', 'account']
+        fields = ['id', 'reaction', 'post', 'account']
 
 
 class UpdatePostReactionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostReaction
-        fields = ['reaction', 'post']
+        fields = ['id', 'reaction', 'post']
 
 
 class PostReactionSerializer(serializers.ModelSerializer):
@@ -182,22 +198,26 @@ class PostReactionSerializer(serializers.ModelSerializer):
 # Lúc Deserializer lại thì phải trả cho nó cả object (đâu có điên)
 # Nên cái CreateAccountSerializer này được ra đời
 class CreateAccountSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
     date_of_birth = serializers.DateField(format='%Y-%m-%d')
 
     class Meta:
         model = Account
-        fields = ['phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user', 'role']
+        fields = ['id', 'phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user', 'role']
 
 
 class UpdateAccountSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
     date_of_birth = serializers.DateField(format='%Y-%m-%d')
 
     class Meta:
         model = Account
-        fields = ['phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'role']
+        fields = ['id', 'phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'role']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -261,15 +281,19 @@ class AccountSerializer(serializers.ModelSerializer):
 
 # -AlumniAccount-
 class CreateAlumniAccountSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = AlumniAccount
-        fields = ['alumni_account_code', 'account']
+        fields = ['id', 'alumni_account_code', 'account']
 
 
 class UpdateAlumniAccountSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = AlumniAccount
-        fields = ['alumni_account_code']
+        fields = ['id', 'alumni_account_code']
 
 
 class AlumniAccountSerializer(serializers.ModelSerializer):
@@ -280,15 +304,19 @@ class AlumniAccountSerializer(serializers.ModelSerializer):
 
 # -PostImage-
 class CreatePostImageSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostImage
-        fields = ['post_image_url', 'post']
+        fields = ['id', 'post_image_url', 'post']
 
 
 class UpdatePostImageSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostImage
-        fields = ['post_image_url']  # Cái này lỏ rồi
+        fields = ['id', 'post_image_url']  # Cái này lỏ rồi
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -308,15 +336,19 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 # -Comment-
 class CreateCommentSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['comment_content', 'comment_image_url', 'account', 'post']
+        fields = ['id', 'comment_content', 'comment_image_url', 'account', 'post']
 
 
 class UpdateCommentSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['comment_content', 'comment_image_url']
+        fields = ['id', 'comment_content', 'comment_image_url']
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -336,15 +368,19 @@ class CommentSerializer(serializers.ModelSerializer):
 
 # -PostInvitation-
 class CreatePostInvitationSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostInvitation
-        fields = ['event_name', 'start_time', 'end_time', 'post']
+        fields = ['id', 'event_name', 'start_time', 'end_time', 'post']
 
 
 class UpdatePostInvitationSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostInvitation
-        fields = ['event_name', 'start_time', 'end_time']
+        fields = ['id', 'event_name', 'start_time', 'end_time']
 
 
 class PostInvitationSerializer(serializers.ModelSerializer):
@@ -355,15 +391,19 @@ class PostInvitationSerializer(serializers.ModelSerializer):
 
 # -PostSurvey-
 class CreatePostSurveySerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostSurvey
-        fields = ['post_survey_title', 'start_time', 'end_time', 'post']
+        fields = ['id', 'post_survey_title', 'start_time', 'end_time', 'post']
 
 
 class UpdatePostSurveySerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = PostSurvey
-        fields = ['post_survey_title', 'start_time', 'end_time', 'is_closed']
+        fields = ['id', 'post_survey_title', 'start_time', 'end_time', 'is_closed']
 
 
 class PostSurveySerializer(serializers.ModelSerializer):
@@ -375,17 +415,21 @@ class PostSurveySerializer(serializers.ModelSerializer):
 # -SurveyQuestion-
 
 class CreateSurveyQuestionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyQuestion
-        fields = ['is_required', 'question_content', 'question_order', 'post_survey', 'survey_question_type']
+        fields = ['id', 'is_required', 'question_content', 'question_order', 'post_survey', 'survey_question_type']
 
 
 class UpdateSurveyQuestionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyQuestion
         # survey_question_type có nên cho đổi sau khi đăng bài không ta?
         # Vì nếu đổi từ dạng multi choice về input text thì phải hủy hết các lựa chọn (SurveyQuestionOption)
-        fields = ['is_required', 'question_content', 'question_order', 'survey_question_type']
+        fields = ['id', 'is_required', 'question_content', 'question_order', 'survey_question_type']
 
 
 class SurveyQuestionSerializer(serializers.ModelSerializer):
@@ -396,15 +440,19 @@ class SurveyQuestionSerializer(serializers.ModelSerializer):
 
 # -SurveyQuestionOption-
 class CreateSurveyQuestionOptionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyQuestionOption
-        fields = ['question_option_value', 'question_option_order', 'survey_question']
+        fields = ['id', 'question_option_value', 'question_option_order', 'survey_question']
 
 
 class UpdateSurveyQuestionOptionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyQuestionOption
-        fields = ['question_option_value', 'question_option_order']
+        fields = ['id', 'question_option_value', 'question_option_order']
 
 
 class SurveyQuestionOptionSerializer(serializers.ModelSerializer):
@@ -416,9 +464,11 @@ class SurveyQuestionOptionSerializer(serializers.ModelSerializer):
 # -SurveyResponse-
 
 class CreateSurveyResponseSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyResponse
-        fields = ['account', 'post_survey']
+        fields = ['id', 'account', 'post_survey']
 
 
 class SurveyResponseSerializer(serializers.ModelSerializer):
@@ -430,15 +480,19 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
 # -SurveyAnswer-
 
 class CreateSurveyAnswerSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyAnswer
-        fields = ['question_option_value', 'survey_question', 'survey_response']
+        fields = ['id', 'question_option_value', 'survey_question', 'survey_response']
 
 
 class UpdateSurveyAnswerSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='pk', read_only=True)
+
     class Meta:
         model = SurveyAnswer
-        fields = ['question_option_value']
+        fields = ['id', 'question_option_value']
 
 
 # Serializer zậy cho client fetch nhìn đỡ bị lú relationship db

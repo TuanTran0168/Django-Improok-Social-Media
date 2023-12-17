@@ -174,15 +174,15 @@ delete_accounts_from_post_invitation = swagger_auto_schema(
 )
 
 add_or_update_survey_answer_to_survey_question_option = swagger_auto_schema(
-    # manual_parameters=[
-    #     openapi.Parameter(
-    #         name='Authorization',
-    #         in_=openapi.IN_HEADER,
-    #         type=openapi.TYPE_STRING,
-    #         description='Token for authentication (Nhớ thêm Bearer nha)',
-    #         required=True
-    #     )
-    # ],
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        )
+    ],
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
@@ -210,15 +210,15 @@ add_or_update_survey_answer_to_survey_question_option = swagger_auto_schema(
 )
 
 add_or_update_survey_question_option_to_survey_answer = swagger_auto_schema(
-    # manual_parameters=[
-    #     openapi.Parameter(
-    #         name='Authorization',
-    #         in_=openapi.IN_HEADER,
-    #         type=openapi.TYPE_STRING,
-    #         description='Token for authentication (Nhớ thêm Bearer nha)',
-    #         required=True
-    #     )
-    # ],
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        )
+    ],
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={

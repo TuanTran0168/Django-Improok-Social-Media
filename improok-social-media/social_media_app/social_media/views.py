@@ -420,13 +420,18 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
 
 
 # -PostSurvey-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class PostSurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                         generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = PostSurvey.objects.filter(active=True).all()
     serializer_class = PostSurveySerializer
     pagination_class = MyPageSize
-
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -436,6 +441,7 @@ class PostSurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retriev
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='survey_question')
+    @method_decorator(decorator=header_authorization, name='get_survey_questions')
     def get_survey_questions(self, request, pk):
         survey_questions = self.get_object().surveyquestion_set.filter(active=True).all()
         return Response(SurveyQuestionSerializer(survey_questions, many=True, context={'request': request}).data,
@@ -467,11 +473,18 @@ class PostSurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retriev
 
 
 # -SurveyQuestion-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class SurveyQuestionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                             generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = SurveyQuestion.objects.filter(active=True).all()
     serializer_class = SurveyQuestionSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -482,11 +495,18 @@ class SurveyQuestionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
 
 
 # -SurveyQuestionOption-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class SurveyQuestionOptionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView,
                                   generics.CreateAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = SurveyQuestionOption.objects.filter(active=True).all()
     serializer_class = SurveyQuestionOptionSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -496,7 +516,7 @@ class SurveyQuestionOptionViewSet(viewsets.ViewSet, generics.ListAPIView, generi
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='survey_answer')
-    # @method_decorator(decorator=header_authorization, name='survey_answers')
+    @method_decorator(decorator=header_authorization, name='get_survey_answer')
     def get_survey_answer(self, request, pk):
         survey_answers = self.get_object().survey_answers \
             .select_related('survey_question', 'survey_response') \
@@ -530,11 +550,16 @@ class SurveyQuestionOptionViewSet(viewsets.ViewSet, generics.ListAPIView, generi
 
 
 # -SurveyResponse-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='destroy')
 class SurveyResponseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                             generics.DestroyAPIView):
     queryset = SurveyResponse.objects.filter(active=True).all()
     serializer_class = SurveyResponseSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -543,11 +568,18 @@ class SurveyResponseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
 
 
 # -SurveyAnswer-
+@method_decorator(decorator=header_authorization, name='list')
+@method_decorator(decorator=header_authorization, name='create')
+@method_decorator(decorator=header_authorization, name='retrieve')
+@method_decorator(decorator=header_authorization, name='update')
+@method_decorator(decorator=header_authorization, name='partial_update')
+@method_decorator(decorator=header_authorization, name='destroy')
 class SurveyAnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                           generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = SurveyAnswer.objects.filter(active=True).all()
     serializer_class = SurveyAnswerSerializer
     pagination_class = MyPageSize
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
