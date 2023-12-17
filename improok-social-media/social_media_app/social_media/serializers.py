@@ -154,7 +154,7 @@ class AccountSerializerForPostReaction(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'phone_number', 'avatar', 'user', 'role']
+        fields = ['id', 'user', 'role']
 
     # Truy cập trường role_name trong trường Role và username trong User của Account (chỉ để hiển thị cho ĐẸP)
     def to_representation(self, instance):
@@ -163,6 +163,18 @@ class AccountSerializerForPostReaction(serializers.ModelSerializer):
         representation['user'] = 'id:' + str(representation['user']['id']) + \
                                  '/username:' + representation['user']['username']
         return representation
+
+
+class ReactionSerializerForPostReaction(serializers.ModelSerializer):
+    class Meta:
+        model = Reaction
+        fields = ['id', 'reaction_name']
+
+
+class PostSerializerForPostReaction(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'post_content']
 
 
 class CreatePostReactionSerializer(serializers.ModelSerializer):
@@ -183,8 +195,8 @@ class UpdatePostReactionSerializer(serializers.ModelSerializer):
 
 class PostReactionSerializer(serializers.ModelSerializer):
     account = AccountSerializerForPostReaction()
-    reaction = ReactionSerializer()
-    post = PostSerializer()
+    reaction = ReactionSerializerForPostReaction()
+    post = PostSerializerForPostReaction()
 
     class Meta:
         model = PostReaction

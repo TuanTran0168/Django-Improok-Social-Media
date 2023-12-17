@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -29,7 +30,8 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
-    add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option
+    add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
+    params_for_post_reaction
 
 
 # -Role-
@@ -171,6 +173,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     queryset = Post.objects.filter(active=True).all()
     serializer_class = PostSerializer
     pagination_class = PostPagination
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
@@ -201,6 +204,38 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         post_images = self.get_object().postimage_set.filter(active=True).all()
         return Response(PostImageSerializer(post_images, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=True, url_path='reactions')
+    @method_decorator(decorator=params_for_post_reaction, name='get_reactions')
+    # @method_decorator([header_authorization, params_for_post_reaction], name='get_reactions')
+    def get_reactions(self, request, pk):
+        reaction_id = request.query_params.get('reaction_id')
+        post_reactions = PostReaction.objects.filter(post_id=pk)
+
+        if reaction_id:
+            post_reactions = post_reactions.filter(reaction_id=reaction_id)
+
+        return Response(PostReactionSerializer(post_reactions, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=True, url_path='count_all_reactions')
+    @method_decorator(decorator=header_authorization, name='count_all_reactions')
+    def count_all_reactions(self, request, pk):
+        # post_reactions_count = PostReaction.objects.filter(post_id=post.pk).values('id').annotate(count=Count('id'))
+        post_reactions_count = PostReaction.objects.filter(post_id=pk).count()
+        return Response(post_reactions_count, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=True, url_path='count_type_reactions')
+    @method_decorator(decorator=header_authorization, name='count_type_reactions')
+    def count_type_reactions(self, request, pk):
+        # KIỂU TRUY VẤN NÀY BÁ VÃI :))) (reaction__reaction_name)
+        post_reactions_count = PostReaction.objects.filter(post_id=pk).values('reaction__reaction_name') \
+            .annotate(Count('id'))
+
+        # Cách này của thầy nè :v hong thích xài
+        # post_reactions_count = PostReaction.objects.filter(post_id=pk).annotate(
+        #     count=Count('id')).values('reaction__reaction_name', 'count')
+        return Response(post_reactions_count, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         queries = self.queryset
