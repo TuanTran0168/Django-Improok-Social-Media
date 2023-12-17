@@ -26,12 +26,12 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateSurveyQuestionSerializer, UpdateSurveyQuestionSerializer, SurveyQuestionOptionSerializer, \
     CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
-    CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer
+    CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
-    params_for_post_reaction
+    params_for_post_reaction, params_for_account_reacted_to_the_post
 
 
 # -Role-
@@ -293,6 +293,7 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     serializer_class = AccountSerializer
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
+
     permission_classes = [permissions.IsAuthenticated]
 
     # Override lại để dùng cái Serializer create, update
@@ -317,6 +318,39 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
         invitation_groups = self.get_object().invitationgroup_set.filter(active=True).all()
         return Response(InvitationGroupSerializer(invitation_groups, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
+
+    # Chỗ này chỉ dùng được method GET thôi, lạy anh Swagger giờ muốn truyền body không được
+    # Nó kêu do Serializer lồng dữ quá không tạo được????
+    # drf_yasg.errors.SwaggerGenerationError: cannot instantiate nested serializer as Parameter
+    @action(methods=['GET'], detail=True, url_path='reacted_to_the_post')
+    @method_decorator(decorator=params_for_account_reacted_to_the_post, name='reacted_to_the_post')
+    def reacted_to_the_post(self, request, pk):
+        post_id = request.query_params.get('post_id')
+        post_reactions = PostReaction.objects.filter(account_id=pk)
+
+        if post_id:
+            post_reactions = post_reactions.filter(post_id=post_id)
+
+        post_reaction_serializer = PostReactionSerializerForAccount(post_reactions, many=True,
+                                                                    context={'request': request}).data
+
+        reaction = False
+        if post_reaction_serializer:
+            reaction = True
+
+        return Response({
+            "reaction": reaction,
+            "data": post_reaction_serializer
+        }, status=status.HTTP_200_OK)
+
+    # @action(methods=['POST'], detail=True, url_path='reacted_to_the_post')
+    # def reacted_to_the_post(self, request, pk):
+    #     list_post_id = request.data.get('list_post_id', [])
+    #     list_post_id = [14, 5, 8]
+    #     post_reactions_of_account = PostReaction.objects.filter(account_id=pk, post_id__in=list_post_id)
+    #
+    #     return Response(TempSerializer(post_reactions_of_account, many=True, context={'request': request}).data,
+    #                     status=status.HTTP_200_OK)
 
 
 # -AlumniAccount-

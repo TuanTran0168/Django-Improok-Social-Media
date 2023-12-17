@@ -203,6 +203,12 @@ class PostReactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TempSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostReaction
+        fields = ['id']
+
+
 # -Account-
 
 # Serializer dùng để tạo riêng
@@ -259,6 +265,12 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = '__all__'
         # fields = ['invitation_group_account', 'role', 'user', 'avatar', 'cover_avatar']
+
+
+class PostReactionSerializerForAccount(serializers.ModelSerializer):
+    class Meta:
+        model = PostReaction
+        fields = ['reaction_id']
 
 
 # Ở CreateAccountSerializer lỡ chỉnh date_of_birth thành Date chứ không phải DateTime nên lỗi :)))

@@ -1,9 +1,11 @@
+from tkinter.scrolledtext import example
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 
 from .serializers import InvitationGroupSerializer, PostInvitationSerializer, EmailSerializer, SurveyAnswerSerializer, \
-    SurveyQuestionOptionSerializer
+    SurveyQuestionOptionSerializer, PostReactionSerializer
 
 header_authorization = swagger_auto_schema(
     manual_parameters=[
@@ -260,7 +262,37 @@ params_for_post_reaction = swagger_auto_schema(
             type=openapi.TYPE_STRING,
             description='The id of reaction (1 or 2 or etc.)'
         )
-    ]
+    ],
+    responses={
+        status.HTTP_200_OK: openapi.Response(
+            description='Success',
+            schema=PostReactionSerializer,
+        )
+    }
+)
+
+params_for_account_reacted_to_the_post = swagger_auto_schema(
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        ),
+        openapi.Parameter(
+            name='post_id',
+            in_=openapi.IN_QUERY,
+            type=openapi.TYPE_STRING,
+            description='The id of post (Example: 1 or 2 or etc.)',
+        )
+    ],
+    responses={
+        status.HTTP_200_OK: openapi.Response(
+            description='Success',
+            schema=PostReactionSerializer,
+        )
+    }
 )
 
 send_email = swagger_auto_schema(
