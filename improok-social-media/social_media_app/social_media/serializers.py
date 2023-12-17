@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment, ConfirmStatus, AlumniAccount, \
-    Reaction, PostReaction, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption
+    Reaction, PostReaction, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, \
+    SurveyResponse
 
 
 # -Role-
@@ -409,6 +410,65 @@ class UpdateSurveyQuestionOptionSerializer(serializers.ModelSerializer):
 class SurveyQuestionOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyQuestionOption
+        fields = '__all__'
+
+
+# -SurveyResponse-
+
+class CreateSurveyResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyResponse
+        fields = ['account', 'post_survey']
+
+
+class SurveyResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyResponse
+        fields = '__all__'
+
+
+# -SurveyAnswer-
+
+class CreateSurveyAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyAnswer
+        fields = ['question_option_value', 'survey_question', 'survey_response']
+
+
+class UpdateSurveyAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyAnswer
+        fields = ['question_option_value']
+
+
+# Serializer zậy cho client fetch nhìn đỡ bị lú relationship db
+# cái này nằm trong cái dưới
+class PostSurveySerializerForSurveyQuestion(serializers.ModelSerializer):
+    class Meta:
+        model = PostSurvey
+        fields = ['id', 'post_survey_title']
+
+
+# Rồi cái này cũng nằm trong cái dưới
+class SurveyQuestionSerializerSerializerForSurveyAnswer(serializers.ModelSerializer):
+    post_survey = PostSurveySerializerForSurveyQuestion()  # nó nè
+
+    class Meta:
+        model = SurveyQuestion
+        fields = ['question_content', 'post_survey', 'survey_question_type']
+
+
+class SurveyAnswerSerializerForRelated(serializers.ModelSerializer):
+    survey_question = SurveyQuestionSerializerSerializerForSurveyAnswer()  # Nó nè
+
+    class Meta:
+        model = SurveyAnswer
+        fields = '__all__'
+
+
+class SurveyAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyAnswer
         fields = '__all__'
 
 

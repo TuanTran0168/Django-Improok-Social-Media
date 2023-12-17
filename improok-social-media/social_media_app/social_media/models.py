@@ -129,7 +129,7 @@ class SurveyQuestionOption(BaseModel):
     question_option_value = models.TextField()
     question_option_order = models.IntegerField()
     survey_question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE)
-    survey_answer_option = models.ManyToManyField('SurveyAnswer')
+    survey_answers = models.ManyToManyField('SurveyAnswer', blank=True)
 
     def __str__(self):
         return self.question_option_value

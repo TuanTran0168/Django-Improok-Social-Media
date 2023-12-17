@@ -11,7 +11,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import Response, APIView
 
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
-    InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption
+    InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse
 from .paginators import PostPagination, MyPageSize
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
@@ -23,10 +23,13 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     PostInvitationSerializer, CreatePostInvitationSerializer, UpdatePostInvitationSerializer, EmailSerializer, \
     PostSurveySerializer, CreatePostSurveySerializer, UpdatePostSurveySerializer, SurveyQuestionSerializer, \
     CreateSurveyQuestionSerializer, UpdateSurveyQuestionSerializer, SurveyQuestionOptionSerializer, \
-    CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer
+    CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
+    SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
+    CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
-    delete_accounts_from_post_invitation, send_email, warning_api
+    delete_accounts_from_post_invitation, send_email, warning_api, \
+    add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option
 
 
 # -Role-
@@ -491,6 +494,89 @@ class SurveyQuestionOptionViewSet(viewsets.ViewSet, generics.ListAPIView, generi
         if self.action.__eq__('update') or self.action.__eq__('partial_update'):
             return UpdateSurveyQuestionOptionSerializer
         return self.serializer_class
+
+    @action(methods=['GET'], detail=True, url_path='survey_answer')
+    # @method_decorator(decorator=header_authorization, name='survey_answers')
+    def get_survey_answer(self, request, pk):
+        survey_answers = self.get_object().survey_answers \
+            .select_related('survey_question', 'survey_response') \
+            .filter(active=True).all()
+
+        return Response(
+            SurveyAnswerSerializerForRelated(survey_answers, many=True, context={'request': request}).data,
+            status=status.HTTP_200_OK)
+
+    # ManyToMany nhưng chiều này hơi cấn
+    @action(methods=['POST'], detail=True, url_path='add_or_update_survey_answers')
+    @method_decorator(decorator=add_or_update_survey_answer_to_survey_question_option,
+                      name='add_or_update_survey_answers')
+    @method_decorator(decorator=warning_api)
+    def add_or_update_survey_answers(self, request, pk):
+        try:
+            survey_question_option = self.get_object()
+            list_survey_answer_id = request.data.get('list_survey_answer_id', [])
+            survey_answers = SurveyAnswer.objects.filter(id__in=list_survey_answer_id)
+            if len(survey_answers) != len(list_survey_answer_id):
+                missing_ids = set(list_survey_answer_id) - set(survey_answers.values_list('id', flat=True))
+                raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
+
+            survey_question_option.survey_answers.add(*survey_answers)
+            survey_question_option.save()
+
+            return Response(SurveyQuestionOptionSerializer(survey_question_option).data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# -SurveyResponse-
+class SurveyResponseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                            generics.DestroyAPIView):
+    queryset = SurveyResponse.objects.filter(active=True).all()
+    serializer_class = SurveyResponseSerializer
+    pagination_class = MyPageSize
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateSurveyResponseSerializer
+        return self.serializer_class
+
+
+# -SurveyAnswer-
+class SurveyAnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                          generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = SurveyAnswer.objects.filter(active=True).all()
+    serializer_class = SurveyAnswerSerializer
+    pagination_class = MyPageSize
+
+    def get_serializer_class(self):
+        if self.action.__eq__('create'):
+            return CreateSurveyAnswerSerializer
+        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+            return UpdateSurveyAnswerSerializer
+        return self.serializer_class
+
+    @action(methods=['POST'], detail=True, url_path='add_or_update_survey_question_options')
+    @method_decorator(decorator=add_or_update_survey_question_option_to_survey_answer,
+                      name='add_or_update_survey_question_options')
+    def add_or_update_survey_question_options(self, request, pk):
+        try:
+            survey_answer = self.get_object()
+            list_survey_question_option_id = request.data.get('list_survey_question_option_id', [])
+            survey_question_options = SurveyQuestionOption.objects.filter(id__in=list_survey_question_option_id)
+            if len(survey_question_options) != len(list_survey_question_option_id):
+                missing_ids = set(list_survey_question_option_id) - set(
+                    survey_question_options.values_list('id', flat=True))
+                raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
+
+            survey_answer.surveyquestionoption_set.add(*survey_question_options)
+            survey_answer.save()
+
+            return Response(SurveyAnswerSerializer(survey_answer).data,
+                            status=status.HTTP_201_CREATED)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # -other views-

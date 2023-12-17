@@ -133,22 +133,24 @@ class SurveyQuestionOptionInLineAdmin(admin.TabularInline):
 
 
 class SurveyQuestionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'question_content', 'is_required', 'post_survey', 'survey_question_type']
     inlines = [SurveyQuestionOptionInLineAdmin]
 
 
 class SurveyQuestionOptionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'question_option_value', 'survey_question']
 
 
 class SurveyResponseAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'account', 'post_survey']
 
 
 class SurveyQuestionOptionInLineAdmin(admin.StackedInline):
-    model = SurveyQuestionOption.survey_answer_option.through
+    model = SurveyQuestionOption.survey_answers.through
 
 
 class SurveyAnswerAdmin(admin.ModelAdmin):
+    list_display = ['id', 'survey_question', 'survey_response']
     inlines = [SurveyQuestionOptionInLineAdmin]
 
 
