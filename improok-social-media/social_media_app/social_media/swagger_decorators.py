@@ -301,6 +301,21 @@ params_for_account_reacted_to_the_post = swagger_auto_schema(
     }
 )
 
+create_alumni_account = swagger_auto_schema(
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING),
+            'email': openapi.Schema(type=openapi.TYPE_STRING),
+            'first_name': openapi.Schema(type=openapi.TYPE_STRING),
+            'last_name': openapi.Schema(type=openapi.TYPE_STRING),
+            'alumni_account_code': openapi.Schema(type=openapi.TYPE_STRING),
+        },
+        required=['username', 'password', 'first_name', 'last_name', 'email', 'alumni_account_code']
+    )
+)
+
 send_email = swagger_auto_schema(
     request_body=EmailSerializer,
     responses={status.HTTP_200_OK: 'Success', status.HTTP_400_BAD_REQUEST: 'Error'}

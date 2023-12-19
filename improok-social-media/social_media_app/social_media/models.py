@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 class BaseModel(models.Model):
     created_date = models.DateField(auto_now_add=True, null=True)
     updated_date = models.DateField(auto_now=True, null=True)
-    deleted_date = models.DateField(auto_now=True, null=True)
+    deleted_date = models.DateField(null=True)
     active = models.BooleanField(default=True)
 
     class Meta:
@@ -29,7 +29,7 @@ class ConfirmStatus(BaseModel):
 
 
 class User(AbstractUser):
-    confirm_status = models.ForeignKey(ConfirmStatus, on_delete=models.CASCADE, null=True)
+    confirm_status = models.ForeignKey(ConfirmStatus, on_delete=models.CASCADE, default=3)
 
     def __str__(self):
         return self.username
@@ -42,7 +42,7 @@ class Account(BaseModel):
     cover_avatar = models.ImageField(upload_to="images/accounts/cover_avatar/%Y/%m", null=True, blank=True)
     account_status = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, default=3)
 
     def __str__(self):
         return self.phone_number

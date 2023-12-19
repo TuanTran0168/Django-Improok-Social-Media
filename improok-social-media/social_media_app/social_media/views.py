@@ -33,7 +33,7 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
-    params_for_post_reaction, params_for_account_reacted_to_the_post
+    params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account
 
 
 # -Role-
@@ -119,7 +119,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
 
 # -User-
 @method_decorator(decorator=header_authorization, name='list')
-@method_decorator(decorator=header_authorization, name='create')
+# @method_decorator(decorator=header_authorization, name='create')
 @method_decorator(decorator=header_authorization, name='retrieve')
 @method_decorator(decorator=header_authorization, name='update')
 @method_decorator(decorator=header_authorization, name='partial_update')
@@ -129,7 +129,14 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = MyPageSize
-    permission_classes = [permissions.IsAuthenticated]
+
+    # permission_classes = [permissions.IsAuthenticated]
+    def get_permissions(self):
+        if self.action in ['list', 'update', 'partial_update', 'destroy', 'current_user', 'get_account_by_user_id',
+                           'current-user']:
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
@@ -139,7 +146,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             return UpdateUserSerializer
         return self.serializer_class
 
-    @action(methods=['get'], detail=False, url_path='current-user')
+    @action(methods=['GET'], detail=False, url_path='current-user')
     @method_decorator(decorator=header_authorization, name='current-user')
     def current_user(self, request):
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
@@ -161,6 +168,29 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['POST'], detail=False, url_path='create_alumni')
+    @method_decorator(decorator=create_alumni_account, name='create_alumni')
+    def create_alumni(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        alumni_account_code = request.data.get('alumni_account_code')
+
+        # user = User.objects.create(username=username, email=email, password=password, first_name=first_name,
+        #                            last_name=last_name)
+
+        user = User.objects.create_user(username=username, email=email)
+        user.set_password(password)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+        account = Account.objects.create(user=user)
+        alumni = AlumniAccount.objects.create(account=account, alumni_account_code=alumni_account_code)
+
+        return Response(status=status.HTTP_200_OK)
 
 
 # -Post-
@@ -302,7 +332,7 @@ class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
 
 # -Account-
 @method_decorator(decorator=header_authorization, name='list')
-@method_decorator(decorator=header_authorization, name='create')
+# @method_decorator(decorator=header_authorization, name='create')
 @method_decorator(decorator=header_authorization, name='retrieve')
 @method_decorator(decorator=header_authorization, name='update')
 @method_decorator(decorator=header_authorization, name='partial_update')
@@ -314,7 +344,11 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
 
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated()]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
@@ -375,7 +409,7 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
 
 # -AlumniAccount-
 @method_decorator(decorator=header_authorization, name='list')
-@method_decorator(decorator=header_authorization, name='create')
+# @method_decorator(decorator=header_authorization, name='create')
 @method_decorator(decorator=header_authorization, name='retrieve')
 @method_decorator(decorator=header_authorization, name='update')
 @method_decorator(decorator=header_authorization, name='partial_update')
@@ -384,7 +418,11 @@ class AlumniAccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retr
                            generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = AlumniAccount.objects.all()
     serializer_class = AlumniAccountSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    # permission_classes = [permissions.IsAuthenticated]
+    def get_permissions(self):
+        if self.action in ['list', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated()]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
