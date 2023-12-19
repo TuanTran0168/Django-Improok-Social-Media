@@ -127,6 +127,14 @@ class UserSerializerForComment(serializers.ModelSerializer):
 class AccountSerializerForComment(serializers.ModelSerializer):
     # role = RoleSerializer()
     user = UserSerializerForComment()
+    avatar = serializers.SerializerMethodField(source='avatar')
+
+    def get_avatar(self, account):
+        if account.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri('/static/%s' % account.avatar.name)
+        return '/static/%s' % account.avatar.name
 
     class Meta:
         model = Account

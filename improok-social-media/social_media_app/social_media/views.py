@@ -14,6 +14,7 @@ from rest_framework.views import Response, APIView
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
     InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse
 from .paginators import PostPagination, MyPageSize
+from .permissions import CommentOwner, PostOwner
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
@@ -175,7 +176,15 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     serializer_class = PostSerializer
     pagination_class = PostPagination
 
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update']:
+            return [PostOwner()]
+        elif self.action == 'destroy':
+            return [CommentOwner()]
+        else:
+            return [permissions.IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
@@ -412,7 +421,14 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     serializer_class = CommentSerializer
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update']:
+            return [CommentOwner()]
+        elif self.action == 'destroy':
+            return [CommentOwner()]
+        else:
+            return [permissions.IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action.__eq__('create'):
