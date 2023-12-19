@@ -179,10 +179,8 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     # permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
-        if self.action in ['update', 'partial_update']:
+        if self.action in ['update', 'partial_update', 'destroy']:
             return [PostOwner()]
-        elif self.action == 'destroy':
-            return [CommentOwner()]
         else:
             return [permissions.IsAuthenticated()]
 
@@ -246,6 +244,12 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         # post_reactions_count = PostReaction.objects.filter(post_id=pk).annotate(
         #     count=Count('id')).values('reaction__reaction_name', 'count')
         return Response(post_reactions_count, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=True, url_path='count_comments')
+    @method_decorator(decorator=header_authorization, name='count_comments')
+    def count_comments(self, request, pk):
+        comment_count = Comment.objects.filter(post_id=pk).count()
+        return Response(comment_count, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         queries = self.queryset
