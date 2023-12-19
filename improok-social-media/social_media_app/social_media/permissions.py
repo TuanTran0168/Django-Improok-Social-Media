@@ -6,7 +6,7 @@ class CommentOwner(permissions.IsAuthenticated):
         if view.action == 'destroy':
             return request.user == comment.post.account.user \
                    or request.user == comment.account.user \
-                   or request.account.role == 'Admin'
+                   or request.user.account.role.role_name == 'Admin'
         elif view.action in ['update', 'partial_update']:
             return request.user == comment.account.user
 
@@ -21,7 +21,7 @@ class PostOwner(permissions.IsAuthenticated):
         if view.action == 'destroy':
             return request.user == post.account.user \
                    or request.account.role == 'Admin'
-        elif view.action in  ['update', 'partial_update']:
+        elif view.action in ['update', 'partial_update']:
             return request.user == post.account.user
 
 

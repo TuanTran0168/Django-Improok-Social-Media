@@ -28,7 +28,7 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
     CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
-    CommentSerializerForPost
+    CommentSerializerForPost, PostSerializerForList
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
@@ -185,6 +185,8 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
             return [permissions.IsAuthenticated()]
 
     def get_serializer_class(self):
+        if self.action.__eq__('list'):
+            return PostSerializerForList
         if self.action.__eq__('create'):
             return CreatePostSerializer
         if self.action.__eq__('update') or self.action.__eq__('partial_update'):

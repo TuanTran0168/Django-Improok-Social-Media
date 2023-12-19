@@ -179,6 +179,14 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PostSerializerForList(serializers.ModelSerializer):
+    account = AccountSerializerForComment()
+
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+
 # -Reaction-
 class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
