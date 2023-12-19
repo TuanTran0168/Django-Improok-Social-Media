@@ -220,10 +220,14 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     # @method_decorator([header_authorization, params_for_post_reaction], name='get_reactions')
     def get_reactions(self, request, pk):
         reaction_id = request.query_params.get('reaction_id')
+        account_id = request.query_params.get('account_id')
         post_reactions = PostReaction.objects.filter(post_id=pk)
 
         if reaction_id:
             post_reactions = post_reactions.filter(reaction_id=reaction_id)
+
+        if account_id:
+            post_reactions = post_reactions.filter(account_id=account_id)
 
         return Response(PostReactionSerializer(post_reactions, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)

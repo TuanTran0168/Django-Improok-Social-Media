@@ -261,6 +261,12 @@ params_for_post_reaction = swagger_auto_schema(
             in_=openapi.IN_QUERY,
             type=openapi.TYPE_STRING,
             description='The id of reaction (1 or 2 or etc.)'
+        ),
+        openapi.Parameter(
+            name='account_id',
+            in_=openapi.IN_QUERY,
+            type=openapi.TYPE_STRING,
+            description='The id of account (1 or 2 or etc.)'
         )
     ],
     responses={
