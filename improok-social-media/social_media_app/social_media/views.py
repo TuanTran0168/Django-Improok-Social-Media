@@ -26,7 +26,8 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateSurveyQuestionSerializer, UpdateSurveyQuestionSerializer, SurveyQuestionOptionSerializer, \
     CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
-    CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount
+    CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
+    CommentSerializerForPost
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
@@ -195,7 +196,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 
         # Nhớ .data chứ không nó lỗi
         # Thả request dô cho cái CommentSerializer bên kia nó nhận nó gắn static cho image
-        return Response(CommentSerializer(comments, many=True, context={'request': request}).data,
+        return Response(CommentSerializerForPost(comments, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
     @action(methods=['GET'], detail=True, url_path='post-images')
@@ -339,8 +340,8 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
             reaction = True
 
         return Response({
-            "reaction": reaction,
-            "data": post_reaction_serializer
+            'reacted': reaction,
+            'data': post_reaction_serializer
         }, status=status.HTTP_200_OK)
 
     # @action(methods=['POST'], detail=True, url_path='reacted_to_the_post')
@@ -458,7 +459,7 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
             accounts = Account.objects.filter(id__in=list_account_id)
             if len(accounts) != len(list_account_id):
                 missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
-                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+                raise NotFound(f'Accounts with IDs {missing_ids} do not exist.')
 
             post_invitation.accounts.add(*accounts)
             post_invitation.save()
@@ -477,7 +478,7 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
             accounts = post_invitation.accounts.filter(id__in=list_account_id)
             if len(accounts) != len(list_account_id):
                 missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
-                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+                raise NotFound(f'Accounts with IDs {missing_ids} do not exist.')
 
             post_invitation.accounts.remove(*accounts)
             post_invitation.save()

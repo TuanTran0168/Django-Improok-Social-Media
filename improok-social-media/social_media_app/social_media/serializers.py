@@ -118,6 +118,37 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 # -Post-
+class UserSerializerForComment(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name']
+
+
+class AccountSerializerForComment(serializers.ModelSerializer):
+    # role = RoleSerializer()
+    user = UserSerializerForComment()
+
+    class Meta:
+        model = Account
+        fields = ['id', 'user', 'role', 'avatar']
+
+
+class CommentSerializerForPost(serializers.ModelSerializer):
+    comment_image_url = serializers.SerializerMethodField(source='comment_image_url')
+    account = AccountSerializerForComment()
+
+    def get_comment_image_url(self, comment):
+        if comment.comment_image_url:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri('/static/%s' % comment.comment_image_url.name)
+        return '/static/%s' % comment.comment_image_url.name
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
+
 class CreatePostSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)
 
