@@ -65,6 +65,14 @@ class InvitationGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class RetrieveInvitationGroupSerializer(serializers.ModelSerializer):
+    account = serializers.SerializerMethodField(source='account')
+
+    class Meta:
+        model = InvitationGroup
+        fields = '__all__'
+
+
 # -User-
 class CreateUserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)

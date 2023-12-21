@@ -28,3 +28,8 @@ class PostOwner(permissions.IsAuthenticated):
 class PostOwnerAdmin(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, post):
         return request.user == post.account.user
+
+
+class IsAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.account.role.role_name == 'Admin'

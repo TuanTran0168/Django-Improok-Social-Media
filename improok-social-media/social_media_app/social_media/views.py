@@ -14,7 +14,7 @@ from rest_framework.views import Response, APIView
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
     InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse
 from .paginators import PostPagination, MyPageSize
-from .permissions import CommentOwner, PostOwner
+from .permissions import CommentOwner, PostOwner, IsAdmin
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
@@ -28,7 +28,7 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
     CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
-    CommentSerializerForPost, PostSerializerForList
+    CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
@@ -63,10 +63,13 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateInvitationGroupSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateInvitationGroupSerializer
+        if self.action == 'retrieve':
+            # return RetrieveInvitationGroupSerializer
+            pass
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='accounts')
@@ -140,9 +143,9 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateUserSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateUserSerializer
         return self.serializer_class
 
@@ -211,15 +214,17 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [PostOwner()]
+        if self.action == 'create_post_survey':
+            return [IsAdmin()]
         else:
             return [permissions.IsAuthenticated()]
 
     def get_serializer_class(self):
-        if self.action.__eq__('list'):
+        if self.action == 'list':
             return PostSerializerForList
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreatePostSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdatePostSerializer
         return self.serializer_class
 
@@ -359,9 +364,9 @@ class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreatePostReactionSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdatePostReactionSerializer
         return self.serializer_class
 
@@ -383,14 +388,16 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     # permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
-        if self.action in ['list', 'update', 'partial_update', 'destroy']:
+        if self.action in ['list', 'update', 'partial_update', 'destroy', 'get_posts_by_account']:
             return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateAccountSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateAccountSerializer
         return self.serializer_class
 
@@ -462,9 +469,9 @@ class AlumniAccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retr
 
     # Override lại để dùng cái Serializer create, update
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateAlumniAccountSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateAlumniAccountSerializer
         return self.serializer_class
 
@@ -485,9 +492,9 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreatePostImageSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdatePostImageSerializer
         return self.serializer_class
 
@@ -515,9 +522,9 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
             return [permissions.IsAuthenticated()]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateCommentSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateCommentSerializer
         return self.serializer_class
 
@@ -537,9 +544,9 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreatePostInvitationSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdatePostInvitationSerializer
         return self.serializer_class
 
@@ -604,9 +611,9 @@ class PostSurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retriev
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreatePostSurveySerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdatePostSurveySerializer
         return self.serializer_class
 
@@ -657,9 +664,9 @@ class SurveyQuestionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateSurveyQuestionSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateSurveyQuestionSerializer
         return self.serializer_class
 
@@ -679,9 +686,9 @@ class SurveyQuestionOptionViewSet(viewsets.ViewSet, generics.ListAPIView, generi
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateSurveyQuestionOptionSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateSurveyQuestionOptionSerializer
         return self.serializer_class
 
@@ -732,7 +739,7 @@ class SurveyResponseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateSurveyResponseSerializer
         return self.serializer_class
 
@@ -752,9 +759,9 @@ class SurveyAnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action.__eq__('create'):
+        if self.action == 'create':
             return CreateSurveyAnswerSerializer
-        if self.action.__eq__('update') or self.action.__eq__('partial_update'):
+        if self.action in ['update', 'partial_update']:
             return UpdateSurveyAnswerSerializer
         return self.serializer_class
 
