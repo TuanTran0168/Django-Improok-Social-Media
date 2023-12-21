@@ -71,6 +71,11 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             return RetrieveInvitationGroupSerializer
         return self.serializer_class
 
+    # Tính override lại gửi context nhưng mà tự nhiên nó tự có context luôn
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     return Response(RetrieveInvitationGroupSerializer(instance, context={'request': request}).data)
+
     @action(methods=['GET'], detail=True, url_path='accounts')
     @method_decorator(decorator=header_authorization, name='accounts')
     def get_accounts(self, request, pk):

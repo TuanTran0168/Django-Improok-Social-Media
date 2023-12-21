@@ -73,19 +73,28 @@ class UserSerializerForInvitationGroup(serializers.ModelSerializer):
 
 class AccountSerializerForRetrieveInvitationGroup(serializers.ModelSerializer):
     user = UserSerializerForInvitationGroup()
+    avatar = serializers.SerializerMethodField(source='avatar')
+
+    def get_avatar(self, account):
+        if account.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri('/static/%s' % account.avatar.name)
+        return '/static/%s' % account.avatar.name
 
     class Meta:
         model = Account
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'avatar']
 
 
 class RetrieveInvitationGroupSerializer(serializers.ModelSerializer):
+    # accounts = AccountSerializerForRetrieveInvitationGroup()
     accounts = serializers.SerializerMethodField()
 
-    @staticmethod
-    def get_accounts(invitation_group):
+    def get_accounts(self, invitation_group):
         accounts = invitation_group.accounts.all()
-        serializer = AccountSerializerForRetrieveInvitationGroup(accounts, many=True)
+        # Gửi context để lấy host ra cho thằng avatar
+        serializer = AccountSerializerForRetrieveInvitationGroup(accounts, many=True, context=self.context)
         return serializer.data
 
     class Meta:
