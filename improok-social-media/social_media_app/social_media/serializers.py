@@ -65,8 +65,28 @@ class InvitationGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserSerializerForInvitationGroup(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
+class AccountSerializerForRetrieveInvitationGroup(serializers.ModelSerializer):
+    user = UserSerializerForInvitationGroup()
+
+    class Meta:
+        model = Account
+        fields = ['id', 'user']
+
+
 class RetrieveInvitationGroupSerializer(serializers.ModelSerializer):
-    account = serializers.SerializerMethodField(source='account')
+    accounts = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_accounts(invitation_group):
+        accounts = invitation_group.accounts.all()
+        serializer = AccountSerializerForRetrieveInvitationGroup(accounts, many=True)
+        return serializer.data
 
     class Meta:
         model = InvitationGroup

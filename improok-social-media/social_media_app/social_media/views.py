@@ -68,8 +68,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
         if self.action in ['update', 'partial_update']:
             return UpdateInvitationGroupSerializer
         if self.action == 'retrieve':
-            # return RetrieveInvitationGroupSerializer
-            pass
+            return RetrieveInvitationGroupSerializer
         return self.serializer_class
 
     @action(methods=['GET'], detail=True, url_path='accounts')
