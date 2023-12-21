@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 class BaseModel(models.Model):
     created_date = models.DateField(auto_now_add=True, null=True)
     updated_date = models.DateField(auto_now=True, null=True)
-    deleted_date = models.DateField(null=True)
+    deleted_date = models.DateField(null=True, blank=True)
     active = models.BooleanField(default=True)
 
     class Meta:
@@ -45,7 +45,7 @@ class Account(BaseModel):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, default=3)
 
     def __str__(self):
-        return self.phone_number
+        return self.user.username
 
 
 class AlumniAccount(BaseModel):
@@ -181,7 +181,6 @@ class InvitationGroup(BaseModel):
 
     def __str__(self):
         return self.invitation_group_name
-
 
 # class GroupAccount(BaseModel):
 #     account = models.ForeignKey(Account, on_delete=models.CASCADE)

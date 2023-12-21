@@ -316,6 +316,50 @@ create_alumni_account = swagger_auto_schema(
     )
 )
 
+create_post_survey = swagger_auto_schema(
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'post_content': openapi.Schema(type=openapi.TYPE_STRING),
+            'account_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'post_survey_title': openapi.Schema(type=openapi.TYPE_STRING),
+            'start_time': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+            'end_time': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+            'survey_question_list': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'survey_question_type_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'question_content': openapi.Schema(type=openapi.TYPE_STRING),
+                        'question_order': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        'is_required': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                        'survey_question_option_list': openapi.Schema(
+                            type=openapi.TYPE_ARRAY,
+                            items=openapi.Schema(
+                                type=openapi.TYPE_OBJECT,
+                                properties={
+                                    'question_option_value': openapi.Schema(type=openapi.TYPE_STRING),
+                                    'question_option_order': openapi.Schema(type=openapi.TYPE_INTEGER),
+                                }
+                            )
+                        )
+                    }
+                )
+            )
+        }
+    ),
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        )
+    ]
+)
+
 send_email = swagger_auto_schema(
     request_body=EmailSerializer,
     responses={status.HTTP_200_OK: 'Success', status.HTTP_400_BAD_REQUEST: 'Error'}

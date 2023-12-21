@@ -33,7 +33,7 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
-    params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account
+    params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey
 
 
 # -Role-
@@ -287,18 +287,54 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         comment_count = Comment.objects.filter(post_id=pk).count()
         return Response(comment_count, status=status.HTTP_200_OK)
 
-    def get_queryset(self):
-        queries = self.queryset
-        keyword = self.request.query_params.get('keyword')
+    @action(methods=['POST'], detail=False, url_path='create_post_survey')
+    @method_decorator(decorator=create_post_survey, name='create_post_survey')
+    def create_post_survey(self, request):
+        account_id = request.data.get('account_id')
+        post_content = request.data.get('post_content')
 
-        if keyword:
-            queries = queries.filter(post_content__icontains=keyword)
+        post = Post.objects.create(post_content=post_content, account_id=account_id)
 
-        account_id = self.request.query_params.get('account_id')
-        if account_id:
-            queries = queries.filter(account=account_id)
+        post_survey_title = request.data.get('post_survey_title')
+        start_time = request.data.get('start_time')
+        end_time = request.data.get('end_time')
+        post_survey = PostSurvey.objects.create(post=post, post_survey_title=post_survey_title, start_time=start_time,
+                                                end_time=end_time)
 
-        return queries
+        survey_question_list = request.data.get('survey_question_list', [])
+        for question in survey_question_list:
+            survey_question_type_id = question.get('survey_question_type_id')
+            question_content = question.get('question_content')
+            question_order = question.get('question_order')
+            is_required = question.get('is_required')
+            survey_question = SurveyQuestion.objects.create(post_survey=post_survey,
+                                                            survey_question_type_id=survey_question_type_id,
+                                                            question_content=question_content,
+                                                            question_order=question_order, is_required=is_required)
+
+            survey_question_option_list = question.get('survey_question_option_list', [])
+            for option in survey_question_option_list:
+                question_option_value = option.get('question_option_value')
+                question_option_order = option.get('question_option_order')
+                SurveyQuestionOption.objects.create(survey_question=survey_question,
+                                                    question_option_value=question_option_value,
+                                                    question_option_order=question_option_order)
+
+        return Response(status=status.HTTP_200_OK)
+
+
+def get_queryset(self):
+    queries = self.queryset
+    keyword = self.request.query_params.get('keyword')
+
+    if keyword:
+        queries = queries.filter(post_content__icontains=keyword)
+
+    account_id = self.request.query_params.get('account_id')
+    if account_id:
+        queries = queries.filter(account=account_id)
+
+    return queries
 
 
 # -Reaction-
