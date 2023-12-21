@@ -360,6 +360,29 @@ create_post_survey = swagger_auto_schema(
     ]
 )
 
+create_post_invitation = swagger_auto_schema(
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'account_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'post_content': openapi.Schema(type=openapi.TYPE_STRING),
+            'event_name': openapi.Schema(type=openapi.TYPE_STRING),
+            'start_time': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+            'end_time': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+        },
+        required=['account_id', 'post_content', 'event_name', 'start_time', 'end_time']
+    ),
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        )
+    ]
+)
+
 send_email = swagger_auto_schema(
     request_body=EmailSerializer,
     responses={status.HTTP_200_OK: 'Success', status.HTTP_400_BAD_REQUEST: 'Error'}

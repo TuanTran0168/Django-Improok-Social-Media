@@ -33,7 +33,8 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
-    params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey
+    params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
+    create_post_invitation
 
 
 # -Role-
@@ -218,7 +219,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [PostOwner()]
-        if self.action == 'create_post_survey':
+        if self.action in ['create_post_survey', 'create_post_invitation']:
             return [IsAdmin()]
         else:
             return [permissions.IsAuthenticated()]
@@ -329,6 +330,23 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                                                     question_option_value=question_option_value,
                                                     question_option_order=question_option_order)
 
+        return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=False, url_path='create_post_invitation')
+    @method_decorator(decorator=create_post_invitation, name='create_post_invitation')
+    def create_post_invitation(self, request):
+        account_id = request.data.get('account_id')
+        post_content = request.data.get('post_content')
+
+        post = Post.objects.create(post_content=post_content, account_id=account_id)
+
+        event_name = request.data.get('event_name')
+        start_time = request.data.get('start_time')
+        end_time = request.data.get('end_time')
+        PostInvitation.objects.create(post=post,
+                                      event_name=event_name,
+                                      start_time=start_time,
+                                      end_time=end_time)
         return Response(status=status.HTTP_200_OK)
 
 
