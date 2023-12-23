@@ -33,6 +33,14 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+import cloudinary
+
+cloudinary.config(
+    cloud_name='dhwuwy0to',
+    api_key='569153767496484',
+    api_secret='ghXq0iY8RhWbqBcJaide7W-34RY'
+)
+
 REST_FRAMEWORK = {
     # 'DEFAULT_PARSER_CLASSES': [
     #     'rest_framework.parsers.JSONParser',

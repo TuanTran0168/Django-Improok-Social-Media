@@ -8,8 +8,9 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import NotFound
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.views import Response, APIView
+import cloudinary.uploader
 
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
     InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse
@@ -513,6 +514,19 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
     parser_classes = [MultiPartParser, ]
     permission_classes = [permissions.IsAuthenticated]
 
+    def perform_create(self, serializer):
+        image_file = self.request.data.get('post_image_url')
+        upload_data = cloudinary.uploader.upload(image_file)
+        serializer.save(post_image_url=upload_data['secure_url'])
+
+    def perform_update(self, serializer):
+        image_file = self.request.data.get('post_image_url')
+
+        if image_file:
+            upload_data = cloudinary.uploader.upload(image_file)
+            serializer.save(post_image_url=upload_data['secure_url'])
+            serializer.save()
+
     def get_serializer_class(self):
         if self.action == 'create':
             return CreatePostImageSerializer
@@ -834,3 +848,21 @@ class SendEmailView(APIView):
             return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# -Cloudinary-
+class UploadView(APIView):
+    parser_classes = (
+        MultiPartParser,
+        JSONParser,
+    )
+
+    @staticmethod
+    def post(request):
+        file = request.data.get('picture')
+
+        upload_data = cloudinary.uploader.upload(file)
+        return Response({
+            'status': 'success',
+            'data': upload_data,
+        }, status=201)

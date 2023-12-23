@@ -413,6 +413,11 @@ class AlumniAccountSerializer(serializers.ModelSerializer):
 # -PostImage-
 class CreatePostImageSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)
+    post_image_url = serializers.SerializerMethodField(source='post_image_url')
+
+    @staticmethod
+    def get_post_image_url(post_image):
+        return post_image.post_image_url.name
 
     class Meta:
         model = PostImage
@@ -421,6 +426,11 @@ class CreatePostImageSerializer(serializers.ModelSerializer):
 
 class UpdatePostImageSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)
+    post_image_url = serializers.SerializerMethodField(source='post_image_url')
+
+    @staticmethod
+    def get_post_image_url(post_image):
+        return post_image.post_image_url.name
 
     class Meta:
         model = PostImage
@@ -430,12 +440,16 @@ class UpdatePostImageSerializer(serializers.ModelSerializer):
 class PostImageSerializer(serializers.ModelSerializer):
     post_image_url = serializers.SerializerMethodField(source='post_image_url')
 
-    def get_post_image_url(self, post_image):
-        if post_image.post_image_url:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % post_image.post_image_url.name)
-        return '/static/%s' % post_image.post_image_url.name
+    # def get_post_image_url(self, post_image):
+    #     if post_image.post_image_url:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % post_image.post_image_url.name)
+    #     return '/static/%s' % post_image.post_image_url.name
+
+    @staticmethod
+    def get_post_image_url(post_image):
+        return post_image.post_image_url.name
 
     class Meta:
         model = PostImage
