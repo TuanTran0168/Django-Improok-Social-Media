@@ -514,18 +514,31 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
     parser_classes = [MultiPartParser, ]
     permission_classes = [permissions.IsAuthenticated]
 
+    # def create(self, request, *args, **kwargs):
+    #     response = super().create(request, *args, **kwargs)
+    #     # image_file = self.request.data.get('post_image_url')
+    #     # upload_data = cloudinary.uploader.upload(image_file)
+    #     # # Thì ra đây là cách gán giá trị cho response NHƯNG không lưu db
+    #     # response.data['post_image_url'] = upload_data['secure_url']
+    #     data = {
+    #         'response': response.data,
+    #         # 'upload_cloudinary': upload_data['secure_url']
+    #     }
+    #
+    #     return Response(data, status=status.HTTP_200_OK)
+
+    # hàm này là override lại quá trình diễn ra trong lúc create
     def perform_create(self, serializer):
         image_file = self.request.data.get('post_image_url')
-        upload_data = cloudinary.uploader.upload(image_file)
-        serializer.save(post_image_url=upload_data['secure_url'])
-
-    def perform_update(self, serializer):
-        image_file = self.request.data.get('post_image_url')
-
         if image_file:
             upload_data = cloudinary.uploader.upload(image_file)
             serializer.save(post_image_url=upload_data['secure_url'])
-            serializer.save()
+
+    def perform_update(self, serializer):
+        image_file = self.request.data.get('post_image_url')
+        if image_file:
+            upload_data = cloudinary.uploader.upload(image_file)
+            serializer.save(post_image_url=upload_data['secure_url'])
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -548,6 +561,18 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     serializer_class = CommentSerializer
     pagination_class = MyPageSize
     parser_classes = [MultiPartParser, ]
+
+    def perform_create(self, serializer):
+        image_file = self.request.data.get('comment_image_url')
+        if image_file:
+            upload_data = cloudinary.uploader.upload(image_file)
+            serializer.save(comment_image_url=upload_data['secure_url'])
+
+    def perform_update(self, serializer):
+        image_file = self.request.data.get('comment_image_url')
+        if image_file:
+            upload_data = cloudinary.uploader.upload(image_file)
+            serializer.save(comment_image_url=upload_data['secure_url'])
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update']:

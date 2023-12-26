@@ -182,12 +182,10 @@ class CommentSerializerForPost(serializers.ModelSerializer):
     comment_image_url = serializers.SerializerMethodField(source='comment_image_url')
     account = AccountSerializerForComment()
 
-    def get_comment_image_url(self, comment):
+    @staticmethod
+    def get_comment_image_url(comment):
         if comment.comment_image_url:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % comment.comment_image_url.name)
-        return '/static/%s' % comment.comment_image_url.name
+            return comment.comment_image_url.name
 
     class Meta:
         model = Comment
@@ -413,11 +411,13 @@ class AlumniAccountSerializer(serializers.ModelSerializer):
 # -PostImage-
 class CreatePostImageSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)
-    post_image_url = serializers.SerializerMethodField(source='post_image_url')
 
-    @staticmethod
-    def get_post_image_url(post_image):
-        return post_image.post_image_url.name
+    # Mở cái này ra thì override được cái localhost nhưng mà nó mất cái ô chọn file ở swagger
+    # post_image_url = serializers.SerializerMethodField(source='post_image_url')
+    #
+    # @staticmethod
+    # def get_post_image_url(post_image):
+    #     return post_image.post_image_url.name
 
     class Meta:
         model = PostImage
@@ -426,11 +426,12 @@ class CreatePostImageSerializer(serializers.ModelSerializer):
 
 class UpdatePostImageSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)
-    post_image_url = serializers.SerializerMethodField(source='post_image_url')
 
-    @staticmethod
-    def get_post_image_url(post_image):
-        return post_image.post_image_url.name
+    # post_image_url = serializers.SerializerMethodField(source='post_image_url')
+    #
+    # @staticmethod
+    # def get_post_image_url(post_image):
+    #     return post_image.post_image_url.name
 
     class Meta:
         model = PostImage
@@ -449,7 +450,8 @@ class PostImageSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_post_image_url(post_image):
-        return post_image.post_image_url.name
+        if post_image.post_image_url:
+            return post_image.post_image_url.name
 
     class Meta:
         model = PostImage
@@ -476,12 +478,17 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     comment_image_url = serializers.SerializerMethodField(source='comment_image_url')
 
-    def get_comment_image_url(self, comment):
+    @staticmethod
+    def get_comment_image_url(comment):
         if comment.comment_image_url:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % comment.comment_image_url.name)
-        return '/static/%s' % comment.comment_image_url.name
+            return comment.comment_image_url.name
+
+    # def get_comment_image_url(self, comment):
+    #     if comment.comment_image_url:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % comment.comment_image_url.name)
+    #     return '/static/%s' % comment.comment_image_url.name
 
     class Meta:
         model = Comment
