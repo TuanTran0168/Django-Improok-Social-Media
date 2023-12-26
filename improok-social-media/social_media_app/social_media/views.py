@@ -13,7 +13,8 @@ from rest_framework.views import Response, APIView
 import cloudinary.uploader
 
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
-    InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse
+    InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse, \
+    SurveyQuestionType
 from .paginators import PostPagination, MyPageSize
 from .permissions import CommentOwner, PostOwner, IsAdmin
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
@@ -29,7 +30,7 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
     CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
-    CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer
+    CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer, SurveyQuestionTypeSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
@@ -48,6 +49,12 @@ class RoleViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 class ConfirmStatusViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = ConfirmStatus.objects.all()
     serializer_class = ConfirmStatusSerializer
+
+
+# -SurveyQuestionType-
+class SurveyQuestionTypeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = SurveyQuestionType.objects.all()
+    serializer_class = SurveyQuestionTypeSerializer
 
 
 # -InvitationGroup-

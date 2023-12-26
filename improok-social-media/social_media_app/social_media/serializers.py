@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import Role, User, Post, Account, PostImage, InvitationGroup, Comment, ConfirmStatus, AlumniAccount, \
     Reaction, PostReaction, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, \
-    SurveyResponse
+    SurveyResponse, SurveyQuestionType
 
 
 # -Role-
@@ -16,6 +16,13 @@ class RoleSerializer(serializers.ModelSerializer):
 class ConfirmStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConfirmStatus
+        fields = '__all__'
+
+
+# -SurveyQuestionType-
+class SurveyQuestionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionType
         fields = '__all__'
 
 
