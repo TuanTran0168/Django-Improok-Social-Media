@@ -35,7 +35,7 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
-    create_post_invitation
+    create_post_invitation, answer_post_survey
 
 
 # -Role-
@@ -331,7 +331,38 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                                                     question_option_value=question_option_value,
                                                     question_option_order=question_option_order)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_201_CREATED)
+
+    @action(methods=['POST'], detail=False, url_path='answer_post_survey')
+    @method_decorator(decorator=answer_post_survey, name='answer_post_survey')
+    def answer_post_survey(self, request):
+        account_id = request.data.get('account_id')
+        post_survey = request.data.get('post_survey')
+        survey_response = SurveyResponse.objects.create(post_survey_id=post_survey,
+                                                        account_id=account_id)
+
+        survey_question_list = request.data.get('survey_question_list', [])
+
+        for question in survey_question_list:
+            question_id = question.get('question')
+            question_option_value = question.get('question_option_value')
+            survey_answer = SurveyAnswer.objects.create(question_option_value=question_option_value,
+                                                        survey_question_id=question_id,
+                                                        survey_response=survey_response)
+
+            # Tuấn đang làm dở tay
+            list_survey_question_option_id = question.get('list_survey_question_option_id', [])
+            if list_survey_question_option_id:
+                survey_question_options = SurveyQuestionOption.objects.filter(id__in=list_survey_question_option_id)
+                if len(survey_question_options) != len(list_survey_question_option_id):
+                    missing_ids = set(list_survey_question_option_id) - set(
+                        survey_question_options.values_list('id', flat=True))
+                    raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
+
+                survey_answer.surveyquestionoption_set.add(*survey_question_options)
+                survey_answer.save()
+
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(methods=['POST'], detail=False, url_path='create_post_invitation')
     @method_decorator(decorator=create_post_invitation, name='create_post_invitation')
