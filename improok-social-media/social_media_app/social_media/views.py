@@ -410,6 +410,35 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
 
     # permission_classes = [permissions.IsAuthenticated]
 
+    def perform_create(self, serializer):
+        avatar_file = self.request.data.get('avatar')
+        cover_avatar_file = self.request.data.get('cover_avatar')
+
+        if avatar_file and cover_avatar_file:
+            upload_avatar = cloudinary.uploader.upload(avatar_file)
+            upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
+            serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
+
+        else:
+            if avatar_file:
+                upload_data = cloudinary.uploader.upload(avatar_file)
+                serializer.save(avatar=upload_data['secure_url'])
+
+            if cover_avatar_file:
+                upload_data = cloudinary.uploader.upload(cover_avatar_file)
+                serializer.save(cover_avatar=upload_data['secure_url'])
+
+    def perform_update(self, serializer):
+        cover_avatar_file = self.request.data.get('cover_avatar')
+        if cover_avatar_file:
+            upload_data = cloudinary.uploader.upload(cover_avatar_file)
+            serializer.save(cover_avatar=upload_data['secure_url'])
+
+        avatar_file = self.request.data.get('avatar')
+        if avatar_file:
+            upload_data = cloudinary.uploader.upload(avatar_file)
+            serializer.save(avatar=upload_data['secure_url'])
+
     def get_permissions(self):
         if self.action in ['list', 'update', 'partial_update', 'destroy', 'get_posts_by_account']:
             return [permissions.IsAuthenticated()]

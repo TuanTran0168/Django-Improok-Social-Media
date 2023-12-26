@@ -24,19 +24,29 @@ class AccountSerializerForInvitationGroup(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
     cover_avatar = serializers.SerializerMethodField(source='cover_avatar')
 
-    def get_avatar(self, account):
+    @staticmethod
+    def get_avatar(account):
         if account.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % account.avatar.name)
-        return '/static/%s' % account.avatar.name
+            return account.avatar.name
 
-    def get_cover_avatar(self, account):
+    @staticmethod
+    def get_cover_avatar(account):
         if account.cover_avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % account.cover_avatar.name)
-        return '/static/%s' % account.cover_avatar.name
+            return account.cover_avatar.name
+
+    # def get_avatar(self, account):
+    #     if account.avatar:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % account.avatar.name)
+    #     return '/static/%s' % account.avatar.name
+    #
+    # def get_cover_avatar(self, account):
+    #     if account.cover_avatar:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % account.cover_avatar.name)
+    #     return '/static/%s' % account.cover_avatar.name
 
     class Meta:
         model = Account
@@ -75,12 +85,17 @@ class AccountSerializerForRetrieveInvitationGroup(serializers.ModelSerializer):
     user = UserSerializerForInvitationGroup()
     avatar = serializers.SerializerMethodField(source='avatar')
 
-    def get_avatar(self, account):
+    @staticmethod
+    def get_avatar(account):
         if account.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % account.avatar.name)
-        return '/static/%s' % account.avatar.name
+            return account.avatar.name
+
+    # def get_avatar(self, account):
+    #     if account.avatar:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % account.avatar.name)
+    #     return '/static/%s' % account.avatar.name
 
     class Meta:
         model = Account
@@ -166,12 +181,17 @@ class AccountSerializerForComment(serializers.ModelSerializer):
     user = UserSerializerForComment()
     avatar = serializers.SerializerMethodField(source='avatar')
 
-    def get_avatar(self, account):
+    @staticmethod
+    def get_avatar(account):
         if account.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % account.avatar.name)
-        return '/static/%s' % account.avatar.name
+            return account.avatar.name
+
+    # def get_avatar(self, account):
+    #     if account.avatar:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % account.avatar.name)
+    #     return '/static/%s' % account.avatar.name
 
     class Meta:
         model = Account
@@ -329,19 +349,29 @@ class AccountSerializer(serializers.ModelSerializer):
     role = RoleSerializer()
     user = UserSerializer()
 
-    def get_avatar(self, account):
+    @staticmethod
+    def get_avatar(account):
         if account.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % account.avatar.name)
-        return '/static/%s' % account.avatar.name
+            return account.avatar.name
 
-    def get_cover_avatar(self, account):
+    @staticmethod
+    def get_cover_avatar(account):
         if account.cover_avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % account.cover_avatar.name)
-        return '/static/%s' % account.cover_avatar.name
+            return account.cover_avatar.name
+
+    # def get_avatar(self, account):
+    #     if account.avatar:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % account.avatar.name)
+    #     return '/static/%s' % account.avatar.name
+    #
+    # def get_cover_avatar(self, account):
+    #     if account.cover_avatar:
+    #         request = self.context.get('request')
+    #         if request:
+    #             return request.build_absolute_uri('/static/%s' % account.cover_avatar.name)
+    #     return '/static/%s' % account.cover_avatar.name
 
     class Meta:
         model = Account
