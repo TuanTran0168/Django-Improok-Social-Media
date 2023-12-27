@@ -64,6 +64,7 @@ class SurveyQuestionTypeViewSet(viewsets.ViewSet, generics.ListAPIView, generics
 @method_decorator(decorator=header_authorization, name='update')
 @method_decorator(decorator=header_authorization, name='partial_update')
 @method_decorator(decorator=header_authorization, name='destroy')
+@method_decorator(decorator=header_authorization, name='destroy')
 class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                              generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = InvitationGroup.objects.filter(active=True)
