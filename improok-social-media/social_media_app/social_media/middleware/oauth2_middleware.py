@@ -12,6 +12,7 @@ class Oauth2MiddleWare(object):
     def __call__(self, request):
         if request.method == 'POST' and str(request.path).__eq__('/o/token/'):
             print('Đây là login với url: ' + request.path)
+            print(request.POST.dict())
             data = request.POST.dict()  # Lấy data từ body mà client gửi nè
 
             # Thêm dữ liệu vào body

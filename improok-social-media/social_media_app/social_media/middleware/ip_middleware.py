@@ -24,7 +24,12 @@ class IPFilterMiddleWare(object):
         print('ip address: ' + ip if ip is not None else "None")
         print('method: ' + method if method is not None else "None")
 
-        allowed_ips = ALLOWED_HOSTS
+        # allowed_ips = ALLOWED_HOSTS
+
+        allowed_ips = [
+            '127.0.0.1'
+        ]
+
         ip = request.META.get('REMOTE_ADDR')  # Get client IP
 
         if ip in allowed_ips:

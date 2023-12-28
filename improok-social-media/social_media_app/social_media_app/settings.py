@@ -73,7 +73,7 @@ SECRET_KEY = 'django-insecure-*g4ng#+=tnw8lo07@1qsxb72f+306^po*(9(^y49adhv*8(9d-
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '192.168.1.5',
+    '192.168.1.6',
     '127.0.0.1',
 ]
 
@@ -107,7 +107,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'social_media.middleware.ip_middleware.IPFilterMiddleWare',
-    'social_media.middleware.oauth2_middleware.Oauth2MiddleWare'
+    'social_media.middleware.characters_middleware.BlockInvalidCharactersMiddleware',
+    'social_media.middleware.oauth2_middleware.Oauth2MiddleWare',
 ]
 
 ROOT_URLCONF = 'social_media_app.urls'
