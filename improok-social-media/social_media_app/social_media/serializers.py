@@ -339,8 +339,8 @@ class CreateAccountSerializer(serializers.ModelSerializer):
 class UpdateAccountSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk', read_only=True)
 
-    role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
-    date_of_birth = serializers.DateField(format='%Y-%m-%d')
+    # role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
+    date_of_birth = serializers.DateField(format='%Y-%m-%d', required=False)
 
     class Meta:
         model = Account

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.db import transaction, IntegrityError
 from django.db.models import Count
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
@@ -89,27 +90,34 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
     @action(methods=['GET'], detail=True, url_path='accounts')
     @method_decorator(decorator=header_authorization, name='accounts')
     def get_accounts(self, request, pk):
-        accounts = self.get_object().accounts.filter(active=True).all()
-        return Response(AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
-                        status=status.HTTP_200_OK)
+        try:
+            accounts = self.get_object().accounts.filter(active=True).all()
+            return Response(
+                AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
+                status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(methods=['POST'], detail=True, url_path='add_or_update_accounts')
     @method_decorator(decorator=add_or_update_accounts_from_invitation_group, name='add_or_update_accounts')
     def add_or_update_accounts(self, request, pk):
         try:
-            invitation_group = self.get_object()
-            list_account_id = request.data.get('list_account_id', [])
-            # Truy vấn mấy tài khoản cần thêm này ra
-            # Nếu mấy cái mới lấy ra mà không trùng với danh sách cần thêm thì khỏi :)))
-            accounts = Account.objects.filter(id__in=list_account_id)
-            if len(accounts) != len(list_account_id):
-                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
-                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+            with transaction.atomic():
+                invitation_group = self.get_object()
+                list_account_id = request.data.get('list_account_id', [])
+                # Truy vấn mấy tài khoản cần thêm này ra
+                # Nếu mấy cái mới lấy ra mà không trùng với danh sách cần thêm thì khỏi :)))
+                accounts = Account.objects.filter(id__in=list_account_id)
+                if len(accounts) != len(list_account_id):
+                    missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                    raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
 
-            invitation_group.accounts.add(*accounts)  # Truyền lẻ từng account vào nhanh hơn truyền list accounts vào
-            invitation_group.save()
+                # Truyền lẻ từng account vào nhanh hơn truyền list accounts vào
+                invitation_group.accounts.add(*accounts)
+                invitation_group.save()
 
-            return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_201_CREATED)
+                return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -118,17 +126,18 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
     @method_decorator(decorator=delete_accounts_from_invitation_group, name='delete_account')
     def delete_account(self, request, pk):
         try:
-            invitation_group = self.get_object()
-            list_account_id = request.data.get('list_account_id', [])
-            accounts = invitation_group.accounts.filter(id__in=list_account_id)
-            if len(accounts) != len(list_account_id):
-                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
-                raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
+            with transaction.atomic():
+                invitation_group = self.get_object()
+                list_account_id = request.data.get('list_account_id', [])
+                accounts = invitation_group.accounts.filter(id__in=list_account_id)
+                if len(accounts) != len(list_account_id):
+                    missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                    raise NotFound(f"Accounts with IDs {missing_ids} do not exist.")
 
-            invitation_group.accounts.remove(*accounts)
-            invitation_group.save()
+                invitation_group.accounts.remove(*accounts)
+                invitation_group.save()
 
-            return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_204_NO_CONTENT)
+                return Response(InvitationGroupSerializer(invitation_group).data, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             error_message = str(e)
             return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -167,10 +176,6 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     @method_decorator(decorator=header_authorization, name='current-user')
     def current_user(self, request):
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
-        # if request.user.is_authenticated:
-        #     return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
-        # else:
-        #     return Response({'detail': 'User is not authenticated.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     @action(methods=['GET'], detail=True, url_path='account')
     @method_decorator(decorator=header_authorization, name='get_account_by_user_id')
@@ -189,25 +194,44 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     @action(methods=['POST'], detail=False, url_path='create_alumni')
     @method_decorator(decorator=create_alumni_account, name='create_alumni')
     def create_alumni(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        email = request.data.get('email')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
-        alumni_account_code = request.data.get('alumni_account_code')
+        try:
+            with transaction.atomic():
+                username = request.data.get('username')
+                password = request.data.get('password')
+                email = request.data.get('email')
+                first_name = request.data.get('first_name')
+                last_name = request.data.get('last_name')
+                alumni_account_code = request.data.get('alumni_account_code')
 
-        # user = User.objects.create(username=username, email=email, password=password, first_name=first_name,
-        #                            last_name=last_name)
+                duplicate_username = User.objects.filter(username=username).exists()
+                if duplicate_username:
+                    return Response({'Username đã tồn tại! ': username}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.create_user(username=username, email=email)
-        user.set_password(password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
-        account = Account.objects.create(user=user)
-        alumni = AlumniAccount.objects.create(account=account, alumni_account_code=alumni_account_code)
+                duplicate_alumni_account_code = AlumniAccount.objects.filter(
+                    alumni_account_code=alumni_account_code).exists()
+                if duplicate_alumni_account_code:
+                    return Response({'Mã số sinh viên đã tồn tại! ': alumni_account_code},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(status=status.HTTP_200_OK)
+                # user = User.objects.create(username=username, email=email, password=password, first_name=first_name,
+                #                            last_name=last_name)
+
+                user = User.objects.create_user(username=username, email=email)
+                user.set_password(password)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.save()
+                account = Account.objects.create(user=user)
+                alumni = AlumniAccount.objects.create(account=account, alumni_account_code=alumni_account_code)
+
+                return Response(AlumniAccountSerializer(alumni).data, status=status.HTTP_200_OK)
+
+        except IntegrityError as e:
+            error_message = str(e)
+            return Response({'Trùng khóa chính: ': error_message}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # -Post-
@@ -309,85 +333,103 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     @action(methods=['POST'], detail=False, url_path='create_post_survey')
     @method_decorator(decorator=create_post_survey, name='create_post_survey')
     def create_post_survey(self, request):
-        account_id = request.data.get('account_id')
-        post_content = request.data.get('post_content')
+        try:
+            with transaction.atomic():
+                account_id = request.data.get('account_id')
+                post_content = request.data.get('post_content')
 
-        post = Post.objects.create(post_content=post_content, account_id=account_id)
+                post = Post.objects.create(post_content=post_content, account_id=account_id)
 
-        post_survey_title = request.data.get('post_survey_title')
-        start_time = request.data.get('start_time')
-        end_time = request.data.get('end_time')
-        post_survey = PostSurvey.objects.create(post=post, post_survey_title=post_survey_title, start_time=start_time,
-                                                end_time=end_time)
+                post_survey_title = request.data.get('post_survey_title')
+                start_time = request.data.get('start_time')
+                end_time = request.data.get('end_time')
+                post_survey = PostSurvey.objects.create(post=post, post_survey_title=post_survey_title,
+                                                        start_time=start_time,
+                                                        end_time=end_time)
 
-        survey_question_list = request.data.get('survey_question_list', [])
-        for question in survey_question_list:
-            survey_question_type_id = question.get('survey_question_type_id')
-            question_content = question.get('question_content')
-            question_order = question.get('question_order')
-            is_required = question.get('is_required')
-            survey_question = SurveyQuestion.objects.create(post_survey=post_survey,
-                                                            survey_question_type_id=survey_question_type_id,
-                                                            question_content=question_content,
-                                                            question_order=question_order, is_required=is_required)
+                survey_question_list = request.data.get('survey_question_list', [])
+                for question in survey_question_list:
+                    survey_question_type_id = question.get('survey_question_type_id')
+                    question_content = question.get('question_content')
+                    question_order = question.get('question_order')
+                    is_required = question.get('is_required')
+                    survey_question = SurveyQuestion.objects.create(post_survey=post_survey,
+                                                                    survey_question_type_id=survey_question_type_id,
+                                                                    question_content=question_content,
+                                                                    question_order=question_order,
+                                                                    is_required=is_required)
 
-            survey_question_option_list = question.get('survey_question_option_list', [])
-            for option in survey_question_option_list:
-                question_option_value = option.get('question_option_value')
-                question_option_order = option.get('question_option_order')
-                SurveyQuestionOption.objects.create(survey_question=survey_question,
-                                                    question_option_value=question_option_value,
-                                                    question_option_order=question_option_order)
+                    survey_question_option_list = question.get('survey_question_option_list', [])
+                    for option in survey_question_option_list:
+                        question_option_value = option.get('question_option_value')
+                        question_option_order = option.get('question_option_order')
+                        SurveyQuestionOption.objects.create(survey_question=survey_question,
+                                                            question_option_value=question_option_value,
+                                                            question_option_order=question_option_order)
 
-        return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_201_CREATED)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(methods=['POST'], detail=False, url_path='answer_post_survey')
     @method_decorator(decorator=answer_post_survey, name='answer_post_survey')
     def answer_post_survey(self, request):
-        account_id = request.data.get('account_id')
-        post_survey = request.data.get('post_survey')
-        survey_response = SurveyResponse.objects.create(post_survey_id=post_survey,
-                                                        account_id=account_id)
+        try:
+            with transaction.atomic():
+                account_id = request.data.get('account_id')
+                post_survey = request.data.get('post_survey')
+                survey_response = SurveyResponse.objects.create(post_survey_id=post_survey,
+                                                                account_id=account_id)
 
-        survey_question_list = request.data.get('survey_question_list', [])
+                survey_question_list = request.data.get('survey_question_list', [])
 
-        for question in survey_question_list:
-            question_id = question.get('question')
-            question_option_value = question.get('question_option_value')
-            survey_answer = SurveyAnswer.objects.create(question_option_value=question_option_value,
-                                                        survey_question_id=question_id,
-                                                        survey_response=survey_response)
+                for question in survey_question_list:
+                    question_id = question.get('question')
+                    question_option_value = question.get('question_option_value')
+                    survey_answer = SurveyAnswer.objects.create(question_option_value=question_option_value,
+                                                                survey_question_id=question_id,
+                                                                survey_response=survey_response)
 
-            # Tuấn đang làm dở tay
-            list_survey_question_option_id = question.get('list_survey_question_option_id', [])
-            if list_survey_question_option_id:
-                survey_question_options = SurveyQuestionOption.objects.filter(id__in=list_survey_question_option_id)
-                if len(survey_question_options) != len(list_survey_question_option_id):
-                    missing_ids = set(list_survey_question_option_id) - set(
-                        survey_question_options.values_list('id', flat=True))
-                    raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
+                    # Tuấn đang làm dở tay
+                    list_survey_question_option_id = question.get('list_survey_question_option_id', [])
+                    if list_survey_question_option_id:
+                        survey_question_options = SurveyQuestionOption.objects.filter(
+                            id__in=list_survey_question_option_id)
+                        if len(survey_question_options) != len(list_survey_question_option_id):
+                            missing_ids = set(list_survey_question_option_id) - set(
+                                survey_question_options.values_list('id', flat=True))
+                            raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
 
-                survey_answer.surveyquestionoption_set.add(*survey_question_options)
-                survey_answer.save()
+                        survey_answer.surveyquestionoption_set.add(*survey_question_options)
+                        survey_answer.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_201_CREATED)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(methods=['POST'], detail=False, url_path='create_post_invitation')
     @method_decorator(decorator=create_post_invitation, name='create_post_invitation')
     def create_post_invitation(self, request):
-        account_id = request.data.get('account_id')
-        post_content = request.data.get('post_content')
+        try:
+            with transaction.atomic():
+                account_id = request.data.get('account_id')
+                post_content = request.data.get('post_content')
 
-        post = Post.objects.create(post_content=post_content, account_id=account_id)
+                post = Post.objects.create(post_content=post_content, account_id=account_id)
 
-        event_name = request.data.get('event_name')
-        start_time = request.data.get('start_time')
-        end_time = request.data.get('end_time')
-        PostInvitation.objects.create(post=post,
-                                      event_name=event_name,
-                                      start_time=start_time,
-                                      end_time=end_time)
-        return Response(status=status.HTTP_200_OK)
+                event_name = request.data.get('event_name')
+                start_time = request.data.get('start_time')
+                end_time = request.data.get('end_time')
+                PostInvitation.objects.create(post=post,
+                                              event_name=event_name,
+                                              start_time=start_time,
+                                              end_time=end_time)
+                return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def get_queryset(self):
@@ -449,41 +491,79 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
 
     # permission_classes = [permissions.IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        phone_number = self.request.data.get('phone_number')
+        if phone_number:
+            duplicate_phone_number = Account.objects.filter(
+                phone_number=phone_number).exists()
+            if duplicate_phone_number:
+                return Response({'Số điện thoại đã tồn tại! ': phone_number},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        user = self.request.data.get('user')
+        if user:
+            duplicate_phone_number = Account.objects.filter(
+                user=user).exists()
+            if duplicate_phone_number:
+                return Response({'User đã tạo tài khoản! ': user},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        phone_number = self.request.data.get('phone_number')
+        if phone_number:
+            duplicate_phone_number = Account.objects.filter(
+                phone_number=phone_number).exists()
+            if duplicate_phone_number:
+                return Response({'Số điện thoại đã tồn tại! ': phone_number},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
-        avatar_file = self.request.data.get('avatar')
-        cover_avatar_file = self.request.data.get('cover_avatar')
+        try:
+            avatar_file = self.request.data.get('avatar')
+            cover_avatar_file = self.request.data.get('cover_avatar')
 
-        if avatar_file and cover_avatar_file:
-            upload_avatar = cloudinary.uploader.upload(avatar_file)
-            upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
-            serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
+            if avatar_file and cover_avatar_file:
+                upload_avatar = cloudinary.uploader.upload(avatar_file)
+                upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
+                serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
 
-        else:
-            if avatar_file:
-                upload_data = cloudinary.uploader.upload(avatar_file)
-                serializer.save(avatar=upload_data['secure_url'])
+            else:
+                if avatar_file:
+                    upload_data = cloudinary.uploader.upload(avatar_file)
+                    serializer.save(avatar=upload_data['secure_url'])
 
-            if cover_avatar_file:
-                upload_data = cloudinary.uploader.upload(cover_avatar_file)
-                serializer.save(cover_avatar=upload_data['secure_url'])
+                if cover_avatar_file:
+                    upload_data = cloudinary.uploader.upload(cover_avatar_file)
+                    serializer.save(cover_avatar=upload_data['secure_url'])
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def perform_update(self, serializer):
-        avatar_file = self.request.data.get('avatar')
-        cover_avatar_file = self.request.data.get('cover_avatar')
+        try:
+            avatar_file = self.request.data.get('avatar')
+            cover_avatar_file = self.request.data.get('cover_avatar')
 
-        if avatar_file and cover_avatar_file:
-            upload_avatar = cloudinary.uploader.upload(avatar_file)
-            upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
-            serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
+            if avatar_file and cover_avatar_file:
+                upload_avatar = cloudinary.uploader.upload(avatar_file)
+                upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
+                serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
 
-        else:
-            if avatar_file:
-                upload_data = cloudinary.uploader.upload(avatar_file)
-                serializer.save(avatar=upload_data['secure_url'])
+            else:
+                if avatar_file:
+                    upload_data = cloudinary.uploader.upload(avatar_file)
+                    serializer.save(avatar=upload_data['secure_url'])
 
-            if cover_avatar_file:
-                upload_data = cloudinary.uploader.upload(cover_avatar_file)
-                serializer.save(cover_avatar=upload_data['secure_url'])
+                if cover_avatar_file:
+                    upload_data = cloudinary.uploader.upload(cover_avatar_file)
+                    serializer.save(cover_avatar=upload_data['secure_url'])
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get_permissions(self):
         if self.action in ['list', 'update', 'partial_update', 'destroy', 'get_posts_by_account']:
@@ -604,16 +684,24 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
 
     # hàm này là override lại quá trình diễn ra trong lúc create
     def perform_create(self, serializer):
-        image_file = self.request.data.get('post_image_url')
-        if image_file:
-            upload_data = cloudinary.uploader.upload(image_file)
-            serializer.save(post_image_url=upload_data['secure_url'])
+        try:
+            image_file = self.request.data.get('post_image_url')
+            if image_file:
+                upload_data = cloudinary.uploader.upload(image_file)
+                serializer.save(post_image_url=upload_data['secure_url'])
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def perform_update(self, serializer):
-        image_file = self.request.data.get('post_image_url')
-        if image_file:
-            upload_data = cloudinary.uploader.upload(image_file)
-            serializer.save(post_image_url=upload_data['secure_url'])
+        try:
+            image_file = self.request.data.get('post_image_url')
+            if image_file:
+                upload_data = cloudinary.uploader.upload(image_file)
+                serializer.save(post_image_url=upload_data['secure_url'])
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -638,16 +726,24 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     parser_classes = [MultiPartParser, ]
 
     def perform_create(self, serializer):
-        image_file = self.request.data.get('comment_image_url')
-        if image_file:
-            upload_data = cloudinary.uploader.upload(image_file)
-            serializer.save(comment_image_url=upload_data['secure_url'])
+        try:
+            image_file = self.request.data.get('comment_image_url')
+            if image_file:
+                upload_data = cloudinary.uploader.upload(image_file)
+                serializer.save(comment_image_url=upload_data['secure_url'])
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def perform_update(self, serializer):
-        image_file = self.request.data.get('comment_image_url')
-        if image_file:
-            upload_data = cloudinary.uploader.upload(image_file)
-            serializer.save(comment_image_url=upload_data['secure_url'])
+        try:
+            image_file = self.request.data.get('comment_image_url')
+            if image_file:
+                upload_data = cloudinary.uploader.upload(image_file)
+                serializer.save(comment_image_url=upload_data['secure_url'])
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update']:
@@ -697,17 +793,18 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
     @method_decorator(decorator=add_or_update_accounts_from_post_invitation, name='add_or_update_accounts')
     def add_or_update_accounts(self, request, pk):
         try:
-            post_invitation = self.get_object()
-            list_account_id = request.data.get('list_account_id', [])
-            accounts = Account.objects.filter(id__in=list_account_id)
-            if len(accounts) != len(list_account_id):
-                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
-                raise NotFound(f'Accounts with IDs {missing_ids} do not exist.')
+            with transaction.atomic():
+                post_invitation = self.get_object()
+                list_account_id = request.data.get('list_account_id', [])
+                accounts = Account.objects.filter(id__in=list_account_id)
+                if len(accounts) != len(list_account_id):
+                    missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                    raise NotFound(f'Accounts with IDs {missing_ids} do not exist.')
 
-            post_invitation.accounts.add(*accounts)
-            post_invitation.save()
+                post_invitation.accounts.add(*accounts)
+                post_invitation.save()
 
-            return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_201_CREATED)
+                return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -716,17 +813,18 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
     @method_decorator(decorator=delete_accounts_from_post_invitation, name='delete_account')
     def delete_account(self, request, pk):
         try:
-            post_invitation = self.get_object()
-            list_account_id = request.data.get('list_account_id', [])
-            accounts = post_invitation.accounts.filter(id__in=list_account_id)
-            if len(accounts) != len(list_account_id):
-                missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
-                raise NotFound(f'Accounts with IDs {missing_ids} do not exist.')
+            with transaction.atomic():
+                post_invitation = self.get_object()
+                list_account_id = request.data.get('list_account_id', [])
+                accounts = post_invitation.accounts.filter(id__in=list_account_id)
+                if len(accounts) != len(list_account_id):
+                    missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
+                    raise NotFound(f'Accounts with IDs {missing_ids} do not exist.')
 
-            post_invitation.accounts.remove(*accounts)
-            post_invitation.save()
+                post_invitation.accounts.remove(*accounts)
+                post_invitation.save()
 
-            return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_204_NO_CONTENT)
+                return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             error_message = str(e)
             return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -906,19 +1004,20 @@ class SurveyAnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
                       name='add_or_update_survey_question_options')
     def add_or_update_survey_question_options(self, request, pk):
         try:
-            survey_answer = self.get_object()
-            list_survey_question_option_id = request.data.get('list_survey_question_option_id', [])
-            survey_question_options = SurveyQuestionOption.objects.filter(id__in=list_survey_question_option_id)
-            if len(survey_question_options) != len(list_survey_question_option_id):
-                missing_ids = set(list_survey_question_option_id) - set(
-                    survey_question_options.values_list('id', flat=True))
-                raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
+            with transaction.atomic():
+                survey_answer = self.get_object()
+                list_survey_question_option_id = request.data.get('list_survey_question_option_id', [])
+                survey_question_options = SurveyQuestionOption.objects.filter(id__in=list_survey_question_option_id)
+                if len(survey_question_options) != len(list_survey_question_option_id):
+                    missing_ids = set(list_survey_question_option_id) - set(
+                        survey_question_options.values_list('id', flat=True))
+                    raise NotFound(f"Survey Answer with IDs {missing_ids} do not exist.")
 
-            survey_answer.surveyquestionoption_set.add(*survey_question_options)
-            survey_answer.save()
+                survey_answer.surveyquestionoption_set.add(*survey_question_options)
+                survey_answer.save()
 
-            return Response(SurveyAnswerSerializer(survey_answer).data,
-                            status=status.HTTP_201_CREATED)
+                return Response(SurveyAnswerSerializer(survey_answer).data,
+                                status=status.HTTP_201_CREATED)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
