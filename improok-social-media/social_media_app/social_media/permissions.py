@@ -32,4 +32,5 @@ class PostOwnerAdmin(permissions.IsAuthenticated):
 
 class IsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.account.role.role_name == 'Admin'
+        if request.user.is_authenticated:
+            return request.user.account.role.role_name == 'Admin'
