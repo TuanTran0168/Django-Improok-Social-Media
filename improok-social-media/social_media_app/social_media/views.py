@@ -431,6 +431,66 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @action(methods=['GET'], detail=True, url_path='post_survey')
+    @method_decorator(decorator=header_authorization, name='get_post_survey')
+    def get_post_survey(self, request, pk):
+        try:
+            # Sau này bên FE client gửi được order thì sẽ order theo field khác
+            # Tạm thời order theo created_date
+            post_survey = PostSurvey.objects.get(id=pk)
+            survey_question_list = post_survey.surveyquestion_set.order_by('created_date').all()
+
+            # Khi dùng order_by thì nó sẽ không trả danh sách dict bình thường
+            # Mà nó trả ra danh sách OrderedDict, truy xuất dùng ['key]
+            # Có dạng (ví dụ: question)
+            # OrderedDict([
+            #     ('id', 7),
+            #     ('created_date', '2023-12-16'),
+            #     ('updated_date', '2023-12-16'),
+            #     ('deleted_date', '2023-12-16'),
+            #     ('active', True),
+            #     ('question_option_value', 'Tuyệt'),
+            #     ('question_option_order', 0),
+            #     ('survey_question', 4),
+            #     ('survey_answers', [])
+            # ])
+            data = {
+                'post_content': post_survey.post.post_content,
+                'account_id': post_survey.post.account_id,
+                'post_survey_title': post_survey.post_survey_title,
+                'start_time': post_survey.start_time,
+                'end_time': post_survey.end_time,
+                'survey_question_list': []
+            }
+
+            for question in survey_question_list:
+                question_data = {
+                    'survey_question_type': question.survey_question_type.id,
+                    'question_content': question.question_content,
+                    'question_order': question.question_order,
+                    'is_required': question.is_required,
+                    'survey_question_option_list': []
+                }
+
+                option_list = SurveyQuestionOptionSerializer(
+                    question.surveyquestionoption_set.order_by('created_date').all(),
+                    many=True).data
+
+                for option in option_list:
+                    if option:
+                        option_data = {
+                            'question_option_value': option['question_option_value'],
+                            'question_option_order': option['question_option_order']
+                        }
+                        question_data['survey_question_option_list'].append(option_data)
+
+                data['survey_question_list'].append(question_data)
+
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 def get_queryset(self):
     queries = self.queryset
