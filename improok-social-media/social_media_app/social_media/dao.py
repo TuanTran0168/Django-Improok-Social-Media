@@ -1,6 +1,6 @@
 from django.db.models import Count
 
-from .models import User, Post, Account
+from .models import User, Post, Account, SurveyQuestion, SurveyResponse, SurveyAnswer, SurveyQuestionOption
 
 
 def load_users(params={}):
@@ -48,5 +48,22 @@ def count_posts_by_account():
 
     # user__username là user.username/userId.username như hồi ở Java :)))
     # user là khóa ngoại của User trong Account (ở models)
-    query = Account.objects.annotate(count=Count('post__id')).values('id', 'phone_number', 'user__username', 'count').order_by('-count')
+    query = Account.objects.annotate(count=Count('post__id')).values('id', 'phone_number', 'user__username',
+                                                                     'count').order_by('-count')
+    return query
+
+
+def count_answer_by_question(question_id):
+    query = SurveyQuestionOption.objects.filter(survey_question_id=question_id) \
+        .annotate(count=Count('survey_answers')) \
+        .values('survey_question', 'id', 'count')
+
+    return query
+
+
+def count_response_by_post_survey(post_survey_id):
+    query = SurveyResponse.objects.filter(id=post_survey_id) \
+        .annotate(count=Count('account')) \
+        .values('id', 'count')
+
     return query

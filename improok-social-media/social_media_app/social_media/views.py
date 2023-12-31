@@ -13,6 +13,7 @@ from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.views import Response, APIView
 import cloudinary.uploader
 
+from . import dao
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
     InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse, \
     SurveyQuestionType
@@ -438,6 +439,10 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
             # Sau này bên FE client gửi được order thì sẽ order theo field khác
             # Tạm thời order theo created_date
             post_survey = PostSurvey.objects.get(id=pk)
+
+            if not post_survey:
+                raise NotFound('Bài Post này không phải Post Survey')
+
             survey_question_list = post_survey.surveyquestion_set.order_by('created_date').all()
 
             # Khi dùng order_by thì nó sẽ không trả danh sách dict bình thường
@@ -465,6 +470,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 
             for question in survey_question_list:
                 question_data = {
+                    'id': question.id,
                     'survey_question_type': question.survey_question_type.id,
                     'question_content': question.question_content,
                     'question_order': question.question_order,
@@ -479,31 +485,96 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                 for option in option_list:
                     if option:
                         option_data = {
+                            'id': option['id'],
                             'question_option_value': option['question_option_value'],
-                            'question_option_order': option['question_option_order']
+                            'question_option_order': option['question_option_order'],
+                            'survey_answers': option['survey_answers']
                         }
                         question_data['survey_question_option_list'].append(option_data)
 
                 data['survey_question_list'].append(question_data)
 
             return Response(data, status=status.HTTP_200_OK)
+
+        except PostSurvey.DoesNotExist as e:
+            error_message = str(e)
+            return Response({'Bài Post này không phải Post Survey': error_message}, status=status.HTTP_404_NOT_FOUND)
+
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @action(methods=['GET'], detail=True, url_path='get_stat_post_survey')
+    @method_decorator(decorator=header_authorization, name='get_stat_post_survey')
+    def get_stat_post_survey(self, request, pk):
+        try:
+            post_survey = PostSurvey.objects.get(id=pk)
 
-def get_queryset(self):
-    queries = self.queryset
-    keyword = self.request.query_params.get('keyword')
+            # if not post_survey:
+            #     raise NotFound('Bài Post này không phải Post Survey')
 
-    if keyword:
-        queries = queries.filter(post_content__icontains=keyword)
+            survey_question_list = post_survey.surveyquestion_set.order_by('created_date').all()
 
-    account_id = self.request.query_params.get('account_id')
-    if account_id:
-        queries = queries.filter(account=account_id)
+            data = {
+                'post_content': post_survey.post.post_content,
+                'account_id': post_survey.post.account_id,
+                'post_survey_title': post_survey.post_survey_title,
+                'start_time': post_survey.start_time,
+                'end_time': post_survey.end_time,
+                'Tổng số người đã trả lời vào bài Post này': dao.count_response_by_post_survey(
+                    post_survey_id=post_survey.id),
+                'survey_question_list': []
+            }
 
-    return queries
+            for question in survey_question_list:
+                question_data = {
+                    'id': question.id,
+                    'survey_question_type': question.survey_question_type.id,
+                    'question_content': question.question_content,
+                    'question_order': question.question_order,
+                    'is_required': question.is_required,
+                    'survey_question_option_list': [],
+                    'Số lượt trả lời vào question này': dao.count_answer_by_question(question.id),
+                }
+                option_list = SurveyQuestionOptionSerializer(
+                    question.surveyquestionoption_set.order_by('created_date').all(),
+                    many=True).data
+
+                for option in option_list:
+                    if option:
+                        option_data = {
+                            'id': option['id'],
+                            'question_option_value': option['question_option_value'],
+                            'question_option_order': option['question_option_order'],
+                            # 'survey_answers': option['survey_answers'],
+                            'Số lượt chọn option này': len(option['survey_answers'])
+                        }
+                        question_data['survey_question_option_list'].append(option_data)
+
+                data['survey_question_list'].append(question_data)
+
+            return Response(data)
+
+        except PostSurvey.DoesNotExist as e:
+            error_message = str(e)
+            return Response({'Bài Post này không phải Post Survey': error_message}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def get_queryset(self):
+        queries = self.queryset
+        keyword = self.request.query_params.get('keyword')
+
+        if keyword:
+            queries = queries.filter(post_content__icontains=keyword)
+
+        account_id = self.request.query_params.get('account_id')
+        if account_id:
+            queries = queries.filter(account=account_id)
+
+        return queries
 
 
 # -Reaction-

@@ -41,6 +41,7 @@ class Account(BaseModel):
     avatar = models.ImageField(upload_to="images/accounts/avatar/%Y/%m", null=True, blank=True)
     cover_avatar = models.ImageField(upload_to="images/accounts/cover_avatar/%Y/%m", null=True, blank=True)
     account_status = models.BooleanField(default=False)
+    gender = models.BooleanField(default=True, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, default=3)
 
@@ -144,16 +145,16 @@ class SurveyResponse(BaseModel):
 
 
 class SurveyAnswer(BaseModel):
-    question_option_value = models.CharField(max_length=10000, null=True, blank=True)
+    answer_value = models.CharField(max_length=10000, null=True, blank=True)
     survey_question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE)
     survey_response = models.ForeignKey(SurveyResponse, on_delete=models.CASCADE)
 
     def __str__(self):
-        if not self.question_option_value:
+        if not self.answer_value:
             return 'Not input text type' + \
                    ' (' + self.survey_question.question_content + ' - ' + self.survey_response.__str__() + ') '
         else:
-            return self.question_option_value
+            return self.answer_value
 
 
 # class SurveyAnswerOption(BaseModel):
