@@ -404,7 +404,7 @@ answer_post_survey = swagger_auto_schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
                         'question': openapi.Schema(type=openapi.TYPE_INTEGER),
-                        'question_option_value': openapi.Schema(type=openapi.TYPE_STRING),
+                        'answer_value': openapi.Schema(type=openapi.TYPE_STRING),
                         'list_survey_question_option_id': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Items(type=openapi.TYPE_INTEGER)

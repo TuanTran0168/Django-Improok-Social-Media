@@ -202,6 +202,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
                 email = request.data.get('email')
                 first_name = request.data.get('first_name')
                 last_name = request.data.get('last_name')
+                gender = request.data.get('gender')
                 alumni_account_code = request.data.get('alumni_account_code')
 
                 duplicate_username = User.objects.filter(username=username).exists()
@@ -222,7 +223,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
                 user.first_name = first_name
                 user.last_name = last_name
                 user.save()
-                account = Account.objects.create(user=user)
+                account = Account.objects.create(user=user, gender=gender)
                 alumni = AlumniAccount.objects.create(account=account, alumni_account_code=alumni_account_code)
 
                 return Response(AlumniAccountSerializer(alumni).data, status=status.HTTP_200_OK)
@@ -387,8 +388,8 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 
                 for question in survey_question_list:
                     question_id = question.get('question')
-                    question_option_value = question.get('question_option_value')
-                    survey_answer = SurveyAnswer.objects.create(question_option_value=question_option_value,
+                    answer_value = question.get('answer_value')
+                    survey_answer = SurveyAnswer.objects.create(answer_value=answer_value,
                                                                 survey_question_id=question_id,
                                                                 survey_response=survey_response)
 

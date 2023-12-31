@@ -333,7 +333,7 @@ class CreateAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'phone_number', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user', 'role']
+        fields = ['id', 'phone_number', 'gender', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user', 'role']
 
 
 class UpdateAccountSerializer(serializers.ModelSerializer):
@@ -650,7 +650,7 @@ class CreateSurveyAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SurveyAnswer
-        fields = ['id', 'question_option_value', 'survey_question', 'survey_response']
+        fields = ['id', 'answer_value', 'survey_question', 'survey_response']
 
 
 class UpdateSurveyAnswerSerializer(serializers.ModelSerializer):
@@ -658,7 +658,7 @@ class UpdateSurveyAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SurveyAnswer
-        fields = ['id', 'question_option_value']
+        fields = ['id', 'answer_value']
 
 
 # Serializer zậy cho client fetch nhìn đỡ bị lú relationship db
