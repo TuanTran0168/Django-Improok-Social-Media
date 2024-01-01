@@ -424,11 +424,11 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                 event_name = request.data.get('event_name')
                 start_time = request.data.get('start_time')
                 end_time = request.data.get('end_time')
-                PostInvitation.objects.create(post=post,
-                                              event_name=event_name,
-                                              start_time=start_time,
-                                              end_time=end_time)
-                return Response(status=status.HTTP_200_OK)
+                post_invitation = PostInvitation.objects.create(post=post,
+                                                                event_name=event_name,
+                                                                start_time=start_time,
+                                                                end_time=end_time)
+                return Response(PostInvitationSerializer(post_invitation).data, status=status.HTTP_200_OK)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
