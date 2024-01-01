@@ -505,9 +505,9 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @action(methods=['GET'], detail=True, url_path='get_stat_post_survey')
-    @method_decorator(decorator=header_authorization, name='get_stat_post_survey')
-    def get_stat_post_survey(self, request, pk):
+    @action(methods=['GET'], detail=True, url_path='get_results_post_survey')
+    @method_decorator(decorator=header_authorization, name='get_results_post_survey')
+    def get_results_post_survey(self, request, pk):
         try:
             post_survey = PostSurvey.objects.get(id=pk)
 
@@ -535,7 +535,8 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                     'question_order': question.question_order,
                     'is_required': question.is_required,
                     'survey_question_option_list': [],
-                    'Số lượt trả lời vào question này': dao.count_answer_by_question(question.id),
+                    'Số lượt trả lời vào câu hỏi này': dao.count_answer_by_question(question.id)
+                    if question.survey_question_type.id != 2 else dao.get_answer_by_question_id(question.id)
                 }
                 option_list = SurveyQuestionOptionSerializer(
                     question.surveyquestionoption_set.order_by('created_date').all(),

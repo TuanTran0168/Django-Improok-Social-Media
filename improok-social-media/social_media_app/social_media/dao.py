@@ -62,8 +62,13 @@ def count_answer_by_question(question_id):
 
 
 def count_response_by_post_survey(post_survey_id):
-    query = SurveyResponse.objects.filter(id=post_survey_id) \
-        .annotate(count=Count('account')) \
-        .values('id', 'count')
+    query = SurveyResponse.objects.filter(post_survey_id=post_survey_id).values('post_survey_id').annotate(
+        so_nguoi_phan_hoi=Count('id'))
+
+    return query
+
+
+def get_answer_by_question_id(question_id):
+    query = SurveyAnswer.objects.filter(survey_question_id=question_id).values('survey_question_id', 'answer_value')
 
     return query
