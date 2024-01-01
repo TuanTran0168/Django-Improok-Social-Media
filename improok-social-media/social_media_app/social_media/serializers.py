@@ -333,7 +333,8 @@ class CreateAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'phone_number', 'gender', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user', 'role']
+        fields = ['id', 'phone_number', 'gender', 'date_of_birth', 'avatar', 'cover_avatar', 'account_status', 'user',
+                  'role']
 
 
 class UpdateAccountSerializer(serializers.ModelSerializer):
@@ -572,7 +573,17 @@ class UpdatePostSurveySerializer(serializers.ModelSerializer):
         fields = ['id', 'post_survey_title', 'start_time', 'end_time', 'is_closed']
 
 
+class PostSerializerForPostSurvey(serializers.ModelSerializer):
+    account = AccountSerializerForComment()
+
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+
 class PostSurveySerializer(serializers.ModelSerializer):
+    post = PostSerializerForPostSurvey()
+
     class Meta:
         model = PostSurvey
         fields = '__all__'
