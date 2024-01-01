@@ -652,7 +652,7 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                 return Response({'Số điện thoại đã tồn tại! ': phone_number},
                                 status=status.HTTP_400_BAD_REQUEST)
 
-        return super().create(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         try:
