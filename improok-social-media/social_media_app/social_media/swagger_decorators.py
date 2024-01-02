@@ -417,6 +417,24 @@ answer_post_survey = swagger_auto_schema(
     )
 )
 
+search_user = swagger_auto_schema(
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        ),
+        openapi.Parameter(
+            name='name',
+            in_=openapi.IN_QUERY,
+            description='Name parameter (Example: Tuan Tran)',
+            type=openapi.TYPE_STRING
+        )
+    ]
+)
+
 send_email = swagger_auto_schema(
     request_body=EmailSerializer,
     responses={status.HTTP_200_OK: 'Success', status.HTTP_400_BAD_REQUEST: 'Error'}

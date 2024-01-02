@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -32,13 +32,14 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     CreateSurveyQuestionOptionSerializer, UpdateSurveyQuestionOptionSerializer, SurveyAnswerSerializer, \
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
     CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
-    CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer, SurveyQuestionTypeSerializer
+    CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer, SurveyQuestionTypeSerializer, \
+    AccountSerializerForUser
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
-    create_post_invitation, answer_post_survey
+    create_post_invitation, answer_post_survey, search_user
 
 
 # -Role-
@@ -157,10 +158,21 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     serializer_class = UserSerializer
     pagination_class = MyPageSize
 
+    def get_queryset(self):
+        queries = self.queryset
+        name = self.request.query_params.get('name')
+
+        if name:
+            names = name.split()
+            for name in names:
+                queries = queries.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
+
+        return queries
+
     # permission_classes = [permissions.IsAuthenticated]
     def get_permissions(self):
         if self.action in ['list', 'update', 'partial_update', 'destroy', 'current_user', 'get_account_by_user_id',
-                           'current-user']:
+                           'current-user', 'search_user']:
             return [permissions.IsAuthenticated()]
 
         return [permissions.AllowAny()]
@@ -234,6 +246,29 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['GET'], detail=False, url_path='search_user')
+    @method_decorator(decorator=search_user, name='search_user')
+    def search_user(self, request):
+        user = User.objects.all()
+        name = self.request.query_params.get('name')
+        if name:
+            names = name.split()
+            for name in names:
+                user = user.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
+
+            users = user.distinct()
+            account = Account.objects.filter(user__in=users)
+            print(account)
+
+        # data = {
+        #     'user': UserSerializer(user, many=True).data,
+        #     'account': AccountSerializerForUser(account, many=True).data
+        # }
+
+        # user = user.select_related('account').all()
+
+        return Response(AccountSerializerForUser(account, many=True).data, status=status.HTTP_200_OK)
 
 
 # -Post-
