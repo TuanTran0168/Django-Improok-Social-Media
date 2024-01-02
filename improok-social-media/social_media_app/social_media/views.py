@@ -500,7 +500,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         try:
             # Sau này bên FE client gửi được order thì sẽ order theo field khác
             # Tạm thời order theo created_date
-            post_survey = PostSurvey.objects.get(id=pk)
+            post_survey = PostSurvey.objects.get(post_id=pk)
 
             if not post_survey:
                 raise NotFound('Bài Post này không phải Post Survey')
@@ -522,6 +522,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
             #     ('survey_answers', [])
             # ])
             data = {
+                'id': post_survey.id,
                 'post_content': post_survey.post.post_content,
                 'account_id': post_survey.post.account_id,
                 'post_survey_title': post_survey.post_survey_title,
@@ -570,7 +571,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     @method_decorator(decorator=header_authorization, name='get_results_post_survey')
     def get_results_post_survey(self, request, pk):
         try:
-            post_survey = PostSurvey.objects.get(id=pk)
+            post_survey = PostSurvey.objects.get(post_id=pk)
 
             # if not post_survey:
             #     raise NotFound('Bài Post này không phải Post Survey')
