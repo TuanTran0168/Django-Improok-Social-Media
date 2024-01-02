@@ -50,6 +50,16 @@ REST_FRAMEWORK = {
     )
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://localhost:6379/0',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
 # Oauth2
 CLIENT_ID = 'zDnklZ6ztQVU0X4DOQEymwV96MfWhW3Hk2VHq3D9'
 CLIENT_SECRET = 'Wo2j1Qn6UKI691i30hmc4gZ7JCTazZ18KXNne7n2IYihCYoEw3PozWTtPc0CkiKZHtMBxOFTWISj83R5cSODQbCh9uTmNb5eefA4W9TwZmzI0D0smpz6bBf8CgSNnYDj'

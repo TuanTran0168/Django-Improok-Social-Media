@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
@@ -40,6 +42,10 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
     create_post_invitation, answer_post_survey, search_user
+
+from django_redis import get_redis_connection
+
+redis_connection = get_redis_connection("default")
 
 
 # -Role-
@@ -247,10 +253,37 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @action(methods=['GET'], detail=False, url_path='search_user_cache')
+    @method_decorator(decorator=search_user, name='search_user_cache')
+    def search_user_cache(self, request):
+        all_name = self.request.query_params.get('name')
+
+        cached_data = redis_connection.get('search_user_cache:' + all_name if all_name is not None else '')
+        print(cached_data)
+        if cached_data:
+            return Response(cached_data, status=status.HTTP_200_OK)
+
+        user = User.objects.all()
+        account = Account.objects.filter(user__in=user)
+        if all_name:
+            names = all_name.split()
+            for name in names:
+                user = user.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
+
+            users = user.distinct()
+            account = Account.objects.filter(user__in=users)
+            print(account)
+
+            redis_connection.set('search_user_cache:' + all_name,
+                                 json.dumps(AccountSerializerForUser(account, many=True).data), ex=300)
+
+        return Response(AccountSerializerForUser(account, many=True).data, status=status.HTTP_200_OK)
+
     @action(methods=['GET'], detail=False, url_path='search_user')
     @method_decorator(decorator=search_user, name='search_user')
     def search_user(self, request):
         user = User.objects.all()
+        account = Account.objects.filter(user__in=user)
         name = self.request.query_params.get('name')
         if name:
             names = name.split()
@@ -260,13 +293,6 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             users = user.distinct()
             account = Account.objects.filter(user__in=users)
             print(account)
-
-        # data = {
-        #     'user': UserSerializer(user, many=True).data,
-        #     'account': AccountSerializerForUser(account, many=True).data
-        # }
-
-        # user = user.select_related('account').all()
 
         return Response(AccountSerializerForUser(account, many=True).data, status=status.HTTP_200_OK)
 
