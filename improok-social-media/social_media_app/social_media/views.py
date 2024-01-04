@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
 from django.db.models import Count, Q
@@ -41,7 +41,7 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
-    create_post_invitation, answer_post_survey, search_user
+    create_post_invitation, answer_post_survey, search_user, check_survey_completed
 
 from django_redis import get_redis_connection
 
@@ -1076,6 +1076,28 @@ class PostSurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retriev
                                           )
         return Response(SurveyQuestionSerializer(survey_questions, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=True, url_path='check_survey_completed')
+    @method_decorator(decorator=check_survey_completed, name='check_survey_completed')
+    def check_survey_completed(self, request, pk):
+        post_survey = self.get_object()
+        account = request.data.get('account')
+
+        try:
+            survey_response = SurveyResponse.objects.get(post_survey=post_survey,
+                                                         account_id=account)
+            if survey_response:
+                return Response(SurveyResponseSerializer(survey_response).data, status.HTTP_200_OK)
+
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except SurveyResponse.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except MultipleObjectsReturned as e:
+            return Response('Cái lỗi này sau sửa lại database unique_together sau. (' + str(e) + ')',
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # -SurveyQuestion-
