@@ -37,7 +37,7 @@ class User(AbstractUser):
 
 class Account(BaseModel):
     phone_number = models.CharField(max_length=255, unique=True, null=True)
-    date_of_birth = models.DateTimeField(null=True)
+    date_of_birth = models.DateField(null=True)
     avatar = models.ImageField(upload_to="images/accounts/avatar/%Y/%m", null=True, blank=True)
     cover_avatar = models.ImageField(upload_to="images/accounts/cover_avatar/%Y/%m", null=True, blank=True)
     account_status = models.BooleanField(default=False)
