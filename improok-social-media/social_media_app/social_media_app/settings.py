@@ -85,7 +85,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '192.168.1.6',
     '127.0.0.1',
-    '172.16.17.232'
+    '172.16.17.232',
+    '192.168.1.27'
 ]
 
 # Application definition
@@ -117,7 +118,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'social_media.middleware.ip_middleware.IPFilterMiddleWare',
+    # 'social_media.middleware.ip_middleware.IPFilterMiddleWare',
     'social_media.middleware.characters_middleware.BlockInvalidCharactersMiddleware',
     'social_media.middleware.oauth2_middleware.Oauth2MiddleWare',
 ]

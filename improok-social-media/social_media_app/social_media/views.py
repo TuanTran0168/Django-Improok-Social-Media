@@ -1,4 +1,5 @@
 import json
+from collections import deque
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -880,10 +881,18 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
     # hàm này là override lại quá trình diễn ra trong lúc create
     def perform_create(self, serializer):
         try:
-            image_file = self.request.data.get('post_image_url')
-            if image_file:
-                upload_data = cloudinary.uploader.upload(image_file)
-                serializer.save(post_image_url=upload_data['secure_url'])
+            multi_images = self.request.FILES.getlist('multi_images')
+            print('multi')
+            print(multi_images)
+
+            if multi_images:
+                all_upload = []
+                for img in multi_images:
+                    upload_data = cloudinary.uploader.upload(img)
+                    print('upload')
+                    print(upload_data)
+                    serializer.save(post_image_url=upload_data['secure_url'])
+                    all_upload.append(upload_data)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -904,6 +913,26 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
         if self.action in ['update', 'partial_update']:
             return UpdatePostImageSerializer
         return self.serializer_class
+
+    @action(methods=['POST'], detail=False, url_path='upload_mutil_images')
+    def upload_mutil_images(self, request):
+        try:
+            multi_images = self.request.FILES.getlist('multi_images')
+            post = self.request.data.get('post')
+            print('multi')
+            print(multi_images)
+
+            all_upload = []
+            for img in multi_images:
+                upload_data = cloudinary.uploader.upload(img)
+                print('upload')
+                print(upload_data)
+                all_upload.append(upload_data)
+                PostImage.objects.create(post_id=post, post_image_url=upload_data['secure_url'])
+            return Response(all_upload, status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # -Comment-
