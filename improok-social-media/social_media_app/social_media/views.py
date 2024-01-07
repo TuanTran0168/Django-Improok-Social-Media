@@ -1,6 +1,7 @@
 import json
 from collections import deque
 
+from _cffi_backend import typeof
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
@@ -262,7 +263,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
         cached_data = redis_connection.get('search_user_cache:' + all_name if all_name is not None else '')
         print(cached_data)
         if cached_data:
-            return Response(cached_data, status=status.HTTP_200_OK)
+            return Response(json.loads(cached_data), status=status.HTTP_200_OK)
 
         user = User.objects.all()
         account = Account.objects.filter(user__in=user)
@@ -274,6 +275,8 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             users = user.distinct()
             account = Account.objects.filter(user__in=users)
             print(account)
+            # redis_connection.set('search_user_cache:' + all_name,
+            #                      AccountSerializerForUser(account, many=True).data, ex=300)
 
             redis_connection.set('search_user_cache:' + all_name,
                                  json.dumps(AccountSerializerForUser(account, many=True).data), ex=300)
@@ -698,9 +701,9 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
 
         user = self.request.data.get('user')
         if user:
-            duplicate_phone_number = Account.objects.filter(
+            duplicate_user = Account.objects.filter(
                 user=user).exists()
-            if duplicate_phone_number:
+            if duplicate_user:
                 return Response({'User đã tạo tài khoản! ': user},
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -731,10 +734,14 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                 if avatar_file:
                     upload_data = cloudinary.uploader.upload(avatar_file)
                     serializer.save(avatar=upload_data['secure_url'])
+                else:
+                    serializer.save()
 
                 if cover_avatar_file:
                     upload_data = cloudinary.uploader.upload(cover_avatar_file)
                     serializer.save(cover_avatar=upload_data['secure_url'])
+                else:
+                    serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -753,10 +760,14 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                 if avatar_file:
                     upload_data = cloudinary.uploader.upload(avatar_file)
                     serializer.save(avatar=upload_data['secure_url'])
+                else:
+                    serializer.save()
 
                 if cover_avatar_file:
                     upload_data = cloudinary.uploader.upload(cover_avatar_file)
                     serializer.save(cover_avatar=upload_data['secure_url'])
+                else:
+                    serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -914,8 +925,8 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
             return UpdatePostImageSerializer
         return self.serializer_class
 
-    @action(methods=['POST'], detail=False, url_path='upload_mutil_images')
-    def upload_mutil_images(self, request):
+    @action(methods=['POST'], detail=False, url_path='upload_multi_images')
+    def upload_multi_images(self, request):
         try:
             multi_images = self.request.FILES.getlist('multi_images')
             post = self.request.data.get('post')
