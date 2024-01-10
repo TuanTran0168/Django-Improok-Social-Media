@@ -730,18 +730,15 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                 upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
                 serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
 
-            else:
-                if avatar_file:
-                    upload_data = cloudinary.uploader.upload(avatar_file)
-                    serializer.save(avatar=upload_data['secure_url'])
-                else:
-                    serializer.save()
+            elif avatar_file:
+                upload_data = cloudinary.uploader.upload(avatar_file)
+                serializer.save(avatar=upload_data['secure_url'])
 
-                if cover_avatar_file:
-                    upload_data = cloudinary.uploader.upload(cover_avatar_file)
-                    serializer.save(cover_avatar=upload_data['secure_url'])
-                else:
-                    serializer.save()
+            elif cover_avatar_file:
+                upload_data = cloudinary.uploader.upload(cover_avatar_file)
+                serializer.save(cover_avatar=upload_data['secure_url'])
+            else:
+                serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -756,18 +753,16 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                 upload_cover_avatar = cloudinary.uploader.upload(cover_avatar_file)
                 serializer.save(avatar=upload_avatar['secure_url'], cover_avatar=upload_cover_avatar['secure_url'])
 
-            else:
-                if avatar_file:
-                    upload_data = cloudinary.uploader.upload(avatar_file)
-                    serializer.save(avatar=upload_data['secure_url'])
-                else:
-                    serializer.save()
+            elif avatar_file:
+                upload_data = cloudinary.uploader.upload(avatar_file)
+                serializer.save(avatar=upload_data['secure_url'])
 
-                if cover_avatar_file:
-                    upload_data = cloudinary.uploader.upload(cover_avatar_file)
-                    serializer.save(cover_avatar=upload_data['secure_url'])
-                else:
-                    serializer.save()
+            elif cover_avatar_file:
+                upload_data = cloudinary.uploader.upload(cover_avatar_file)
+                serializer.save(cover_avatar=upload_data['secure_url'])
+            else:
+                serializer.save()
+
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
