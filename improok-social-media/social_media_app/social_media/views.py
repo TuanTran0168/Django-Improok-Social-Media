@@ -312,7 +312,7 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                   generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = Post.objects.filter(active=True).all()
     serializer_class = PostSerializer
-    pagination_class = PostPagination
+    pagination_class = MyPageSize
 
     # permission_classes = [permissions.IsAuthenticated]
 
@@ -781,12 +781,22 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
             return UpdateAccountSerializer
         return self.serializer_class
 
+    # @action(methods=['GET'], detail=True, url_path='posts')
+    # @method_decorator(decorator=header_authorization, name='get_posts_by_account')
+    # def get_posts_by_account(self, request, pk):
+    #     posts = self.get_object().post_set.filter(active=True).all()
+    #     return Response(PostSerializer(posts, many=True, context={'request': request}).data,
+    #                     status=status.HTTP_200_OK)
+
     @action(methods=['GET'], detail=True, url_path='posts')
     @method_decorator(decorator=header_authorization, name='get_posts_by_account')
     def get_posts_by_account(self, request, pk):
         posts = self.get_object().post_set.filter(active=True).all()
-        return Response(PostSerializer(posts, many=True, context={'request': request}).data,
-                        status=status.HTTP_200_OK)
+        paginator = MyPageSize()
+        paginated = paginator.paginate_queryset(posts, request)
+
+        serializer = PostSerializer(paginated, many=True, context={'request': request})
+        return paginator.get_paginated_response(serializer.data)
 
     @action(methods=['GET'], detail=True, url_path='invitation_groups')
     @method_decorator(decorator=header_authorization, name='get_invitation_groups_by_account')
