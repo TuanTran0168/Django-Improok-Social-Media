@@ -102,9 +102,14 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
     def get_accounts(self, request, pk):
         try:
             accounts = self.get_object().accounts.filter(active=True).all()
-            return Response(
-                AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
-                status=status.HTTP_200_OK)
+            paginator = MyPageSize()
+            paginated = paginator.paginate_queryset(accounts, request)
+
+            serializer = AccountSerializerForInvitationGroup(paginated, many=True, context={'request': request})
+            return paginator.get_paginated_response(serializer.data)
+            # return Response(
+            #     AccountSerializerForInvitationGroup(accounts, many=True, context={'request': request}).data,
+            #     status=status.HTTP_200_OK)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
