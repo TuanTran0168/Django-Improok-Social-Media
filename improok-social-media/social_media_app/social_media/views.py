@@ -914,16 +914,38 @@ class PostImageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrieve
                     print(upload_data)
                     serializer.save(post_image_url=upload_data['secure_url'])
                     all_upload.append(upload_data)
+            else:
+                serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    # def perform_update(self, serializer):
+    #     try:
+    #         image_file = self.request.data.get('post_image_url')
+    #         if image_file:
+    #             upload_data = cloudinary.uploader.upload(image_file)
+    #             serializer.save(post_image_url=upload_data['secure_url'])
+    #     except Exception as e:
+    #         error_message = str(e)
+    #         return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def perform_update(self, serializer):
         try:
-            image_file = self.request.data.get('post_image_url')
-            if image_file:
-                upload_data = cloudinary.uploader.upload(image_file)
-                serializer.save(post_image_url=upload_data['secure_url'])
+            multi_images = self.request.FILES.getlist('multi_images')
+            print('multi')
+            print(multi_images)
+
+            if multi_images:
+                all_upload = []
+                for img in multi_images:
+                    upload_data = cloudinary.uploader.upload(img)
+                    print('upload')
+                    print(upload_data)
+                    serializer.save(post_image_url=upload_data['secure_url'])
+                    all_upload.append(upload_data)
+            else:
+                serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -976,6 +998,8 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
             if image_file:
                 upload_data = cloudinary.uploader.upload(image_file)
                 serializer.save(comment_image_url=upload_data['secure_url'])
+            else:
+                serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -986,6 +1010,8 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
             if image_file:
                 upload_data = cloudinary.uploader.upload(image_file)
                 serializer.save(comment_image_url=upload_data['secure_url'])
+            else:
+                serializer.save()
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
