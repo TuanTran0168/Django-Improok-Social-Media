@@ -15,6 +15,8 @@ from pathlib import Path
 # TuanTran's import & configure
 import pymysql
 
+from social_media_app.celery import app
+
 pymysql.install_as_MySQLdb()
 
 AUTH_USER_MODEL = 'social_media.User'
@@ -50,6 +52,7 @@ REST_FRAMEWORK = {
     )
 }
 
+# Redis
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -65,6 +68,7 @@ CLIENT_ID = 'zDnklZ6ztQVU0X4DOQEymwV96MfWhW3Hk2VHq3D9'
 CLIENT_SECRET = 'Wo2j1Qn6UKI691i30hmc4gZ7JCTazZ18KXNne7n2IYihCYoEw3PozWTtPc0CkiKZHtMBxOFTWISj83R5cSODQbCh9uTmNb5eefA4W9TwZmzI0D0smpz6bBf8CgSNnYDj'
 #
 
+# Send mail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -72,6 +76,21 @@ EMAIL_HOST_USER = 'trandangtuan0168@gmail.com'
 EMAIL_HOST_PASSWORD = 'wojkawcuhoeltqws'
 EMAIL_USE_TLS = True  # or False if not using TLS/SSL
 DEFAULT_FROM_EMAIL = 'trandangtuan0168@gmail.com'
+
+# Celery
+# Message Broker (Tiện có redis xài luôn redis, khỏi RabbitMQ)
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# CELERY_BEAT_SCHEDULE = {
+#     'run_every_5_seconds': {
+#         'task': 'tuan_tran_task',
+#         'schedule': 5.0,
+#     },
+# }
+
+# CELERY_IMPORTS = ('social_media.tasks',)
+# CELERY_BEAT_SCHEDULE = app.conf.beat_schedule
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -87,7 +106,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '172.16.17.232',
     '192.168.1.27',
-    '10.17.49.217'
+    '10.17.49.217',
+    '*'
 ]
 
 # Application definition
@@ -106,7 +126,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'oauth2_provider',
-    'corsheaders'
+    'corsheaders',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [

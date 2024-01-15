@@ -5,7 +5,7 @@ from .views import RoleViewSet, UserViewSet, PostViewSet, \
     AccountViewSet, PostImageViewSet, CommentViewSet, ConfirmStatusViewSet, AlumniAccountViewSet, ReactionViewSet, \
     PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet, SendEmailView, PostSurveyViewSet, \
     SurveyQuestionViewSet, SurveyQuestionOptionViewSet, SurveyAnswerViewSet, SurveyResponseViewSet, UploadView, \
-    SurveyQuestionTypeViewSet
+    SurveyQuestionTypeViewSet, API_TEST
 
 router = routers.DefaultRouter()
 router.register('roles', RoleViewSet, basename='roles')
@@ -49,4 +49,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('send-email/', SendEmailView.as_view(), name='send-email'),
     path('upload-image/', UploadView.as_view()),
+    path('api-test/', API_TEST.as_view()),
 ]

@@ -47,6 +47,9 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
 
 from django_redis import get_redis_connection
 
+from .tasks import tuan_tran_task
+# from social_media_app.social_media.task import tuan_tran_task
+
 redis_connection = get_redis_connection("default")
 
 
@@ -1358,3 +1361,13 @@ class UploadView(APIView):
             'status': 'success',
             'data': upload_data,
         }, status=201)
+
+
+class API_TEST(APIView):
+    @staticmethod
+    def post(request):
+        print("Đây là task")
+        results = tuan_tran_task.delay()
+        print(results.result)
+        print("Đây là task")
+        return Response(status=201)
