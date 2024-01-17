@@ -14,8 +14,7 @@ from pathlib import Path
 
 # TuanTran's import & configure
 import pymysql
-
-from social_media_app.celery import app
+from celery.schedules import crontab
 
 pymysql.install_as_MySQLdb()
 
@@ -81,16 +80,52 @@ DEFAULT_FROM_EMAIL = 'trandangtuan0168@gmail.com'
 # Message Broker (Tiện có redis xài luôn redis, khỏi RabbitMQ)
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+# Đặt danh sách các tasks mà Celery sẽ tìm kiếm và đăng ký
+CELERY_IMPORTS = (
+    'social_media.tasks',
+)
 
 # CELERY_BEAT_SCHEDULE = {
-#     'run_every_5_seconds': {
+#     'run_every_1_minutes': {
 #         'task': 'tuan_tran_task',
-#         'schedule': 5.0,
+#         'schedule': crontab(minute='*/1'),
+#     },
+#     'run_every_2_minutes': {
+#         'task': 'tuan_tran_task_1',
+#         'schedule': crontab(minute='*/2'),
+#     },
+#     'run_every_3_minutes': {
+#         'task': 'tuan_tran_task_2',
+#         'schedule': crontab(minute='*/3'),
 #     },
 # }
 
-# CELERY_IMPORTS = ('social_media.tasks',)
+CELERY_IMPORTS = ('social_media.tasks',)
 # CELERY_BEAT_SCHEDULE = app.conf.beat_schedule
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'celery': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '%s/social_media/celery_task_log.log' % BASE_DIR,
+            # 'filename': 'D:/celery.log',
+        },
+    },
+    'loggers': {
+        'celery': {
+            'handlers': ['celery'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -127,7 +162,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'oauth2_provider',
     'corsheaders',
-    'django_celery_results'
+    'django_celery_results',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [

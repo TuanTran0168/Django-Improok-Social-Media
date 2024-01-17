@@ -47,7 +47,7 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
 
 from django_redis import get_redis_connection
 
-from .tasks import tuan_tran_task
+
 # from social_media_app.social_media.task import tuan_tran_task
 
 redis_connection = get_redis_connection("default")
@@ -77,7 +77,6 @@ class SurveyQuestionTypeViewSet(viewsets.ViewSet, generics.ListAPIView, generics
 @method_decorator(decorator=header_authorization, name='retrieve')
 @method_decorator(decorator=header_authorization, name='update')
 @method_decorator(decorator=header_authorization, name='partial_update')
-@method_decorator(decorator=header_authorization, name='destroy')
 @method_decorator(decorator=header_authorization, name='destroy')
 class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
                              generics.UpdateAPIView, generics.DestroyAPIView):
@@ -1367,7 +1366,6 @@ class API_TEST(APIView):
     @staticmethod
     def post(request):
         print("Đây là task")
-        results = tuan_tran_task.delay()
-        print(results.result)
+        InvitationGroup.objects.create(invitation_group_name="Tạo bằng api")
         print("Đây là task")
         return Response(status=201)
