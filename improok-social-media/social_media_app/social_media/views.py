@@ -22,7 +22,7 @@ from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus
     InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse, \
     SurveyQuestionType
 from .paginators import PostPagination, MyPageSize
-from .permissions import CommentOwner, PostOwner, IsAdmin
+from .permissions import CommentOwner, PostOwner, IsAdmin, PostReactionOwner
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
@@ -671,7 +671,13 @@ class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
     queryset = PostReaction.objects.select_related('account', 'post', 'reaction').filter(active=True).all()
     serializer_class = PostReactionSerializer
     pagination_class = MyPageSize
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['partial_update', 'destroy']:
+            return [PostReactionOwner()]
+        else:
+            return [permissions.IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action == 'create':
