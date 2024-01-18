@@ -8,7 +8,7 @@ from django.utils.html import mark_safe
 from social_media import dao
 from .models import Role, ConfirmStatus, User, Account, AlumniAccount, Post, PostSurvey, Reaction, PostReaction, \
     PostImage, Comment, SurveyQuestionType, SurveyQuestion, SurveyQuestionOption, SurveyResponse, SurveyAnswer, \
-    PostInvitation, InvitationGroup
+    PostInvitation, InvitationGroup, Room, Message
 
 
 class SocialMediaAppAdminSite(admin.AdminSite):
@@ -17,7 +17,7 @@ class SocialMediaAppAdminSite(admin.AdminSite):
 
     def get_urls(self):
         return [
-                   path('stats-admin/', self.stats_view) # Cái này là url
+                   path('stats-admin/', self.stats_view)  # Cái này là url
                ] + super().get_urls()
 
     @staticmethod
@@ -166,6 +166,7 @@ class PostInvitationAdmin(admin.ModelAdmin):
     # inlines = [AccountInLineAdmin]
     pass
 
+
 # class AccountInLineAdmin(admin.TabularInline):
 #     model = Account.group_account.through
 
@@ -180,6 +181,14 @@ class GroupAccountAdmin(admin.ModelAdmin):
 
 
 class InvitationAccountAdmin(admin.ModelAdmin):
+    pass
+
+
+class RoomAdmin(admin.ModelAdmin):
+    pass
+
+
+class MessageAdmin(admin.ModelAdmin):
     pass
 
 
@@ -204,3 +213,5 @@ my_admin_site.register(PostInvitation, PostInvitationAdmin)
 my_admin_site.register(InvitationGroup, InvitationGroupAdmin)
 # admin.site.register(GroupAccount, GroupAccountAdmin)
 # admin.site.register(InvitationAccount, InvitationAccountAdmin)
+my_admin_site.register(Room, RoomAdmin)
+my_admin_site.register(Message, MessageAdmin)

@@ -183,6 +183,7 @@ class InvitationGroup(BaseModel):
     def __str__(self):
         return self.invitation_group_name
 
+
 # class GroupAccount(BaseModel):
 #     account = models.ForeignKey(Account, on_delete=models.CASCADE)
 #     invitation_group = models.ForeignKey(InvitationGroup, on_delete=models.CASCADE)
@@ -191,3 +192,20 @@ class InvitationGroup(BaseModel):
 # class InvitationAccount(BaseModel):
 #     account = models.ForeignKey(Account, on_delete=models.CASCADE)
 #     post_invitation = models.ForeignKey(PostInvitation, on_delete=models.CASCADE)
+
+class Room(BaseModel):
+    # roomId = 1
+    # tuan -> thai ||| roomName = 1
+    # thai -> tuan ||| roomName = 1
+    # id sender + id receiver => room Id
+    first_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='first_user_room', null=True)
+    second_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='second_user_room', null=True)
+
+    class Meta:
+        unique_together = ['first_user', 'second_user']
+
+
+class Message(BaseModel):
+    who_sent = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    content = models.CharField(max_length=10000)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)

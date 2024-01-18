@@ -20,7 +20,7 @@ import cloudinary.uploader
 from . import dao
 from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus, AlumniAccount, Reaction, PostReaction, \
     InvitationGroup, PostInvitation, PostSurvey, SurveyQuestion, SurveyQuestionOption, SurveyAnswer, SurveyResponse, \
-    SurveyQuestionType
+    SurveyQuestionType, Room, Message
 from .paginators import PostPagination, MyPageSize
 from .permissions import CommentOwner, PostOwner, IsAdmin, PostReactionOwner
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
@@ -37,13 +37,13 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
     CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
     CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer, SurveyQuestionTypeSerializer, \
-    AccountSerializerForUser
+    AccountSerializerForUser, RoomSerializer, MessageSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
-    create_post_invitation, answer_post_survey, search_user, check_survey_completed
+    create_post_invitation, answer_post_survey, search_user, check_survey_completed, create_lecturer_account
 
 from django_redis import get_redis_connection
 
@@ -253,6 +253,38 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
                 alumni = AlumniAccount.objects.create(account=account, alumni_account_code=alumni_account_code)
 
                 return Response(AlumniAccountSerializer(alumni).data, status=status.HTTP_200_OK)
+
+        except IntegrityError as e:
+            error_message = str(e)
+            return Response({'Trùng khóa chính: ': error_message}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['POST'], detail=False, url_path='create_lecturer')
+    @method_decorator(decorator=create_lecturer_account, name='create_lecturer')
+    def create_lecturer(self, request):
+        try:
+            with transaction.atomic():
+                username = request.data.get('username')
+                password = request.data.get('password')
+                email = request.data.get('email')
+                first_name = request.data.get('first_name')
+                last_name = request.data.get('last_name')
+                gender = request.data.get('gender')
+
+                duplicate_username = User.objects.filter(username=username).exists()
+                if duplicate_username:
+                    return Response({'Username đã tồn tại! ': username}, status=status.HTTP_400_BAD_REQUEST)
+
+                user = User.objects.create_user(username=username, email=email)
+                user.set_password(password)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.save()
+                account = Account.objects.create(user=user, gender=gender, role_id=2)
+
+                return Response(AccountSerializer(account).data, status=status.HTTP_200_OK)
 
         except IntegrityError as e:
             error_message = str(e)
@@ -1322,6 +1354,22 @@ class SurveyAnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# -Room-
+class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView):
+    queryset = Room.objects.filter(active=True).all()
+    serializer_class = RoomSerializer
+    pagination_class = MyPageSize
+    # permission_classes = [permissions.IsAuthenticated]
+
+
+class MessageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                     generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset = Message.objects.filter(active=True).all()
+    serializer_class = MessageSerializer
+    pagination_class = MyPageSize
+    # permission_classes = [permissions.IsAuthenticated]
 
 
 # -other views-

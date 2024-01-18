@@ -316,6 +316,20 @@ create_alumni_account = swagger_auto_schema(
     )
 )
 
+create_lecturer_account = swagger_auto_schema(
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING),
+            'email': openapi.Schema(type=openapi.TYPE_STRING),
+            'first_name': openapi.Schema(type=openapi.TYPE_STRING),
+            'last_name': openapi.Schema(type=openapi.TYPE_STRING),
+        },
+        required=['username', 'password', 'first_name', 'last_name', 'email']
+    )
+)
+
 create_post_survey = swagger_auto_schema(
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
