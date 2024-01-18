@@ -5,7 +5,7 @@ from .views import RoleViewSet, UserViewSet, PostViewSet, \
     AccountViewSet, PostImageViewSet, CommentViewSet, ConfirmStatusViewSet, AlumniAccountViewSet, ReactionViewSet, \
     PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet, SendEmailView, PostSurveyViewSet, \
     SurveyQuestionViewSet, SurveyQuestionOptionViewSet, SurveyAnswerViewSet, SurveyResponseViewSet, UploadView, \
-    SurveyQuestionTypeViewSet, API_TEST
+    SurveyQuestionTypeViewSet, API_TEST, index, room
 
 router = routers.DefaultRouter()
 router.register('roles', RoleViewSet, basename='roles')
@@ -50,4 +50,6 @@ urlpatterns = [
     path('send-email/', SendEmailView.as_view(), name='send-email'),
     path('upload-image/', UploadView.as_view()),
     path('api-test/', API_TEST.as_view()),
+    path('chat/', index),
+    path("chat/<str:room_name>/", room, name="room"),
 ]

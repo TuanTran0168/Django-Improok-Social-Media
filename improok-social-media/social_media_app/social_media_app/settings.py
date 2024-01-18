@@ -127,6 +127,16 @@ LOGGING = {
     },
 }
 
+ASGI_APPLICATION = "social_media_app.asgi.application"
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -148,6 +158,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -163,7 +174,9 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'corsheaders',
     'django_celery_results',
-    'django_celery_beat'
+    'django_celery_beat',
+    'channels',
+    'channels_redis'
 ]
 
 MIDDLEWARE = [
@@ -200,7 +213,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'social_media_app.wsgi.application'
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

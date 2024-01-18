@@ -47,7 +47,6 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
 
 from django_redis import get_redis_connection
 
-
 # from social_media_app.social_media.task import tuan_tran_task
 
 redis_connection = get_redis_connection("default")
@@ -671,6 +670,7 @@ class PostReactionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
     queryset = PostReaction.objects.select_related('account', 'post', 'reaction').filter(active=True).all()
     serializer_class = PostReactionSerializer
     pagination_class = MyPageSize
+
     # permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
@@ -1375,3 +1375,15 @@ class API_TEST(APIView):
         InvitationGroup.objects.create(invitation_group_name="Tạo bằng api")
         print("Đây là task")
         return Response(status=201)
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, "chat/index.html")
+
+
+def room(request, room_name):
+    return render(request, "chat/room.html", {"room_name": room_name})
