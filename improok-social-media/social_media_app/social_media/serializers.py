@@ -146,7 +146,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'password', 'first_name', 'last_name', 'email']
+        fields = ['id', 'password', 'first_name', 'last_name', 'email', 'confirm_status']
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
