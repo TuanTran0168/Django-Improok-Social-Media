@@ -267,7 +267,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
         try:
             with transaction.atomic():
                 username = request.data.get('username')
-                password = request.data.get('password')
+                # password = request.data.get('password')
                 email = request.data.get('email')
                 first_name = request.data.get('first_name')
                 last_name = request.data.get('last_name')
@@ -278,7 +278,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
                     return Response({'Username đã tồn tại! ': username}, status=status.HTTP_400_BAD_REQUEST)
 
                 user = User.objects.create_user(username=username, email=email)
-                user.set_password(password)
+                user.set_password('ou@123')
                 user.first_name = first_name
                 user.last_name = last_name
                 user.save()

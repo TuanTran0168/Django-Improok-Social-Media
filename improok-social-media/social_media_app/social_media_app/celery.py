@@ -44,6 +44,10 @@ app.conf.beat_schedule = {
         'task': 'social_media.tasks.tuan_tran_create_invitation_group',
         'schedule': 30,  # Chạy task mỗi 30 giay
     },
+    'run-tuan-tran-change-password-after-1-days': {
+        'task': 'social_media.tasks.tuan_tran_change_password_after_1_days',
+        'schedule': crontab(minute=0, hour=0),  # Chạy task mỗi ngày vào lúc 12h đêm
+    },
 }
 
 app.conf.broker_connection_retry_on_startup = True
@@ -54,7 +58,6 @@ app.conf.broker_connection_retry_on_startup = True
 # celery -A social_media_app inspect registered
 
 logger = logging.getLogger("celery")
-
 
 # @app.task
 # def show_hello_world():

@@ -126,6 +126,7 @@ LOGGING = {
         },
     },
 }
+timezone = 'Europe/London'
 
 ASGI_APPLICATION = "social_media_app.asgi.application"
 # CHANNEL_LAYERS = {
