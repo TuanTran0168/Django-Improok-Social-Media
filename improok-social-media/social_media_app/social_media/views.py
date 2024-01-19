@@ -281,6 +281,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
                 user.set_password('ou@123')
                 user.first_name = first_name
                 user.last_name = last_name
+                user.confirm_status_id = 1
                 user.save()
                 account = Account.objects.create(user=user, gender=gender, role_id=2)
 

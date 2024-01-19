@@ -5,7 +5,7 @@ import logging
 from celery import shared_task
 from rest_framework.renderers import JSONRenderer
 
-from .models import InvitationGroup, User
+from .models import InvitationGroup, User, Account
 from .serializers import InvitationGroupSerializer
 
 # @shared_task
@@ -52,7 +52,10 @@ def tuan_tran_change_password_after_1_days():
         user_list = User.objects.filter(temp_user.password)
         if user_list:
             for user in user_list:
-                user.confirm_status.id = 2
+                account = Account.objects().filter(user=user)
+                if account:
+                    account.account_status = False
+                    account.save()
         logger.info("Task đã hoàn thành thành công")
     except Exception as e:
         logger.error("Task thất bại: %s", str(e))
