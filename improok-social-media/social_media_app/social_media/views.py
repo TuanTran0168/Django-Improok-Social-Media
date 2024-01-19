@@ -884,6 +884,16 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     #     return Response(TempSerializer(post_reactions_of_account, many=True, context={'request': request}).data,
     #                     status=status.HTTP_200_OK)
 
+    @action(methods=['GET'], detail=True, url_path='rooms')
+    def rooms(self, request, pk):
+        try:
+            print(pk)
+            rooms = Room.objects.filter(Q(first_user_id=pk) | Q(second_user_id=pk))
+            return Response(RoomSerializer(rooms, many=True).data)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # -AlumniAccount-
 @method_decorator(decorator=header_authorization, name='list')
@@ -1361,7 +1371,46 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     queryset = Room.objects.filter(active=True).all()
     serializer_class = RoomSerializer
     pagination_class = MyPageSize
+
     # permission_classes = [permissions.IsAuthenticated]
+    def create(self, request, *args, **kwargs):
+        # Lấy dữ liệu từ request.data
+        first_user_id = request.data.get('first_user')
+        second_user_id = request.data.get('second_user')
+
+        # Kiểm tra xem phòng đã tồn tại hay chưa
+        existing_room = Room.objects.filter(
+            Q(first_user_id=first_user_id, second_user_id=second_user_id) |
+            Q(first_user_id=second_user_id, second_user_id=first_user_id)
+        ).exists()
+
+        # Nếu phòng đã tồn tại, raise một lỗi
+        if existing_room:
+            return Response({"error": "Room already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Tiến hành tạo phòng mới
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(methods=['GET'], detail=False, url_path='find_room')
+    def find_room(self, request):
+        try:
+            first_user_id = request.data.get('first_user')
+            second_user_id = request.data.get('second_user')
+
+            room = Room.objects.filter(
+                Q(first_user_id=first_user_id, second_user_id=second_user_id) |
+                Q(first_user_id=second_user_id, second_user_id=first_user_id)
+            )
+
+            return Response(RoomSerializer(room, many=True).data)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class MessageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
