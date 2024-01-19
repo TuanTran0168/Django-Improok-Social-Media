@@ -204,8 +204,14 @@ class Room(BaseModel):
     class Meta:
         unique_together = ['first_user', 'second_user']
 
+    def __str__(self):
+        return str(self.first_user.id) + str(self.second_user.id)
+
 
 class Message(BaseModel):
     who_sent = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     content = models.CharField(max_length=10000)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.content

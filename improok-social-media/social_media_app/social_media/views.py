@@ -890,7 +890,13 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
         try:
             print(pk)
             rooms = Room.objects.filter(Q(first_user_id=pk) | Q(second_user_id=pk))
-            return Response(RoomSerializer(rooms, many=True).data)
+
+            paginator = MyPageSize()
+            paginated = paginator.paginate_queryset(rooms, request)
+
+            serializer = RoomSerializer(paginated, many=True)
+            return paginator.get_paginated_response(serializer.data)
+            # return Response(RoomSerializer(rooms, many=True).data)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -1397,6 +1403,15 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    @action(methods=['GET'], detail=True, url_path='messages')
+    def messages(self, request, pk):
+        messages = Message.objects.filter(room_id=pk).all()
+        paginator = MyPageSize()
+        paginated = paginator.paginate_queryset(messages, request)
+
+        serializer = MessageSerializer(paginated, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
     @action(methods=['GET'], detail=False, url_path='find_room')
     def find_room(self, request):
         try:
@@ -1414,8 +1429,9 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# -Message-
 class MessageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
-                     generics.UpdateAPIView, generics.DestroyAPIView):
+                     generics.DestroyAPIView):
     queryset = Message.objects.filter(active=True).all()
     serializer_class = MessageSerializer
     pagination_class = MyPageSize
