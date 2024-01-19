@@ -43,7 +43,8 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     delete_accounts_from_post_invitation, send_email, warning_api, \
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
-    create_post_invitation, answer_post_survey, search_user, check_survey_completed, create_lecturer_account
+    create_post_invitation, answer_post_survey, search_user, check_survey_completed, create_lecturer_account, \
+    get_user_by_status
 
 from django_redis import get_redis_connection
 
@@ -186,7 +187,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     # permission_classes = [permissions.IsAuthenticated]
     def get_permissions(self):
         if self.action in ['list', 'update', 'partial_update', 'destroy', 'current_user', 'get_account_by_user_id',
-                           'current-user', 'search_user']:
+                           'current-user', 'search_user', 'get_user_by_status', 'search_user_cache']:
             return [permissions.IsAuthenticated()]
 
         return [permissions.AllowAny()]
@@ -297,30 +298,35 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     @action(methods=['GET'], detail=False, url_path='search_user_cache')
     @method_decorator(decorator=search_user, name='search_user_cache')
     def search_user_cache(self, request):
-        all_name = self.request.query_params.get('name')
+        try:
+            all_name = self.request.query_params.get('name')
 
-        cached_data = redis_connection.get('search_user_cache:' + all_name if all_name is not None else '')
-        print(cached_data)
-        if cached_data:
-            return Response(json.loads(cached_data), status=status.HTTP_200_OK)
+            cached_data = redis_connection.get('search_user_cache:' + all_name if all_name is not None else '')
+            print("Đây là data từ cache Redis: ")
+            print(cached_data)
+            if cached_data:
+                return Response(json.loads(cached_data), status=status.HTTP_200_OK)
 
-        user = User.objects.all()
-        account = Account.objects.filter(user__in=user)
-        if all_name:
-            names = all_name.split()
-            for name in names:
-                user = user.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
+            user = User.objects.all()
+            account = Account.objects.filter(user__in=user)
+            if all_name:
+                names = all_name.split()
+                for name in names:
+                    user = user.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
 
-            users = user.distinct()
-            account = Account.objects.filter(user__in=users)
-            print(account)
-            # redis_connection.set('search_user_cache:' + all_name,
-            #                      AccountSerializerForUser(account, many=True).data, ex=300)
+                users = user.distinct()
+                account = Account.objects.filter(user__in=users)
+                print(account)
+                # redis_connection.set('search_user_cache:' + all_name,
+                #                      AccountSerializerForUser(account, many=True).data, ex=300)
 
-            redis_connection.set('search_user_cache:' + all_name,
-                                 json.dumps(AccountSerializerForUser(account, many=True).data), ex=300)
+                redis_connection.set('search_user_cache:' + all_name,
+                                     json.dumps(AccountSerializerForUser(account, many=True).data), ex=300)
 
-        return Response(AccountSerializerForUser(account, many=True).data, status=status.HTTP_200_OK)
+            return Response(AccountSerializerForUser(account, many=True).data, status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(methods=['GET'], detail=False, url_path='search_user')
     @method_decorator(decorator=search_user, name='search_user')
@@ -338,6 +344,26 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             print(account)
 
         return Response(AccountSerializerForUser(account, many=True).data, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=False, url_path='get_user_by_status')
+    @method_decorator(decorator=get_user_by_status, name='get_user_by_status')
+    def get_user_by_status(self, request):
+        try:
+            confirm_status_id = request.query_params.get('confirm_status_id')
+            users = User.objects.filter(confirm_status_id=confirm_status_id).all()
+            paginator = MyPageSize()
+            paginated = paginator.paginate_queryset(users, request)
+
+            serializer = UserSerializer(paginated, many=True, context={'request': request})
+            return paginator.get_paginated_response(serializer.data)
+        except ValueError as e:
+            error_message = str(e)
+            return Response({'Nhập số đừng nhập chữ: ': error_message}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # return Response(UserSerializer(user, many=True).data, status=status.HTTP_200_OK)
 
 
 # -Post-

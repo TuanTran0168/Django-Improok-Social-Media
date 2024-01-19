@@ -467,6 +467,24 @@ check_survey_completed = swagger_auto_schema(
     ],
 )
 
+get_user_by_status = swagger_auto_schema(
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        ),
+        openapi.Parameter(
+            name='confirm_status_id',
+            in_=openapi.IN_QUERY,
+            description='confirm_status_id parameter (Example: 1, 2, 3)',
+            type=openapi.TYPE_STRING
+        )
+    ]
+)
+
 send_email = swagger_auto_schema(
     request_body=EmailSerializer,
     responses={status.HTTP_200_OK: 'Success', status.HTTP_400_BAD_REQUEST: 'Error'}
