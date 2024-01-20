@@ -1516,6 +1516,7 @@ class API_TEST(APIView):
         print("Đây là task")
         # InvitationGroup.objects.create(invitation_group_name="Tạo bằng api")
         test_count_task.delay()
+        tuan_tran_create_invitation_group.delay()
         print("Đây là task")
         return Response("DONE NHA", status=201)
 

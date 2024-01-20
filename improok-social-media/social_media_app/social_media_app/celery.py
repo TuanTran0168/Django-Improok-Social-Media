@@ -10,8 +10,12 @@ app = Celery('social_media_app')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# app.autodiscover_tasks()
-app.autodiscover_tasks(['social_media.tasks'])
+
+# Celery Beat Setting
+app.autodiscover_tasks()
+
+
+# app.autodiscover_tasks(['social_media.tasks'])
 
 
 @app.task(bind=True)
@@ -36,9 +40,10 @@ app.conf.beat_schedule = {
 
 app.conf.broker_connection_retry_on_startup = True
 # celery -A social_media_app worker --loglevel=info
-# celery -A social_media_app worker -n worker1 --loglevel=info
-# celery -A social_media_app worker -n worker2 --loglevel=info
-# celery -A social_media_app worker -n worker3 --loglevel=info
+# celery -A social_media_app worker -n tuantranworker --loglevel=info
 # celery -A social_media_app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 # celery -A social_media_app beat -l DEBUG --scheduler django_celery_beat.schedulers:DatabaseScheduler
 # celery -A social_media_app inspect registered
+
+# celery -A social_media_app.celery worker -l info
+# celery -A social_media_app.celery worker --pool=solo -l info

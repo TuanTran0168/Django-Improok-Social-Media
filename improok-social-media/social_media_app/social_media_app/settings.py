@@ -84,26 +84,12 @@ CELERY_RESULT_EXTENDED = True
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Ho_Chi_Minh'
 
 # Đặt danh sách các tasks mà Celery sẽ tìm kiếm và đăng ký
 CELERY_IMPORTS = (
     'social_media.tasks',
 )
-
-# CELERY_BEAT_SCHEDULE = {
-#     'run_every_1_minutes': {
-#         'task': 'tuan_tran_task',
-#         'schedule': crontab(minute='*/1'),
-#     },
-#     'run_every_2_minutes': {
-#         'task': 'tuan_tran_task_1',
-#         'schedule': crontab(minute='*/2'),
-#     },
-#     'run_every_3_minutes': {
-#         'task': 'tuan_tran_task_2',
-#         'schedule': crontab(minute='*/3'),
-#     },
-# }
 
 CELERY_IMPORTS = ('social_media.tasks',)
 # CELERY_BEAT_SCHEDULE = app.conf.beat_schedule
@@ -127,7 +113,6 @@ LOGGING = {
         },
     },
 }
-timezone = 'Europe/London'
 
 ASGI_APPLICATION = "social_media_app.asgi.application"
 # CHANNEL_LAYERS = {

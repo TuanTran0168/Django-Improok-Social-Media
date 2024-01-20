@@ -10,30 +10,11 @@ from .models import InvitationGroup, User, Account
 from .serializers import InvitationGroupSerializer
 from social_media_app.celery import app
 
-# @shared_task
-# def tuan_tran_task():
-#     print("Hello from tuan_tran_task!")
-#
-#
-# @shared_task
-# def tuan_tran_task_1():
-#     print("Hello from tuan_tran_task! 1")
-#
-#
-# @shared_task
-# def tuan_tran_task_2():
-#     print("Hello from tuan_tran_task! 2")
-#
-#
-# @shared_task
-# def tuan_tran_task_3():
-#     InvitationGroup.objects.create(invitation_group_name="Tạo bằng task")
-
 logger = logging.getLogger("celery")
 
 
-@shared_task
-def tuan_tran_create_invitation_group():
+@shared_task(bind=True)
+def tuan_tran_create_invitation_group(self):
     logging.info("Đây là: tuan_tran_create_invitation_group")
     try:
         invitation_group_task = InvitationGroup.objects.create(invitation_group_name="Tạo bằng task")
@@ -41,8 +22,10 @@ def tuan_tran_create_invitation_group():
         serializer = InvitationGroupSerializer(invitation_group_task)
         serialized_data = JSONRenderer().render(serializer.data)
         logger.info("Task đã hoàn thành thành công. Kết quả: %s", serialized_data)
+        return "Task (tuan_tran_create_invitation_group) Completed!"
     except Exception as e:
         logger.error("Lỗi khi lưu thông tin InvitationGroup: %s", str(e))
+        return "Task (tuan_tran_create_invitation_group) Failed!"
 
 
 @shared_task
@@ -59,12 +42,14 @@ def tuan_tran_change_password_after_1_days():
                     account.account_status = False
                     account.save()
         logger.info("Task đã hoàn thành thành công")
+        return 'Task (tuan_tran_change_password_after_1_days) Completed'
     except Exception as e:
         logger.error("Task thất bại: %s", str(e))
+        return 'Task (tuan_tran_change_password_after_1_days) Failed'
 
 
-@app.task
-def test_count_task():
+@shared_task(bind=True)
+def test_count_task(self):
     for i in range(11):
         print(i)
         sleep(1)
