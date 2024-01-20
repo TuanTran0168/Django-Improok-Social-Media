@@ -86,6 +86,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Ho_Chi_Minh'
 
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
 # Đặt danh sách các tasks mà Celery sẽ tìm kiếm và đăng ký
 CELERY_IMPORTS = (
     'social_media.tasks',

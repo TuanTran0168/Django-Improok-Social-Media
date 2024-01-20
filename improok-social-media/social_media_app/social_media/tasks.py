@@ -17,18 +17,19 @@ logger = logging.getLogger("celery")
 def tuan_tran_create_invitation_group(self):
     logging.info("Đây là: tuan_tran_create_invitation_group")
     try:
-        invitation_group_task = InvitationGroup.objects.create(invitation_group_name="Tạo bằng task")
+        invitation_group_task = InvitationGroup.objects.create(invitation_group_name="Tạo bằng task (CELERY BEAT)")
         invitation_group_task.save()
         serializer = InvitationGroupSerializer(invitation_group_task)
         serialized_data = JSONRenderer().render(serializer.data)
         logger.info("Task đã hoàn thành thành công. Kết quả: %s", serialized_data)
+        print("Task đã hoàn thành thành công. Kết quả: %s", serialized_data)
         return "Task (tuan_tran_create_invitation_group) Completed!"
     except Exception as e:
         logger.error("Lỗi khi lưu thông tin InvitationGroup: %s", str(e))
         return "Task (tuan_tran_create_invitation_group) Failed!"
 
 
-@shared_task
+@shared_task(bind=True)
 def tuan_tran_change_password_after_1_days():
     try:
         temp_user = User(username='temp')
@@ -41,10 +42,11 @@ def tuan_tran_change_password_after_1_days():
                 if account:
                     account.account_status = False
                     account.save()
-        logger.info("Task đã hoàn thành thành công")
+        logger.info("Task (tuan_tran_change_password_after_1_days) đã hoàn thành thành công")
+        print("Task (tuan_tran_change_password_after_1_days) đã hoàn thành thành công")
         return 'Task (tuan_tran_change_password_after_1_days) Completed'
     except Exception as e:
-        logger.error("Task thất bại: %s", str(e))
+        logger.error("Task (tuan_tran_change_password_after_1_days) thất bại: %s", str(e))
         return 'Task (tuan_tran_change_password_after_1_days) Failed'
 
 

@@ -34,7 +34,7 @@ app.conf.beat_schedule = {
     },
     'test-count-task': {
         'task': 'social_media.tasks.test_count_task',
-        'schedule': 5
+        'schedule': 15
     },
 }
 
@@ -43,7 +43,10 @@ app.conf.broker_connection_retry_on_startup = True
 # celery -A social_media_app worker -n tuantranworker --loglevel=info
 # celery -A social_media_app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 # celery -A social_media_app beat -l DEBUG --scheduler django_celery_beat.schedulers:DatabaseScheduler
-# celery -A social_media_app inspect registered
 
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # celery -A social_media_app.celery worker -l info
 # celery -A social_media_app.celery worker --pool=solo -l info
+# celery -A social_media_app beat -l INFO
+# celery -A social_media_app inspect registered
