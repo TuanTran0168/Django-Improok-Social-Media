@@ -1,12 +1,14 @@
 # ce/taks.py
 # Create your tasks here
 import logging
+from time import sleep
 
 from celery import shared_task
 from rest_framework.renderers import JSONRenderer
 
 from .models import InvitationGroup, User, Account
 from .serializers import InvitationGroupSerializer
+from social_media_app.celery import app
 
 # @shared_task
 # def tuan_tran_task():
@@ -59,3 +61,14 @@ def tuan_tran_change_password_after_1_days():
         logger.info("Task đã hoàn thành thành công")
     except Exception as e:
         logger.error("Task thất bại: %s", str(e))
+
+
+@app.task
+def test_count_task():
+    for i in range(11):
+        print(i)
+        sleep(1)
+    return 'Task complete'
+
+# app.tasks.register(test_count_task)
+# app.tasks.register(tuan_tran_create_invitation_group)

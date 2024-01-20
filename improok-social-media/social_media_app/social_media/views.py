@@ -48,6 +48,8 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
 
 from django_redis import get_redis_connection
 
+from .tasks import tuan_tran_change_password_after_1_days, tuan_tran_create_invitation_group, test_count_task
+
 # from social_media_app.social_media.task import tuan_tran_task
 
 redis_connection = get_redis_connection("default")
@@ -1512,9 +1514,10 @@ class API_TEST(APIView):
     @staticmethod
     def post(request):
         print("Đây là task")
-        InvitationGroup.objects.create(invitation_group_name="Tạo bằng api")
+        # InvitationGroup.objects.create(invitation_group_name="Tạo bằng api")
+        test_count_task.delay()
         print("Đây là task")
-        return Response(status=201)
+        return Response("DONE NHA", status=201)
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

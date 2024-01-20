@@ -79,7 +79,8 @@ DEFAULT_FROM_EMAIL = 'trandangtuan0168@gmail.com'
 # Celery
 # Message Broker (Tiện có redis xài luôn redis, khỏi RabbitMQ)
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_EXTENDED = True
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
@@ -177,7 +178,8 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'channels',
-    'channels_redis'
+    'channels_redis',
+    'celery'
 ]
 
 MIDDLEWARE = [

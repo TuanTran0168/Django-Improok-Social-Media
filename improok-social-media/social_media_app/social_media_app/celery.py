@@ -20,26 +20,6 @@ def debug_task(self):
 
 
 app.conf.beat_schedule = {
-    # 'run-tuan-tran-task': {
-    #     'task': 'social_media.tasks.tuan_tran_task',
-    #     'schedule': crontab(minute='*/1'),  # Chạy task mỗi 1 phút
-    # },
-    # 'run-tuan-tran-task-1': {
-    #     'task': 'social_media.tasks.tuan_tran_task_1',
-    #     'schedule': crontab(minute='*/2'),  # Chạy task mỗi 2 phút
-    # },
-    # 'run-tuan-tran-task-2': {
-    #     'task': 'social_media.tasks.tuan_tran_task_2',
-    #     'schedule': crontab(minute='*/3'),  # Chạy task mỗi 3 phút
-    # },
-    # 'run-tuan-tran-task-3': {
-    #     'task': 'social_media.tasks.tuan_tran_task_2',
-    #     'schedule': crontab(minute='*/5'),  # Chạy task mỗi 5 phút
-    # },
-    # 'run-tuan-tran-task-4': {
-    #     'task': 'social_media.tasks.tuan_tran_task_3',
-    #     'schedule': 5,  # Chạy task mỗi 5 giay
-    # },
     'run-create-invitation-group': {
         'task': 'social_media.tasks.tuan_tran_create_invitation_group',
         'schedule': 30,  # Chạy task mỗi 30 giay
@@ -48,19 +28,17 @@ app.conf.beat_schedule = {
         'task': 'social_media.tasks.tuan_tran_change_password_after_1_days',
         'schedule': crontab(minute=0, hour=0),  # Chạy task mỗi ngày vào lúc 12h đêm
     },
+    'test-count-task': {
+        'task': 'social_media.tasks.test_count_task',
+        'schedule': 5
+    },
 }
 
 app.conf.broker_connection_retry_on_startup = True
-
 # celery -A social_media_app worker --loglevel=info
+# celery -A social_media_app worker -n worker1 --loglevel=info
+# celery -A social_media_app worker -n worker2 --loglevel=info
+# celery -A social_media_app worker -n worker3 --loglevel=info
 # celery -A social_media_app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 # celery -A social_media_app beat -l DEBUG --scheduler django_celery_beat.schedulers:DatabaseScheduler
 # celery -A social_media_app inspect registered
-
-logger = logging.getLogger("celery")
-
-# @app.task
-# def show_hello_world():
-#     logger.info("-" * 25)
-#     logger.info("Printing Hello from Celery")
-#     logger.info("-" * 25)

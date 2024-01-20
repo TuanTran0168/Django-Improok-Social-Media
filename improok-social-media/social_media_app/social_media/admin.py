@@ -215,3 +215,17 @@ my_admin_site.register(InvitationGroup, InvitationGroupAdmin)
 # admin.site.register(InvitationAccount, InvitationAccountAdmin)
 my_admin_site.register(Room, RoomAdmin)
 my_admin_site.register(Message, MessageAdmin)
+
+from django_celery_beat.models import PeriodicTask, IntervalSchedule, ClockedSchedule, SolarSchedule, CrontabSchedule, \
+    PeriodicTasks
+
+my_admin_site.register(PeriodicTask)
+my_admin_site.register(IntervalSchedule)
+my_admin_site.register(ClockedSchedule)
+my_admin_site.register(SolarSchedule)
+my_admin_site.register(CrontabSchedule)
+my_admin_site.register(PeriodicTasks)
+
+from django_celery_results.models import TaskResult, GroupResult
+my_admin_site.register(TaskResult)
+my_admin_site.register(GroupResult)
