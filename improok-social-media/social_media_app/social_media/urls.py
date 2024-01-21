@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, re_path, include
 from rest_framework import routers
 
@@ -5,7 +6,7 @@ from .views import RoleViewSet, UserViewSet, PostViewSet, \
     AccountViewSet, PostImageViewSet, CommentViewSet, ConfirmStatusViewSet, AlumniAccountViewSet, ReactionViewSet, \
     PostReactionViewSet, InvitationGroupViewSet, PostInvitationViewSet, SendEmailView, PostSurveyViewSet, \
     SurveyQuestionViewSet, SurveyQuestionOptionViewSet, SurveyAnswerViewSet, SurveyResponseViewSet, UploadView, \
-    SurveyQuestionTypeViewSet, API_TEST, index, room, RoomViewSet, MessageViewSet
+    SurveyQuestionTypeViewSet, API_TEST, index, room, RoomViewSet, MessageViewSet, HomeView
 
 router = routers.DefaultRouter()
 router.register('roles', RoleViewSet, basename='roles')
@@ -49,6 +50,7 @@ router.register('rooms', RoomViewSet, basename='rooms')
 
 router.register('messages', MessageViewSet, basename='messages')
 
+app_name = 'app'
 urlpatterns = [
     path('', include(router.urls)),
     path('send-email/', SendEmailView.as_view(), name='send-email'),
@@ -56,4 +58,8 @@ urlpatterns = [
     path('api-test/', API_TEST.as_view()),
     path('chat/', index),
     path("chat/<str:room_name>/", room, name="room"),
+
+    path('home/', HomeView.as_view(), name='home'),
+    path('home/login/', LoginView.as_view()),
+    path('home/logout/', LogoutView.as_view(), name='logout_by_tuan_tran'),
 ]

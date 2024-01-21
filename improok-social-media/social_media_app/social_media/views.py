@@ -1522,7 +1522,7 @@ class API_TEST(APIView):
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def index(request):
@@ -1531,3 +1531,22 @@ def index(request):
 
 def room(request, room_name):
     return render(request, "chat/room.html", {"room_name": room_name})
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+from django.views.generic import View
+from django.contrib.auth import logout as auth_logout
+
+
+class HomeView(View):
+    template_name = "login_google/home.html"
+
+    def get(self, request):
+        current_user = request.user
+        return render(request, self.template_name, {'current_user': current_user})
+
+
+class LogoutView(View):
+    def get(self, request):
+        auth_logout(request)
+        return redirect('app:home')

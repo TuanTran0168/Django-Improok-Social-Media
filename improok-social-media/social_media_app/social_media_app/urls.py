@@ -48,5 +48,6 @@ urlpatterns = [
             name='schema-redoc'),
     path('o/', include('oauth2_provider.urls',
                        namespace='oauth2_provider')),
+    path('auth/', include('social_django.urls', namespace='social')),
     # re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),  # Tạm thời không dùng cái upload file bằng ckeditor
 ]

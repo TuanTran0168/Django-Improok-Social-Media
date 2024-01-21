@@ -117,15 +117,6 @@ LOGGING = {
 }
 
 ASGI_APPLICATION = "social_media_app.asgi.application"
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("127.0.0.1", 6379)],
-#         },
-#     },
-# }
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -166,7 +157,8 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'channels',
     'channels_redis',
-    'celery'
+    'celery',
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -179,6 +171,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     # 'social_media.middleware.ip_middleware.IPFilterMiddleWare',
     'social_media.middleware.characters_middleware.BlockInvalidCharactersMiddleware',
     'social_media.middleware.oauth2_middleware.Oauth2MiddleWare',
@@ -197,6 +190,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -262,3 +257,21 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.open_id.OpenIdAuth',
+    # 'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
+    'social_core.backends.twitter.TwitterOAuth',
+    # 'social_core.backends.yahoo.YahooOpenId',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+LOGIN_URL = 'login'
+# LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+# LOGOUT_REDIRECT_URL = 'login'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '503521058443-e7ib2bc0p7p2inbh7b7rtpf0a6eftohg.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'

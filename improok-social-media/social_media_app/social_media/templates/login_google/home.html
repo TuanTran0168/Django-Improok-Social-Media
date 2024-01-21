@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Home</h1>
+    {% if current_user.is_authenticated %}
+        <p>Welcome! <strong>{{ current_user }}</strong></p>
+        <a href="{% url 'app:logout_by_tuan_tran' %}">Logout</a>
+    {% else %}
+            <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+            <br>
+            <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+            <p>{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}</p>
+    {% endif %}
+</body>
+</html>
