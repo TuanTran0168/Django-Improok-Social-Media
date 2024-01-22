@@ -18,21 +18,6 @@ USE `improok-social-media`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `auth_group`
---
-
-DROP TABLE IF EXISTS `auth_group`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auth_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `auth_group`
 --
 
@@ -42,25 +27,6 @@ LOCK TABLES `auth_group` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `auth_group_permissions`
---
-
-DROP TABLE IF EXISTS `auth_group_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auth_group_permissions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`),
-  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
-  CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
-  CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `auth_group_permissions`
 --
 
@@ -68,24 +34,6 @@ LOCK TABLES `auth_group_permissions` WRITE;
 /*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `auth_permission`
---
-
-DROP TABLE IF EXISTS `auth_permission`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auth_permission` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content_type_id` int(11) NOT NULL,
-  `codename` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
-  CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `auth_permission`
@@ -98,31 +46,6 @@ INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_admin_log`
---
-
-DROP TABLE IF EXISTS `django_admin_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_admin_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `action_time` datetime(6) NOT NULL,
-  `object_id` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `object_repr` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `action_flag` smallint(5) unsigned NOT NULL,
-  `change_message` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content_type_id` int(11) DEFAULT NULL,
-  `user_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`),
-  KEY `django_admin_log_user_id_c564eba6_fk_social_media_user_id` (`user_id`),
-  CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
-  CONSTRAINT `django_admin_log_user_id_c564eba6_fk_social_media_user_id` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`),
-  CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_admin_log`
 --
 
@@ -133,20 +56,6 @@ INSERT INTO `django_admin_log` VALUES (1,'2023-12-05 01:54:11.303447','1','Group
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_celery_beat_clockedschedule`
---
-
-DROP TABLE IF EXISTS `django_celery_beat_clockedschedule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_beat_clockedschedule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `clocked_time` datetime(6) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_celery_beat_clockedschedule`
 --
 
@@ -154,25 +63,6 @@ LOCK TABLES `django_celery_beat_clockedschedule` WRITE;
 /*!40000 ALTER TABLE `django_celery_beat_clockedschedule` DISABLE KEYS */;
 /*!40000 ALTER TABLE `django_celery_beat_clockedschedule` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `django_celery_beat_crontabschedule`
---
-
-DROP TABLE IF EXISTS `django_celery_beat_crontabschedule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_beat_crontabschedule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `minute` varchar(240) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `hour` varchar(96) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `day_of_week` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `day_of_month` varchar(124) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `month_of_year` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `timezone` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `django_celery_beat_crontabschedule`
@@ -185,21 +75,6 @@ INSERT INTO `django_celery_beat_crontabschedule` VALUES (1,'0','4','*','*','*','
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_celery_beat_intervalschedule`
---
-
-DROP TABLE IF EXISTS `django_celery_beat_intervalschedule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_beat_intervalschedule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `every` int(11) NOT NULL,
-  `period` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_celery_beat_intervalschedule`
 --
 
@@ -208,53 +83,6 @@ LOCK TABLES `django_celery_beat_intervalschedule` WRITE;
 INSERT INTO `django_celery_beat_intervalschedule` VALUES (1,5,'seconds'),(2,30,'seconds'),(3,10,'seconds'),(4,15,'seconds');
 /*!40000 ALTER TABLE `django_celery_beat_intervalschedule` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `django_celery_beat_periodictask`
---
-
-DROP TABLE IF EXISTS `django_celery_beat_periodictask`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_beat_periodictask` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `task` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `args` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `kwargs` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `exchange` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `routing_key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `expires` datetime(6) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL,
-  `last_run_at` datetime(6) DEFAULT NULL,
-  `total_run_count` int(10) unsigned NOT NULL,
-  `date_changed` datetime(6) NOT NULL,
-  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `crontab_id` int(11) DEFAULT NULL,
-  `interval_id` int(11) DEFAULT NULL,
-  `solar_id` int(11) DEFAULT NULL,
-  `one_off` tinyint(1) NOT NULL,
-  `start_time` datetime(6) DEFAULT NULL,
-  `priority` int(10) unsigned DEFAULT NULL,
-  `headers` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT (_utf8mb3'{}'),
-  `clocked_id` int(11) DEFAULT NULL,
-  `expire_seconds` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `django_celery_beat_p_crontab_id_d3cba168_fk_django_ce` (`crontab_id`),
-  KEY `django_celery_beat_p_interval_id_a8ca27da_fk_django_ce` (`interval_id`),
-  KEY `django_celery_beat_p_solar_id_a87ce72c_fk_django_ce` (`solar_id`),
-  KEY `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` (`clocked_id`),
-  CONSTRAINT `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` FOREIGN KEY (`clocked_id`) REFERENCES `django_celery_beat_clockedschedule` (`id`),
-  CONSTRAINT `django_celery_beat_p_crontab_id_d3cba168_fk_django_ce` FOREIGN KEY (`crontab_id`) REFERENCES `django_celery_beat_crontabschedule` (`id`),
-  CONSTRAINT `django_celery_beat_p_interval_id_a8ca27da_fk_django_ce` FOREIGN KEY (`interval_id`) REFERENCES `django_celery_beat_intervalschedule` (`id`),
-  CONSTRAINT `django_celery_beat_p_solar_id_a87ce72c_fk_django_ce` FOREIGN KEY (`solar_id`) REFERENCES `django_celery_beat_solarschedule` (`id`),
-  CONSTRAINT `django_celery_beat_periodictask_chk_1` CHECK ((`total_run_count` >= 0)),
-  CONSTRAINT `django_celery_beat_periodictask_chk_2` CHECK ((`priority` >= 0)),
-  CONSTRAINT `django_celery_beat_periodictask_chk_3` CHECK ((`expire_seconds` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `django_celery_beat_periodictask`
@@ -267,20 +95,6 @@ INSERT INTO `django_celery_beat_periodictask` VALUES (1,'celery.backend_cleanup'
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_celery_beat_periodictasks`
---
-
-DROP TABLE IF EXISTS `django_celery_beat_periodictasks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_beat_periodictasks` (
-  `ident` smallint(6) NOT NULL,
-  `last_update` datetime(6) NOT NULL,
-  PRIMARY KEY (`ident`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_celery_beat_periodictasks`
 --
 
@@ -289,23 +103,6 @@ LOCK TABLES `django_celery_beat_periodictasks` WRITE;
 INSERT INTO `django_celery_beat_periodictasks` VALUES (1,'2024-01-20 13:38:30.758143');
 /*!40000 ALTER TABLE `django_celery_beat_periodictasks` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `django_celery_beat_solarschedule`
---
-
-DROP TABLE IF EXISTS `django_celery_beat_solarschedule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_beat_solarschedule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `event` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `latitude` decimal(9,6) NOT NULL,
-  `longitude` decimal(9,6) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq` (`event`,`latitude`,`longitude`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `django_celery_beat_solarschedule`
@@ -317,24 +114,6 @@ LOCK TABLES `django_celery_beat_solarschedule` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_celery_results_chordcounter`
---
-
-DROP TABLE IF EXISTS `django_celery_results_chordcounter`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_results_chordcounter` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sub_tasks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `count` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `group_id` (`group_id`),
-  CONSTRAINT `django_celery_results_chordcounter_chk_1` CHECK ((`count` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_celery_results_chordcounter`
 --
 
@@ -344,28 +123,6 @@ LOCK TABLES `django_celery_results_chordcounter` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_celery_results_groupresult`
---
-
-DROP TABLE IF EXISTS `django_celery_results_groupresult`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_results_groupresult` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `date_created` datetime(6) NOT NULL,
-  `date_done` datetime(6) NOT NULL,
-  `content_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content_encoding` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `group_id` (`group_id`),
-  KEY `django_cele_date_cr_bd6c1d_idx` (`date_created`),
-  KEY `django_cele_date_do_caae0e_idx` (`date_done`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_celery_results_groupresult`
 --
 
@@ -373,39 +130,6 @@ LOCK TABLES `django_celery_results_groupresult` WRITE;
 /*!40000 ALTER TABLE `django_celery_results_groupresult` DISABLE KEYS */;
 /*!40000 ALTER TABLE `django_celery_results_groupresult` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `django_celery_results_taskresult`
---
-
-DROP TABLE IF EXISTS `django_celery_results_taskresult`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_celery_results_taskresult` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `task_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content_encoding` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `date_done` datetime(6) NOT NULL,
-  `traceback` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `task_args` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `task_kwargs` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `task_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `worker` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `date_created` datetime(6) NOT NULL,
-  `periodic_task_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `task_id` (`task_id`),
-  KEY `django_cele_task_na_08aec9_idx` (`task_name`),
-  KEY `django_cele_status_9b6201_idx` (`status`),
-  KEY `django_cele_worker_d54dd8_idx` (`worker`),
-  KEY `django_cele_date_cr_f04a50_idx` (`date_created`),
-  KEY `django_cele_date_do_f59aad_idx` (`date_done`)
-) ENGINE=InnoDB AUTO_INCREMENT=268 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `django_celery_results_taskresult`
@@ -418,22 +142,6 @@ INSERT INTO `django_celery_results_taskresult` VALUES (1,'c7a48246-2be0-412e-8ee
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_content_type`
---
-
-DROP TABLE IF EXISTS `django_content_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_content_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `app_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_content_type`
 --
 
@@ -444,46 +152,14 @@ INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group
 UNLOCK TABLES;
 
 --
--- Table structure for table `django_migrations`
---
-
-DROP TABLE IF EXISTS `django_migrations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_migrations` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `app` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `applied` datetime(6) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `django_migrations`
 --
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2023-12-03 13:30:54.317629'),(2,'contenttypes','0002_remove_content_type_name','2023-12-03 13:30:54.348880'),(3,'auth','0001_initial','2023-12-03 13:30:54.443078'),(4,'auth','0002_alter_permission_name_max_length','2023-12-03 13:30:54.474327'),(5,'auth','0003_alter_user_email_max_length','2023-12-03 13:30:54.474327'),(6,'auth','0004_alter_user_username_opts','2023-12-03 13:30:54.474327'),(7,'auth','0005_alter_user_last_login_null','2023-12-03 13:30:54.489999'),(8,'auth','0006_require_contenttypes_0002','2023-12-03 13:30:54.493041'),(9,'auth','0007_alter_validators_add_error_messages','2023-12-03 13:30:54.493041'),(10,'auth','0008_alter_user_username_max_length','2023-12-03 13:30:54.506050'),(11,'auth','0009_alter_user_last_name_max_length','2023-12-03 13:30:54.506050'),(12,'auth','0010_alter_group_name_max_length','2023-12-03 13:30:54.521712'),(13,'auth','0011_update_proxy_permissions','2023-12-03 13:30:54.521712'),(14,'auth','0012_alter_user_first_name_max_length','2023-12-03 13:30:54.537308'),(15,'social_media','0001_initial','2023-12-03 13:30:55.604673'),(16,'admin','0001_initial','2023-12-03 13:30:55.698831'),(17,'admin','0002_logentry_remove_auto_add','2023-12-03 13:30:55.714473'),(18,'admin','0003_logentry_add_action_flag_choices','2023-12-03 13:30:55.730093'),(19,'sessions','0001_initial','2023-12-03 13:30:55.776967'),(20,'social_media','0002_account_alumniaccount_confirmstatus_groupaccount_and_more','2023-12-03 13:30:57.392628'),(21,'social_media','0003_account_account_status','2023-12-03 13:30:57.440018'),(22,'social_media','0004_comment_comment_image_url_alter_account_avatar_and_more','2023-12-03 13:30:57.643949'),(23,'social_media','0005_alter_account_avatar_alter_account_cover_avatar_and_more','2023-12-03 13:30:57.740043'),(24,'social_media','0006_remove_postsurvey_post_survey_status_and_more','2023-12-03 13:30:57.863835'),(25,'social_media','0007_alter_surveyanswer_question_option_value','2023-12-03 13:30:57.879475'),(26,'social_media','0008_alter_surveyanswer_question_option_value','2023-12-03 13:30:57.895137'),(27,'social_media','0009_remove_invitationaccount_account_and_more','2023-12-03 13:30:58.413228'),(28,'social_media','0010_alter_account_group_account_and_more','2023-12-03 13:30:58.475775'),(29,'social_media','0011_alter_account_group_account_and_more','2023-12-03 13:30:58.538679'),(30,'social_media','0012_alter_comment_comment_content_and_more','2023-12-05 02:15:09.429543'),(31,'oauth2_provider','0001_initial','2023-12-09 11:28:31.801593'),(32,'oauth2_provider','0002_auto_20190406_1805','2023-12-09 11:28:31.858138'),(33,'oauth2_provider','0003_auto_20201211_1314','2023-12-09 11:28:31.939136'),(34,'oauth2_provider','0004_auto_20200902_2022','2023-12-09 11:28:32.222162'),(35,'oauth2_provider','0005_auto_20211222_2352','2023-12-09 11:28:32.304365'),(36,'oauth2_provider','0006_alter_application_client_secret','2023-12-09 11:28:32.337879'),(37,'oauth2_provider','0007_application_post_logout_redirect_uris','2023-12-09 11:28:32.402542'),(38,'social_media','0013_remove_account_group_account_and_more','2023-12-12 12:38:26.937512'),(39,'social_media','0014_rename_account_postinvitation_accounts','2023-12-12 12:41:24.296464'),(40,'social_media','0015_alter_invitationgroup_accounts_and_more','2023-12-14 09:40:33.062249'),(41,'social_media','0016_remove_surveyquestionoption_survey_answer_option_and_more','2023-12-17 06:11:51.959064'),(42,'social_media','0017_alter_account_deleted_date_alter_account_role_and_more','2023-12-19 12:24:53.381433'),(43,'social_media','0018_alter_account_deleted_date_and_more','2023-12-21 10:39:40.716880'),(44,'social_media','0019_rename_question_option_value_surveyanswer_answer_value_and_more','2023-12-31 15:23:47.923420'),(45,'social_media','0020_alter_account_date_of_birth','2024-01-06 07:36:43.296819'),(46,'django_celery_results','0001_initial','2024-01-15 16:04:44.596478'),(47,'django_celery_results','0002_add_task_name_args_kwargs','2024-01-15 16:04:44.675584'),(48,'django_celery_results','0003_auto_20181106_1101','2024-01-15 16:04:44.685365'),(49,'django_celery_results','0004_auto_20190516_0412','2024-01-15 16:04:44.857168'),(50,'django_celery_results','0005_taskresult_worker','2024-01-15 16:04:44.913681'),(51,'django_celery_results','0006_taskresult_date_created','2024-01-15 16:04:45.048193'),(52,'django_celery_results','0007_remove_taskresult_hidden','2024-01-15 16:04:45.172185'),(53,'django_celery_results','0008_chordcounter','2024-01-15 16:04:45.247158'),(54,'django_celery_results','0009_groupresult','2024-01-15 16:04:46.025654'),(55,'django_celery_results','0010_remove_duplicate_indices','2024-01-15 16:04:46.057923'),(56,'django_celery_results','0011_taskresult_periodic_task_name','2024-01-15 16:04:46.103976'),(57,'django_celery_beat','0001_initial','2024-01-16 03:15:08.850880'),(58,'django_celery_beat','0002_auto_20161118_0346','2024-01-16 03:15:08.929076'),(59,'django_celery_beat','0003_auto_20161209_0049','2024-01-16 03:15:08.944702'),(60,'django_celery_beat','0004_auto_20170221_0000','2024-01-16 03:15:08.960328'),(61,'django_celery_beat','0005_add_solarschedule_events_choices','2024-01-16 03:15:08.968993'),(62,'django_celery_beat','0006_auto_20180322_0932','2024-01-16 03:15:09.038531'),(63,'django_celery_beat','0007_auto_20180521_0826','2024-01-16 03:15:09.085474'),(64,'django_celery_beat','0008_auto_20180914_1922','2024-01-16 03:15:09.107096'),(65,'django_celery_beat','0006_auto_20180210_1226','2024-01-16 03:15:09.117110'),(66,'django_celery_beat','0006_periodictask_priority','2024-01-16 03:15:09.196058'),(67,'django_celery_beat','0009_periodictask_headers','2024-01-16 03:15:09.259398'),(68,'django_celery_beat','0010_auto_20190429_0326','2024-01-16 03:15:09.384804'),(69,'django_celery_beat','0011_auto_20190508_0153','2024-01-16 03:15:09.463733'),(70,'django_celery_beat','0012_periodictask_expire_seconds','2024-01-16 03:15:09.542277'),(71,'django_celery_beat','0013_auto_20200609_0727','2024-01-16 03:15:09.542277'),(72,'django_celery_beat','0014_remove_clockedschedule_enabled','2024-01-16 03:15:09.557900'),(73,'django_celery_beat','0015_edit_solarschedule_events_choices','2024-01-16 03:15:09.573552'),(74,'django_celery_beat','0016_alter_crontabschedule_timezone','2024-01-16 03:15:09.589149'),(75,'django_celery_beat','0017_alter_crontabschedule_month_of_year','2024-01-16 03:15:09.589149'),(76,'django_celery_beat','0018_improve_crontab_helptext','2024-01-16 03:15:09.604776'),(77,'social_media','0021_room_message','2024-01-18 10:33:51.573828'),(78,'social_media','0022_remove_message_receiver_remove_message_sender_and_more','2024-01-18 10:38:20.184889'),(79,'social_media','0023_alter_room_options_room_first_user_room_second_user_and_more','2024-01-18 11:12:35.095010'),(80,'social_media','0024_alter_message_who_sent','2024-01-18 11:14:06.043352'),(81,'default','0001_initial','2024-01-21 15:18:47.749092'),(82,'social_auth','0001_initial','2024-01-21 15:18:47.753609'),(83,'default','0002_add_related_name','2024-01-21 15:18:47.820611'),(84,'social_auth','0002_add_related_name','2024-01-21 15:18:47.824607'),(85,'default','0003_alter_email_max_length','2024-01-21 15:18:47.841616'),(86,'social_auth','0003_alter_email_max_length','2024-01-21 15:18:47.845616'),(87,'default','0004_auto_20160423_0400','2024-01-21 15:18:47.863136'),(88,'social_auth','0004_auto_20160423_0400','2024-01-21 15:18:47.867137'),(89,'social_auth','0005_auto_20160727_2333','2024-01-21 15:18:47.889147'),(90,'social_django','0006_partial','2024-01-21 15:18:47.947531'),(91,'social_django','0007_code_timestamp','2024-01-21 15:18:47.994045'),(92,'social_django','0008_partial_timestamp','2024-01-21 15:18:48.042163'),(93,'social_django','0009_auto_20191118_0520','2024-01-21 15:18:48.128391'),(94,'social_django','0010_uid_db_index','2024-01-21 15:18:48.162446'),(95,'social_django','0011_alter_id_fields','2024-01-21 15:18:48.581939'),(96,'social_django','0012_usersocialauth_extra_data_new','2024-01-21 15:18:48.823335'),(97,'social_django','0013_migrate_extra_data','2024-01-21 15:18:48.853862'),(98,'social_django','0014_remove_usersocialauth_extra_data','2024-01-21 15:18:48.962904'),(99,'social_django','0015_rename_extra_data_new_usersocialauth_extra_data','2024-01-21 15:18:49.011981'),(100,'social_django','0005_auto_20160727_2333','2024-01-21 15:18:49.020983'),(101,'social_django','0003_alter_email_max_length','2024-01-21 15:18:49.024983'),(102,'social_django','0002_add_related_name','2024-01-21 15:18:49.029982'),(103,'social_django','0001_initial','2024-01-21 15:18:49.033981'),(104,'social_django','0004_auto_20160423_0400','2024-01-21 15:18:49.037986');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2023-12-03 13:30:54.317629'),(2,'contenttypes','0002_remove_content_type_name','2023-12-03 13:30:54.348880'),(3,'auth','0001_initial','2023-12-03 13:30:54.443078'),(4,'auth','0002_alter_permission_name_max_length','2023-12-03 13:30:54.474327'),(5,'auth','0003_alter_user_email_max_length','2023-12-03 13:30:54.474327'),(6,'auth','0004_alter_user_username_opts','2023-12-03 13:30:54.474327'),(7,'auth','0005_alter_user_last_login_null','2023-12-03 13:30:54.489999'),(8,'auth','0006_require_contenttypes_0002','2023-12-03 13:30:54.493041'),(9,'auth','0007_alter_validators_add_error_messages','2023-12-03 13:30:54.493041'),(10,'auth','0008_alter_user_username_max_length','2023-12-03 13:30:54.506050'),(11,'auth','0009_alter_user_last_name_max_length','2023-12-03 13:30:54.506050'),(12,'auth','0010_alter_group_name_max_length','2023-12-03 13:30:54.521712'),(13,'auth','0011_update_proxy_permissions','2023-12-03 13:30:54.521712'),(14,'auth','0012_alter_user_first_name_max_length','2023-12-03 13:30:54.537308'),(15,'social_media','0001_initial','2023-12-03 13:30:55.604673'),(16,'admin','0001_initial','2023-12-03 13:30:55.698831'),(17,'admin','0002_logentry_remove_auto_add','2023-12-03 13:30:55.714473'),(18,'admin','0003_logentry_add_action_flag_choices','2023-12-03 13:30:55.730093'),(19,'sessions','0001_initial','2023-12-03 13:30:55.776967'),(20,'social_media','0002_account_alumniaccount_confirmstatus_groupaccount_and_more','2023-12-03 13:30:57.392628'),(21,'social_media','0003_account_account_status','2023-12-03 13:30:57.440018'),(22,'social_media','0004_comment_comment_image_url_alter_account_avatar_and_more','2023-12-03 13:30:57.643949'),(23,'social_media','0005_alter_account_avatar_alter_account_cover_avatar_and_more','2023-12-03 13:30:57.740043'),(24,'social_media','0006_remove_postsurvey_post_survey_status_and_more','2023-12-03 13:30:57.863835'),(25,'social_media','0007_alter_surveyanswer_question_option_value','2023-12-03 13:30:57.879475'),(26,'social_media','0008_alter_surveyanswer_question_option_value','2023-12-03 13:30:57.895137'),(27,'social_media','0009_remove_invitationaccount_account_and_more','2023-12-03 13:30:58.413228'),(28,'social_media','0010_alter_account_group_account_and_more','2023-12-03 13:30:58.475775'),(29,'social_media','0011_alter_account_group_account_and_more','2023-12-03 13:30:58.538679'),(30,'social_media','0012_alter_comment_comment_content_and_more','2023-12-05 02:15:09.429543'),(31,'oauth2_provider','0001_initial','2023-12-09 11:28:31.801593'),(32,'oauth2_provider','0002_auto_20190406_1805','2023-12-09 11:28:31.858138'),(33,'oauth2_provider','0003_auto_20201211_1314','2023-12-09 11:28:31.939136'),(34,'oauth2_provider','0004_auto_20200902_2022','2023-12-09 11:28:32.222162'),(35,'oauth2_provider','0005_auto_20211222_2352','2023-12-09 11:28:32.304365'),(36,'oauth2_provider','0006_alter_application_client_secret','2023-12-09 11:28:32.337879'),(37,'oauth2_provider','0007_application_post_logout_redirect_uris','2023-12-09 11:28:32.402542'),(38,'social_media','0013_remove_account_group_account_and_more','2023-12-12 12:38:26.937512'),(39,'social_media','0014_rename_account_postinvitation_accounts','2023-12-12 12:41:24.296464'),(40,'social_media','0015_alter_invitationgroup_accounts_and_more','2023-12-14 09:40:33.062249'),(41,'social_media','0016_remove_surveyquestionoption_survey_answer_option_and_more','2023-12-17 06:11:51.959064'),(42,'social_media','0017_alter_account_deleted_date_alter_account_role_and_more','2023-12-19 12:24:53.381433'),(43,'social_media','0018_alter_account_deleted_date_and_more','2023-12-21 10:39:40.716880'),(44,'social_media','0019_rename_question_option_value_surveyanswer_answer_value_and_more','2023-12-31 15:23:47.923420'),(45,'social_media','0020_alter_account_date_of_birth','2024-01-06 07:36:43.296819'),(46,'django_celery_results','0001_initial','2024-01-15 16:04:44.596478'),(47,'django_celery_results','0002_add_task_name_args_kwargs','2024-01-15 16:04:44.675584'),(48,'django_celery_results','0003_auto_20181106_1101','2024-01-15 16:04:44.685365'),(49,'django_celery_results','0004_auto_20190516_0412','2024-01-15 16:04:44.857168'),(50,'django_celery_results','0005_taskresult_worker','2024-01-15 16:04:44.913681'),(51,'django_celery_results','0006_taskresult_date_created','2024-01-15 16:04:45.048193'),(52,'django_celery_results','0007_remove_taskresult_hidden','2024-01-15 16:04:45.172185'),(53,'django_celery_results','0008_chordcounter','2024-01-15 16:04:45.247158'),(54,'django_celery_results','0009_groupresult','2024-01-15 16:04:46.025654'),(55,'django_celery_results','0010_remove_duplicate_indices','2024-01-15 16:04:46.057923'),(56,'django_celery_results','0011_taskresult_periodic_task_name','2024-01-15 16:04:46.103976'),(57,'django_celery_beat','0001_initial','2024-01-16 03:15:08.850880'),(58,'django_celery_beat','0002_auto_20161118_0346','2024-01-16 03:15:08.929076'),(59,'django_celery_beat','0003_auto_20161209_0049','2024-01-16 03:15:08.944702'),(60,'django_celery_beat','0004_auto_20170221_0000','2024-01-16 03:15:08.960328'),(61,'django_celery_beat','0005_add_solarschedule_events_choices','2024-01-16 03:15:08.968993'),(62,'django_celery_beat','0006_auto_20180322_0932','2024-01-16 03:15:09.038531'),(63,'django_celery_beat','0007_auto_20180521_0826','2024-01-16 03:15:09.085474'),(64,'django_celery_beat','0008_auto_20180914_1922','2024-01-16 03:15:09.107096'),(65,'django_celery_beat','0006_auto_20180210_1226','2024-01-16 03:15:09.117110'),(66,'django_celery_beat','0006_periodictask_priority','2024-01-16 03:15:09.196058'),(67,'django_celery_beat','0009_periodictask_headers','2024-01-16 03:15:09.259398'),(68,'django_celery_beat','0010_auto_20190429_0326','2024-01-16 03:15:09.384804'),(69,'django_celery_beat','0011_auto_20190508_0153','2024-01-16 03:15:09.463733'),(70,'django_celery_beat','0012_periodictask_expire_seconds','2024-01-16 03:15:09.542277'),(71,'django_celery_beat','0013_auto_20200609_0727','2024-01-16 03:15:09.542277'),(72,'django_celery_beat','0014_remove_clockedschedule_enabled','2024-01-16 03:15:09.557900'),(73,'django_celery_beat','0015_edit_solarschedule_events_choices','2024-01-16 03:15:09.573552'),(74,'django_celery_beat','0016_alter_crontabschedule_timezone','2024-01-16 03:15:09.589149'),(75,'django_celery_beat','0017_alter_crontabschedule_month_of_year','2024-01-16 03:15:09.589149'),(76,'django_celery_beat','0018_improve_crontab_helptext','2024-01-16 03:15:09.604776'),(77,'social_media','0021_room_message','2024-01-18 10:33:51.573828'),(78,'social_media','0022_remove_message_receiver_remove_message_sender_and_more','2024-01-18 10:38:20.184889'),(79,'social_media','0023_alter_room_options_room_first_user_room_second_user_and_more','2024-01-18 11:12:35.095010'),(80,'social_media','0024_alter_message_who_sent','2024-01-18 11:14:06.043352'),(81,'default','0001_initial','2024-01-21 15:18:47.749092'),(82,'social_auth','0001_initial','2024-01-21 15:18:47.753609'),(83,'default','0002_add_related_name','2024-01-21 15:18:47.820611'),(84,'social_auth','0002_add_related_name','2024-01-21 15:18:47.824607'),(85,'default','0003_alter_email_max_length','2024-01-21 15:18:47.841616'),(86,'social_auth','0003_alter_email_max_length','2024-01-21 15:18:47.845616'),(87,'default','0004_auto_20160423_0400','2024-01-21 15:18:47.863136'),(88,'social_auth','0004_auto_20160423_0400','2024-01-21 15:18:47.867137'),(89,'social_auth','0005_auto_20160727_2333','2024-01-21 15:18:47.889147'),(90,'social_django','0006_partial','2024-01-21 15:18:47.947531'),(91,'social_django','0007_code_timestamp','2024-01-21 15:18:47.994045'),(92,'social_django','0008_partial_timestamp','2024-01-21 15:18:48.042163'),(93,'social_django','0009_auto_20191118_0520','2024-01-21 15:18:48.128391'),(94,'social_django','0010_uid_db_index','2024-01-21 15:18:48.162446'),(95,'social_django','0011_alter_id_fields','2024-01-21 15:18:48.581939'),(96,'social_django','0012_usersocialauth_extra_data_new','2024-01-21 15:18:48.823335'),(97,'social_django','0013_migrate_extra_data','2024-01-21 15:18:48.853862'),(98,'social_django','0014_remove_usersocialauth_extra_data','2024-01-21 15:18:48.962904'),(99,'social_django','0015_rename_extra_data_new_usersocialauth_extra_data','2024-01-21 15:18:49.011981'),(100,'social_django','0005_auto_20160727_2333','2024-01-21 15:18:49.020983'),(101,'social_django','0003_alter_email_max_length','2024-01-21 15:18:49.024983'),(102,'social_django','0002_add_related_name','2024-01-21 15:18:49.029982'),(103,'social_django','0001_initial','2024-01-21 15:18:49.033981'),(104,'social_django','0004_auto_20160423_0400','2024-01-21 15:18:49.037986'),(105,'social_media','0025_room_received_message_date_room_seen','2024-01-22 14:56:56.797195');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `django_session`
---
-
-DROP TABLE IF EXISTS `django_session`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_session` (
-  `session_key` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `session_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expire_date` datetime(6) NOT NULL,
-  PRIMARY KEY (`session_key`),
-  KEY `django_session_expire_date_a5c62663` (`expire_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `django_session`
@@ -491,40 +167,9 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('8uaq6b2eev9wj58myfbzg65r0sifz80s','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rElqF:bnboS88BDDClLff8SmSRJ2SOYhPbfw_QTAoZ1ibVjeI','2023-12-31 07:45:39.988007'),('ao32xfmuceqwqrfqsir7xdpti0hg3bzb','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rJwJh:LJIjLjxND2biZSCHv_a3e_mpBmIj5R6WhvYuZNSjXaE','2024-01-14 13:57:25.329923'),('bmybxp5zgcysy5c4n54hqlg221ogglds','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rARpw:cz0K-I8fFuMxe6ZDQwohYjPTW07LymzcsIC-SEWwab4','2023-12-19 09:35:28.903416'),('f12gvdlj0idaek7oy172x6ta5b1b9sgt','eyJuZXh0IjoiL2hvbWUvIiwiZ29vZ2xlLW9hdXRoMl9zdGF0ZSI6IllDdUlDclRjMTdPajlWY3dRNXlsNkY4aENFYzZYMHp6In0:1rRb5N:iE5-IaUypQE9xalmIplqmBMeOGO-7F8ypqNGp7_8hO4','2024-02-04 16:54:17.109185'),('jrtdoi4r4d6y718kzv0zjr8txy7d5rhf','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rKgC0:X4CV6B7NaEXjCqWB1Ksg0DdKvUkpalu7GKfvHVfp4Sc','2024-01-16 14:56:32.678343'),('kdeq10ppcu4th7archf4hkmx5ecl66ld','eyJuZXh0IjoiL2hvbWUvIiwiZ29vZ2xlLW9hdXRoMl9zdGF0ZSI6Ijd2Vnd2ZFZydGNvQ2htNVNtMWlQenBTT2N1SWxubXdIIn0:1rRad2:rFcFErY_CV6CzHUsVhEL-fFXhFjYRr9YB67QA8a0uWA','2024-02-04 16:25:00.571793'),('oziorh8k5mx7jhz4iqyw3r4kzhbjksqd','.eJxVkEtrwzAQhP-Lzq0jWSsF9RZCKaUlhRxSfBJ6rB_UsUgku4WQ_145zaE-LczwzSxzIQP-JPJEVm044oo8kCaEpsfHYMbUljomkzDbpvysqul9Or5CtT3sh12zcafnafwO6i2ddusM6pnQY8Sz7nxGOCxFa9wXDrMTg-tMr104Y3FXY_HXW7zczsdmbl_yrYlthpUCK72sKTAmRe2pkkYxoMrZ2gnOuGWOcpRQCrAC11ByIbxgzFsKwtc59N5_i-5NTLoPTTf8e3CxAbn-AmqvYVM:1rRbBy:ksgO-9U-YX0zdyUiKf-BrkWd62vA6KOJG_2nGsFfJSU','2024-02-04 17:01:06.539066'),('wglq5rxburfcb174x3mk46rnxhgxyil6','.eJxVkM2qwjAQRt8lay2ZZiYSd4pwkbtwY9chv221GK6pXFR8d1t1YVcD33C-M8yd1SnVXZgnc-mbUufe9IEtma3w6qvjDfw-0uYv8e3v4ro97OC_Wadqv2EzpkdCX3I469YPiMBpaI07htO4ycm1ptMunUPxSXPx9hY_r7FbjfYp35jcDLBSaKWXkSOApOi5kkYBcuVsdCRAWHBcBIkloaWwwFIQeQLwliP5OJR-_K_qzuRed6luT18HTn7AHk_DVFwv:1rRasn:KB60czscprsKFbb4dcj-x2mz9ZjPFjyoJ4MxrzUA2NM','2024-02-04 16:41:17.364276');
+INSERT INTO `django_session` VALUES ('8uaq6b2eev9wj58myfbzg65r0sifz80s','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rElqF:bnboS88BDDClLff8SmSRJ2SOYhPbfw_QTAoZ1ibVjeI','2023-12-31 07:45:39.988007'),('ao32xfmuceqwqrfqsir7xdpti0hg3bzb','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rJwJh:LJIjLjxND2biZSCHv_a3e_mpBmIj5R6WhvYuZNSjXaE','2024-01-14 13:57:25.329923'),('bmybxp5zgcysy5c4n54hqlg221ogglds','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rARpw:cz0K-I8fFuMxe6ZDQwohYjPTW07LymzcsIC-SEWwab4','2023-12-19 09:35:28.903416'),('f12gvdlj0idaek7oy172x6ta5b1b9sgt','eyJuZXh0IjoiL2hvbWUvIiwiZ29vZ2xlLW9hdXRoMl9zdGF0ZSI6IllDdUlDclRjMTdPajlWY3dRNXlsNkY4aENFYzZYMHp6In0:1rRb5N:iE5-IaUypQE9xalmIplqmBMeOGO-7F8ypqNGp7_8hO4','2024-02-04 16:54:17.109185'),('jrtdoi4r4d6y718kzv0zjr8txy7d5rhf','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rKgC0:X4CV6B7NaEXjCqWB1Ksg0DdKvUkpalu7GKfvHVfp4Sc','2024-01-16 14:56:32.678343'),('kdeq10ppcu4th7archf4hkmx5ecl66ld','eyJuZXh0IjoiL2hvbWUvIiwiZ29vZ2xlLW9hdXRoMl9zdGF0ZSI6Ijd2Vnd2ZFZydGNvQ2htNVNtMWlQenBTT2N1SWxubXdIIn0:1rRad2:rFcFErY_CV6CzHUsVhEL-fFXhFjYRr9YB67QA8a0uWA','2024-02-04 16:25:00.571793'),('wglq5rxburfcb174x3mk46rnxhgxyil6','.eJxVkM2qwjAQRt8lay2ZZiYSd4pwkbtwY9chv221GK6pXFR8d1t1YVcD33C-M8yd1SnVXZgnc-mbUufe9IEtma3w6qvjDfw-0uYv8e3v4ro97OC_Wadqv2EzpkdCX3I469YPiMBpaI07htO4ycm1ptMunUPxSXPx9hY_r7FbjfYp35jcDLBSaKWXkSOApOi5kkYBcuVsdCRAWHBcBIkloaWwwFIQeQLwliP5OJR-_K_qzuRed6luT18HTn7AHk_DVFwv:1rRasn:KB60czscprsKFbb4dcj-x2mz9ZjPFjyoJ4MxrzUA2NM','2024-02-04 16:41:17.364276'),('zy7akued58yr0276nuxhwoprux7s5cz7','.eJxVjMEOwiAQRP-FsyGwBQSP3v0GsiyLVA1NSnsy_rtt0oPeJvPezFtEXJca185zHLO4CC1Ov11CenLbQX5gu0-SprbMY5K7Ig_a5W3K_Loe7t9BxV639VAyFtYuK-M9lmTAOQ96y3Q2SArYB0oBgKy1Shd0OLAKhqEYk20Qny_tJjfV:1rRpSt:jCDOOgJ0KbxfP81jzCqUvhBaw7ezniFzNdVlhsRarE8','2024-02-05 08:15:31.172949');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `oauth2_provider_accesstoken`
---
-
-DROP TABLE IF EXISTS `oauth2_provider_accesstoken`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `oauth2_provider_accesstoken` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expires` datetime(6) NOT NULL,
-  `scope` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `application_id` bigint(20) DEFAULT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
-  `created` datetime(6) NOT NULL,
-  `updated` datetime(6) NOT NULL,
-  `source_refresh_token_id` bigint(20) DEFAULT NULL,
-  `id_token_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `token` (`token`),
-  UNIQUE KEY `source_refresh_token_id` (`source_refresh_token_id`),
-  UNIQUE KEY `id_token_id` (`id_token_id`),
-  KEY `oauth2_provider_acce_application_id_b22886e1_fk_oauth2_pr` (`application_id`),
-  KEY `oauth2_provider_acce_user_id_6e4c9a65_fk_social_me` (`user_id`),
-  CONSTRAINT `oauth2_provider_acce_application_id_b22886e1_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
-  CONSTRAINT `oauth2_provider_acce_id_token_id_85db651b_fk_oauth2_pr` FOREIGN KEY (`id_token_id`) REFERENCES `oauth2_provider_idtoken` (`id`),
-  CONSTRAINT `oauth2_provider_acce_source_refresh_token_e66fbc72_fk_oauth2_pr` FOREIGN KEY (`source_refresh_token_id`) REFERENCES `oauth2_provider_refreshtoken` (`id`),
-  CONSTRAINT `oauth2_provider_acce_user_id_6e4c9a65_fk_social_me` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oauth2_provider_accesstoken`
@@ -532,38 +177,9 @@ CREATE TABLE `oauth2_provider_accesstoken` (
 
 LOCK TABLES `oauth2_provider_accesstoken` WRITE;
 /*!40000 ALTER TABLE `oauth2_provider_accesstoken` DISABLE KEYS */;
-INSERT INTO `oauth2_provider_accesstoken` VALUES (1,'mTdfbjmmZlV44XhGoDkL7TYzBZs7Ze','2023-12-09 21:40:17.888779','read write',1,1,'2023-12-09 11:40:17.889782','2023-12-09 11:40:17.889782',NULL,NULL),(2,'MFTA03sf7QDGhk4MgmQxltE5V8Qq8P','2023-12-12 18:29:50.315663','read write',1,1,'2023-12-12 08:29:50.315663','2023-12-12 08:29:50.315663',NULL,NULL),(3,'HM7suDaNLvs6ZQhfdq5B3D7smVz6PD','2023-12-14 20:31:39.568515','read write',1,1,'2023-12-14 10:31:39.569492','2023-12-14 10:31:39.569492',NULL,NULL),(4,'XmIDiznxqxUCHEbLizY775v5JLiTB4','2023-12-14 21:00:06.410048','read write',1,2,'2023-12-14 11:00:06.411121','2023-12-14 11:00:06.411121',NULL,NULL),(5,'3Bo8xNWhZqGKU7AVJhIVimORCbk1C7','2023-12-16 20:40:42.943986','read write',1,2,'2023-12-16 10:40:42.943986','2023-12-16 10:40:42.943986',NULL,NULL),(6,'foayciL9snFRQ4Tp2sng2SVkkflKFc','2023-12-17 16:57:42.943773','read write',1,2,'2023-12-17 06:57:42.943773','2023-12-17 06:57:42.943773',NULL,NULL),(7,'oBulNBppBDdEBtDgsRuogNBsaxPLAj','2023-12-17 21:40:41.132405','read write',1,2,'2023-12-17 11:40:41.132405','2023-12-17 11:40:41.133402',NULL,NULL),(8,'aY3XVcROEhPMbvVgrzfqS48cUhOs6A','2023-12-19 12:26:20.980459','read write',1,2,'2023-12-19 02:26:20.980459','2023-12-19 02:26:20.980459',NULL,NULL),(9,'TuaxIpvmyDwWHWhMv1o17oyN8deSW2','2023-12-19 14:31:02.426574','read write',1,3,'2023-12-19 04:31:02.426574','2023-12-19 04:31:02.426574',NULL,NULL),(10,'jx5GakJzOaOotcT3piytSGcqqgKakL','2023-12-19 14:32:26.037622','read write',1,1,'2023-12-19 04:32:26.037622','2023-12-19 04:32:26.037622',NULL,NULL),(11,'v5EnPVKC3JZGm4IsuABO6j8Hbgdipb','2023-12-19 19:35:58.923920','read write',1,2,'2023-12-19 09:35:58.924921','2023-12-19 09:35:58.924921',NULL,NULL),(12,'91dLCSKLHvqbxx09vHH4p6f54y5loN','2023-12-19 19:59:24.367529','read write',1,2,'2023-12-19 09:59:24.367529','2023-12-19 09:59:24.367529',NULL,NULL),(13,'FnULzUBgROc9hRgpZ2wPaZ7xK9sLOY','2023-12-19 20:02:09.476544','read write',1,2,'2023-12-19 10:02:09.476544','2023-12-19 10:02:09.476544',NULL,NULL),(14,'Qn4jUwA1irxCI6Z6Gt8h9AQs1rkTLg','2023-12-19 20:03:28.161439','read write',1,2,'2023-12-19 10:03:28.162441','2023-12-19 10:03:28.162441',NULL,NULL),(15,'6wzI6xeZVP1BrDlzBMq5TrD6QeEKgt','2023-12-19 20:14:05.308502','read write',1,2,'2023-12-19 10:14:05.309502','2023-12-19 10:14:05.309502',NULL,NULL),(16,'twIL4RXjSrthhMCTegl31PE0je9S3L','2023-12-21 20:11:40.179797','read write',1,1,'2023-12-21 10:11:40.180799','2023-12-21 10:11:40.180799',NULL,NULL),(17,'cmPhhnmgEj8t76GGoqInPM0x6emhBx','2023-12-21 21:08:25.646501','read write',1,2,'2023-12-21 11:08:25.647500','2023-12-21 11:08:25.647500',NULL,NULL),(18,'qluL1NsdtM1hM3ZtnfYjdFPdl9gQI4','2023-12-23 23:15:14.160126','read write',1,2,'2023-12-23 13:15:14.160126','2023-12-23 13:15:14.160126',NULL,NULL),(19,'JxvqNxiaj81MQnoQQeHA8K1v6qkYI1','2023-12-26 18:21:56.923684','read write',1,2,'2023-12-26 08:21:56.923684','2023-12-26 08:21:56.923684',NULL,NULL),(20,'lNSwzq16Ycsty9kcboIFiqDib4EfKo','2023-12-27 01:23:23.069311','read write',1,1,'2023-12-26 15:23:23.070363','2023-12-26 15:23:23.070363',NULL,NULL),(21,'K7vzZPscg85IVPSRkuMF9XmOatCfMW','2023-12-27 01:51:04.961888','read write',1,1,'2023-12-26 15:51:04.961888','2023-12-26 15:51:04.962451',NULL,NULL),(22,'v7OJMhKIqt7785sujd5TSV3HTZhLjA','2023-12-27 01:58:38.379519','read write',1,1,'2023-12-26 15:58:38.379519','2023-12-26 15:58:38.379519',NULL,NULL),(23,'crHEvldYJJjryAxArVvfV1fXKQgDmt','2023-12-27 02:09:46.183450','read write',1,1,'2023-12-26 16:09:46.183450','2023-12-26 16:09:46.183450',NULL,NULL),(24,'rcmFLCbILmygCzlwv6nUMcVuhLAd1O','2023-12-27 02:10:46.925077','read write',1,1,'2023-12-26 16:10:46.925077','2023-12-26 16:10:46.925077',NULL,NULL),(25,'tO71szEAsNJ8OunAUEySAA36mLSlVI','2023-12-27 02:25:52.315535','read write',1,1,'2023-12-26 16:25:52.315535','2023-12-26 16:25:52.315535',NULL,NULL),(26,'eDw1aP3bYwx9MaqNRk4iK5AaY5d53t','2023-12-27 02:28:30.591762','read write',1,1,'2023-12-26 16:28:30.592721','2023-12-26 16:28:30.592721',NULL,NULL),(27,'KTCKiBmuL49FiUdjSxBV6esMBDSGwS','2023-12-27 02:33:28.883787','read write',1,1,'2023-12-26 16:33:28.883787','2023-12-26 16:33:28.883787',NULL,NULL),(28,'80RREdnNosmXuh9iO1MyoYquf7TUvk','2023-12-27 02:59:16.478080','read write',1,1,'2023-12-26 16:59:16.479078','2023-12-26 16:59:16.479078',NULL,NULL),(29,'yc3CfshyuVoOWB0sZdobQjqLr4PDNt','2023-12-27 03:02:52.706802','read write',1,1,'2023-12-26 17:02:52.706802','2023-12-26 17:02:52.706802',NULL,NULL),(30,'XBXwFQT06CrqAZlCxOYFDYpFpZwV5Y','2023-12-27 03:04:47.114370','read write',1,1,'2023-12-26 17:04:47.114370','2023-12-26 17:04:47.114370',NULL,NULL),(31,'Sio6hFGF3OfOCRviFoSAnNofGQWEPg','2023-12-27 03:06:35.731104','read write',1,1,'2023-12-26 17:06:35.731612','2023-12-26 17:06:35.731612',NULL,NULL),(32,'lkSKufr3cTDtMiqbvKLST3uf9bQtSZ','2023-12-27 03:07:31.603059','read write',1,1,'2023-12-26 17:07:31.603059','2023-12-26 17:07:31.603059',NULL,NULL),(33,'fVsI2CHLZJYoxlJ38PLeT9728PF5Gj','2023-12-27 03:09:40.461460','read write',1,1,'2023-12-26 17:09:40.462055','2023-12-26 17:09:40.462055',NULL,NULL),(34,'IjecVhj1p3wAIWtAnVjwSxsT33hW5I','2023-12-28 01:49:56.668386','read write',1,2,'2023-12-27 15:49:56.669386','2023-12-27 15:49:56.669386',NULL,NULL),(35,'8pX0aRcaSQB3rn8eEy9P5suvS6g522','2023-12-28 02:06:19.294125','read write',1,2,'2023-12-27 16:06:19.294125','2023-12-27 16:06:19.294125',NULL,NULL),(36,'zxfKegoF9FZEjnNJk0foymt0tl09uT','2023-12-28 02:06:44.329718','read write',1,2,'2023-12-27 16:06:44.329718','2023-12-27 16:06:44.329718',NULL,NULL),(37,'FKpq7vLg9TS7tPUIdvbEdSvSIWtcbk','2023-12-28 02:07:05.393226','read write',1,2,'2023-12-27 16:07:05.393226','2023-12-27 16:07:05.393226',NULL,NULL),(38,'szCPCsfHqhGEHQOfStKErFFqsbtzBE','2023-12-28 02:08:48.714072','read write',1,2,'2023-12-27 16:08:48.714072','2023-12-27 16:08:48.714072',NULL,NULL),(39,'AMLMObmf9shK0KRTpOVoXYhSutDDpI','2023-12-28 02:09:00.867689','read write',1,2,'2023-12-27 16:09:00.867689','2023-12-27 16:09:00.867689',NULL,NULL),(40,'QgnFNmumUzEbJQOIDaeUYWmey0oIz1','2023-12-28 02:09:17.292775','read write',1,2,'2023-12-27 16:09:17.292775','2023-12-27 16:09:17.292775',NULL,NULL),(41,'zQCiKXN9WtZUL1N1e19SIhx0DP7dDg','2023-12-28 02:09:28.942322','read write',1,2,'2023-12-27 16:09:28.942322','2023-12-27 16:09:28.942322',NULL,NULL),(42,'J9DXfPQ4mHBdmeNcTsPtrqpgZiMzf5','2023-12-28 02:09:51.092780','read write',1,2,'2023-12-27 16:09:51.093780','2023-12-27 16:09:51.093780',NULL,NULL),(43,'qbiSWQaCgqKY4N41mVp1RTeNtx5Ekd','2023-12-28 02:13:19.153602','read write',1,2,'2023-12-27 16:13:19.169228','2023-12-27 16:13:19.169228',NULL,NULL),(44,'3cISffdSrqTGCdzYqQCdC51p8OWBF6','2023-12-28 02:14:13.889137','read write',1,2,'2023-12-27 16:14:13.889137','2023-12-27 16:14:13.889137',NULL,NULL),(45,'kKmSoirA5QGhHSyso7sVBeNnyFhA5Q','2023-12-28 02:14:21.367754','read write',1,3,'2023-12-27 16:14:21.383377','2023-12-27 16:14:21.383377',NULL,NULL),(46,'HcA4YVFDUNi9cffkB1FsBMZZRrOqvl','2023-12-28 21:55:23.683937','read write',1,3,'2023-12-28 11:55:23.684938','2023-12-28 11:55:23.684938',NULL,NULL),(47,'OHAMDQwamYqJxBc9iyus0lmCqmLfAR','2023-12-28 23:59:01.738501','read write',1,3,'2023-12-28 13:59:01.738501','2023-12-28 13:59:01.738501',NULL,NULL),(48,'w3G4qHFcS84ICjLhoNbvzoaeIYj7NV','2023-12-29 00:04:29.769083','read write',1,3,'2023-12-28 14:04:29.769083','2023-12-28 14:04:29.769083',NULL,NULL),(49,'QWxmbvQNxfbCUVmzJP3HQUfKwpTFec','2023-12-29 19:41:57.304305','read write',1,1,'2023-12-29 09:41:57.305308','2023-12-29 09:41:57.305308',NULL,NULL),(50,'TPjJgOXrO3WgtJWDEKeq9k6DoNXKRe','2023-12-31 04:20:37.095852','read write',1,1,'2023-12-30 18:20:37.096861','2023-12-30 18:20:37.096861',NULL,NULL),(51,'gAQOffTrYf3mf9snCsWc3uA4DMGzZP','2023-12-31 05:57:58.597152','read write',1,1,'2023-12-30 19:57:58.598153','2023-12-30 19:57:58.598153',NULL,NULL),(52,'OVee5tfNwBEAKw10yQjzdvxNRK9NJN','2023-12-31 22:59:08.761687','read write',1,1,'2023-12-31 12:59:08.761687','2023-12-31 12:59:08.761687',NULL,NULL),(53,'I1wEKACvlVkBLa7Tu9Ob3yTK3RtPbJ','2024-01-01 12:18:12.672543','read write',1,1,'2024-01-01 02:18:12.672543','2024-01-01 02:18:12.672543',NULL,NULL),(54,'LLsSfra31gaC3q6dr1g3Uu8dpOdlbw','2024-01-01 20:07:13.557598','read write',1,1,'2024-01-01 10:07:13.557598','2024-01-01 10:07:13.557598',NULL,NULL),(55,'FjO1XP9aGTxRRUVFH3jxPZMM683nDP','2024-01-01 22:32:44.272066','read write',1,1,'2024-01-01 12:32:44.272066','2024-01-01 12:32:44.272066',NULL,NULL),(56,'uw7gefdQ5Cxd2SGul6Cv7D4D4tGpPk','2024-01-02 20:00:09.163274','read write',1,1,'2024-01-02 10:00:09.163274','2024-01-02 10:00:09.163274',NULL,NULL),(57,'fUwzcjni1cEE9f5m7UdqOc17iohlyR','2024-01-03 00:13:40.415912','read write',1,1,'2024-01-02 14:13:40.415912','2024-01-02 14:13:40.415912',NULL,NULL),(58,'18fg8PMkx3qNzqMyuQpJouJcFDYrUG','2024-01-03 00:40:27.438401','read write',1,1,'2024-01-02 14:40:27.439405','2024-01-02 14:40:27.439405',NULL,NULL),(59,'zK7ZIMapWF0IItr0ND2MceCnuwHwHC','2024-01-05 00:13:51.442135','read write',1,1,'2024-01-04 14:13:51.443138','2024-01-04 14:13:51.443138',NULL,NULL),(60,'X26uK1DYgNpfBLTV5AqcCjsJecugZS','2024-01-05 00:51:37.567821','read write',1,1,'2024-01-04 14:51:37.567821','2024-01-04 14:51:37.567821',NULL,NULL),(61,'rqv6KDE5RhzTXYsf4eEyT69o6sphfR','2024-01-06 16:30:11.661337','read write',1,1,'2024-01-06 06:30:11.662909','2024-01-06 06:30:11.662909',NULL,NULL),(62,'mTxr0sNsrXa1XLXoxIR50KtLxppi8w','2024-01-06 20:58:01.716005','read write',1,1,'2024-01-06 10:58:01.716005','2024-01-06 10:58:01.716005',NULL,NULL),(63,'ZrrhtbmhQNdW9Nw8mcVhlSIAEV6k1G','2024-01-07 10:33:30.477417','read write',1,1,'2024-01-07 00:33:30.478421','2024-01-07 00:33:30.478421',NULL,NULL),(64,'Gx0hlskFKkjFZL9upb5ClbPD7w3J0z','2024-01-07 11:42:55.248736','read write',1,1,'2024-01-07 01:42:55.248736','2024-01-07 01:42:55.248736',NULL,NULL),(65,'BoTOzmVvUhAIG8WEPnfeQUR58MMxVe','2024-01-07 11:44:04.417546','read write',1,1,'2024-01-07 01:44:04.417546','2024-01-07 01:44:04.417546',NULL,NULL),(66,'H2oDMoEpOp8505yqRrJ9sT3BZqxxfx','2024-01-07 11:46:06.558159','read write',1,1,'2024-01-07 01:46:06.558159','2024-01-07 01:46:06.558159',NULL,NULL),(67,'4mDwqhNvlnDfRXkg7OD0uF7T57APFa','2024-01-07 11:48:11.399213','read write',1,1,'2024-01-07 01:48:11.399213','2024-01-07 01:48:11.399213',NULL,NULL),(68,'2u724D0LWuePNitfsIFN0p0Jgihg9V','2024-01-07 11:48:37.090670','read write',1,1,'2024-01-07 01:48:37.090670','2024-01-07 01:48:37.090670',NULL,NULL),(69,'PcMDovpAdwKeI4RbVVUav2cvga2vSU','2024-01-07 11:49:43.946939','read write',1,1,'2024-01-07 01:49:43.946939','2024-01-07 01:49:43.946939',NULL,NULL),(70,'8o3ZvHYqjTlJh5XqpX02YN3iig3EN3','2024-01-07 12:31:23.626013','read write',1,1,'2024-01-07 02:31:23.626013','2024-01-07 02:31:23.626013',NULL,NULL),(71,'ema3VJ1ivxkcANy3wVntrmgsqbIzUA','2024-01-10 17:35:53.248926','read write',1,1,'2024-01-10 07:35:53.248926','2024-01-10 07:35:53.248926',NULL,NULL),(72,'J9SP0dzsGEg0U7DXiGToOEFw5mKaOZ','2024-01-11 21:29:41.812532','read write',1,1,'2024-01-11 11:29:41.813531','2024-01-11 11:29:41.813531',NULL,NULL),(73,'VvdeHRJLZUKD5lto7w5FxGRRLCcCYh','2024-01-14 11:55:43.842284','read write',1,1,'2024-01-14 01:55:43.842284','2024-01-14 01:55:43.842284',NULL,NULL),(74,'geWWoyEv4jjTwAbkGXthZXkNWGoRso','2024-01-14 11:55:44.140497','read write',1,1,'2024-01-14 01:55:44.140497','2024-01-14 01:55:44.140497',NULL,NULL),(75,'cCQNbpY7eiG33833Omweyz3RXlBbtE','2024-01-19 18:25:33.170135','read write',1,1,'2024-01-19 08:25:33.171137','2024-01-19 08:25:33.171137',NULL,NULL),(76,'EtOvhgaIkF1HG07SDJVxHEvswQMpv1','2024-01-19 18:34:42.226124','read write',1,1,'2024-01-19 08:34:42.226124','2024-01-19 08:34:42.226124',NULL,NULL),(77,'rVO8dpW9rdsvFIjZamOKIz0H1kFgRy','2024-01-19 18:38:03.229239','read write',1,1,'2024-01-19 08:38:03.230282','2024-01-19 08:38:03.230282',NULL,NULL),(78,'vHdpMS5YMDSDC3A6T2JXNS8ckTiuqj','2024-01-19 18:46:43.138453','read write',1,1,'2024-01-19 08:46:43.138453','2024-01-19 08:46:43.138453',NULL,NULL),(79,'XcmFLjqSuLA9Thx8B4tPgRrrZNEcwV','2024-01-19 18:50:42.575050','read write',1,1,'2024-01-19 08:50:42.575050','2024-01-19 08:50:42.575050',NULL,NULL),(80,'TBnN0Lwds4yxoGOvay8cxFacQfNp1E','2024-01-19 18:56:48.468036','read write',1,1,'2024-01-19 08:56:48.469006','2024-01-19 08:56:48.469006',NULL,NULL),(81,'AFGwFJL82zNsSi4X2ZPlUMtd1Ph2Wn','2024-01-20 00:01:29.609234','read write',1,1,'2024-01-19 14:01:29.609234','2024-01-19 14:01:29.609234',NULL,NULL),(82,'Ou9vldW4j8bEuBhydO3qRnzLGLX6Q7','2024-01-20 00:03:55.690573','read write',1,2,'2024-01-19 14:03:55.690573','2024-01-19 14:03:55.690573',NULL,NULL),(83,'FuXkoR8lX6zj0W7Jyv4KHs6nRhOLD0','2024-01-20 02:01:36.235592','read write',1,1,'2024-01-19 16:01:36.236603','2024-01-19 16:01:36.236603',NULL,NULL),(84,'e4Omd8McepZHCUFuyJ5MtdC9jONAff','2024-01-20 02:09:33.495837','read write',1,1,'2024-01-19 16:09:33.498886','2024-01-19 16:09:33.498886',NULL,NULL),(85,'xay6Eko5oj3vfV4n2BhwafSuCsNdsk','2024-01-20 02:11:57.985529','read write',1,1,'2024-01-19 16:11:57.986538','2024-01-19 16:11:57.986538',NULL,NULL),(86,'zyRnEb2KoEonIhsf1YRVE8Ma5xR8J6','2024-01-20 02:13:05.658836','read write',1,1,'2024-01-19 16:13:05.658836','2024-01-19 16:13:05.658836',NULL,NULL),(87,'DaXCYUF3wOHBwlQKTjbpQHCZeEc00Z','2024-01-20 02:16:19.220628','read write',1,1,'2024-01-19 16:16:19.220628','2024-01-19 16:16:19.220628',NULL,NULL),(88,'f56UpDuFyABiNacIhWxC0jiT692SSj','2024-01-20 02:17:07.355560','read write',1,1,'2024-01-19 16:17:07.355560','2024-01-19 16:17:07.355560',NULL,NULL),(89,'uzLpGgWkYH1v61sxr4luY8AHnACbrh','2024-01-20 02:30:58.503329','read write',1,1,'2024-01-19 16:30:58.503329','2024-01-19 16:30:58.503329',NULL,NULL),(90,'DkrbmS7pOXCrSGc7ZwQHO2h1xs6r1p','2024-01-20 02:31:15.387931','read write',1,2,'2024-01-19 16:31:15.387931','2024-01-19 16:31:15.387931',NULL,NULL),(91,'B2XVZLg7rVUJrkA0qVOJGCIinok2ic','2024-01-20 02:32:24.865712','read write',1,1,'2024-01-19 16:32:24.865712','2024-01-19 16:32:24.865712',NULL,NULL),(92,'y7ri0uKkOR3Za1qcPyBiDAWsFrp4N5','2024-01-20 03:05:57.626551','read write',1,1,'2024-01-19 17:05:57.626551','2024-01-19 17:05:57.626551',NULL,NULL);
+INSERT INTO `oauth2_provider_accesstoken` VALUES (1,'mTdfbjmmZlV44XhGoDkL7TYzBZs7Ze','2023-12-09 21:40:17.888779','read write',1,1,'2023-12-09 11:40:17.889782','2023-12-09 11:40:17.889782',NULL,NULL),(2,'MFTA03sf7QDGhk4MgmQxltE5V8Qq8P','2023-12-12 18:29:50.315663','read write',1,1,'2023-12-12 08:29:50.315663','2023-12-12 08:29:50.315663',NULL,NULL),(3,'HM7suDaNLvs6ZQhfdq5B3D7smVz6PD','2023-12-14 20:31:39.568515','read write',1,1,'2023-12-14 10:31:39.569492','2023-12-14 10:31:39.569492',NULL,NULL),(4,'XmIDiznxqxUCHEbLizY775v5JLiTB4','2023-12-14 21:00:06.410048','read write',1,2,'2023-12-14 11:00:06.411121','2023-12-14 11:00:06.411121',NULL,NULL),(5,'3Bo8xNWhZqGKU7AVJhIVimORCbk1C7','2023-12-16 20:40:42.943986','read write',1,2,'2023-12-16 10:40:42.943986','2023-12-16 10:40:42.943986',NULL,NULL),(6,'foayciL9snFRQ4Tp2sng2SVkkflKFc','2023-12-17 16:57:42.943773','read write',1,2,'2023-12-17 06:57:42.943773','2023-12-17 06:57:42.943773',NULL,NULL),(7,'oBulNBppBDdEBtDgsRuogNBsaxPLAj','2023-12-17 21:40:41.132405','read write',1,2,'2023-12-17 11:40:41.132405','2023-12-17 11:40:41.133402',NULL,NULL),(8,'aY3XVcROEhPMbvVgrzfqS48cUhOs6A','2023-12-19 12:26:20.980459','read write',1,2,'2023-12-19 02:26:20.980459','2023-12-19 02:26:20.980459',NULL,NULL),(9,'TuaxIpvmyDwWHWhMv1o17oyN8deSW2','2023-12-19 14:31:02.426574','read write',1,3,'2023-12-19 04:31:02.426574','2023-12-19 04:31:02.426574',NULL,NULL),(10,'jx5GakJzOaOotcT3piytSGcqqgKakL','2023-12-19 14:32:26.037622','read write',1,1,'2023-12-19 04:32:26.037622','2023-12-19 04:32:26.037622',NULL,NULL),(11,'v5EnPVKC3JZGm4IsuABO6j8Hbgdipb','2023-12-19 19:35:58.923920','read write',1,2,'2023-12-19 09:35:58.924921','2023-12-19 09:35:58.924921',NULL,NULL),(12,'91dLCSKLHvqbxx09vHH4p6f54y5loN','2023-12-19 19:59:24.367529','read write',1,2,'2023-12-19 09:59:24.367529','2023-12-19 09:59:24.367529',NULL,NULL),(13,'FnULzUBgROc9hRgpZ2wPaZ7xK9sLOY','2023-12-19 20:02:09.476544','read write',1,2,'2023-12-19 10:02:09.476544','2023-12-19 10:02:09.476544',NULL,NULL),(14,'Qn4jUwA1irxCI6Z6Gt8h9AQs1rkTLg','2023-12-19 20:03:28.161439','read write',1,2,'2023-12-19 10:03:28.162441','2023-12-19 10:03:28.162441',NULL,NULL),(15,'6wzI6xeZVP1BrDlzBMq5TrD6QeEKgt','2023-12-19 20:14:05.308502','read write',1,2,'2023-12-19 10:14:05.309502','2023-12-19 10:14:05.309502',NULL,NULL),(16,'twIL4RXjSrthhMCTegl31PE0je9S3L','2023-12-21 20:11:40.179797','read write',1,1,'2023-12-21 10:11:40.180799','2023-12-21 10:11:40.180799',NULL,NULL),(17,'cmPhhnmgEj8t76GGoqInPM0x6emhBx','2023-12-21 21:08:25.646501','read write',1,2,'2023-12-21 11:08:25.647500','2023-12-21 11:08:25.647500',NULL,NULL),(18,'qluL1NsdtM1hM3ZtnfYjdFPdl9gQI4','2023-12-23 23:15:14.160126','read write',1,2,'2023-12-23 13:15:14.160126','2023-12-23 13:15:14.160126',NULL,NULL),(19,'JxvqNxiaj81MQnoQQeHA8K1v6qkYI1','2023-12-26 18:21:56.923684','read write',1,2,'2023-12-26 08:21:56.923684','2023-12-26 08:21:56.923684',NULL,NULL),(20,'lNSwzq16Ycsty9kcboIFiqDib4EfKo','2023-12-27 01:23:23.069311','read write',1,1,'2023-12-26 15:23:23.070363','2023-12-26 15:23:23.070363',NULL,NULL),(21,'K7vzZPscg85IVPSRkuMF9XmOatCfMW','2023-12-27 01:51:04.961888','read write',1,1,'2023-12-26 15:51:04.961888','2023-12-26 15:51:04.962451',NULL,NULL),(22,'v7OJMhKIqt7785sujd5TSV3HTZhLjA','2023-12-27 01:58:38.379519','read write',1,1,'2023-12-26 15:58:38.379519','2023-12-26 15:58:38.379519',NULL,NULL),(23,'crHEvldYJJjryAxArVvfV1fXKQgDmt','2023-12-27 02:09:46.183450','read write',1,1,'2023-12-26 16:09:46.183450','2023-12-26 16:09:46.183450',NULL,NULL),(24,'rcmFLCbILmygCzlwv6nUMcVuhLAd1O','2023-12-27 02:10:46.925077','read write',1,1,'2023-12-26 16:10:46.925077','2023-12-26 16:10:46.925077',NULL,NULL),(25,'tO71szEAsNJ8OunAUEySAA36mLSlVI','2023-12-27 02:25:52.315535','read write',1,1,'2023-12-26 16:25:52.315535','2023-12-26 16:25:52.315535',NULL,NULL),(26,'eDw1aP3bYwx9MaqNRk4iK5AaY5d53t','2023-12-27 02:28:30.591762','read write',1,1,'2023-12-26 16:28:30.592721','2023-12-26 16:28:30.592721',NULL,NULL),(27,'KTCKiBmuL49FiUdjSxBV6esMBDSGwS','2023-12-27 02:33:28.883787','read write',1,1,'2023-12-26 16:33:28.883787','2023-12-26 16:33:28.883787',NULL,NULL),(28,'80RREdnNosmXuh9iO1MyoYquf7TUvk','2023-12-27 02:59:16.478080','read write',1,1,'2023-12-26 16:59:16.479078','2023-12-26 16:59:16.479078',NULL,NULL),(29,'yc3CfshyuVoOWB0sZdobQjqLr4PDNt','2023-12-27 03:02:52.706802','read write',1,1,'2023-12-26 17:02:52.706802','2023-12-26 17:02:52.706802',NULL,NULL),(30,'XBXwFQT06CrqAZlCxOYFDYpFpZwV5Y','2023-12-27 03:04:47.114370','read write',1,1,'2023-12-26 17:04:47.114370','2023-12-26 17:04:47.114370',NULL,NULL),(31,'Sio6hFGF3OfOCRviFoSAnNofGQWEPg','2023-12-27 03:06:35.731104','read write',1,1,'2023-12-26 17:06:35.731612','2023-12-26 17:06:35.731612',NULL,NULL),(32,'lkSKufr3cTDtMiqbvKLST3uf9bQtSZ','2023-12-27 03:07:31.603059','read write',1,1,'2023-12-26 17:07:31.603059','2023-12-26 17:07:31.603059',NULL,NULL),(33,'fVsI2CHLZJYoxlJ38PLeT9728PF5Gj','2023-12-27 03:09:40.461460','read write',1,1,'2023-12-26 17:09:40.462055','2023-12-26 17:09:40.462055',NULL,NULL),(34,'IjecVhj1p3wAIWtAnVjwSxsT33hW5I','2023-12-28 01:49:56.668386','read write',1,2,'2023-12-27 15:49:56.669386','2023-12-27 15:49:56.669386',NULL,NULL),(35,'8pX0aRcaSQB3rn8eEy9P5suvS6g522','2023-12-28 02:06:19.294125','read write',1,2,'2023-12-27 16:06:19.294125','2023-12-27 16:06:19.294125',NULL,NULL),(36,'zxfKegoF9FZEjnNJk0foymt0tl09uT','2023-12-28 02:06:44.329718','read write',1,2,'2023-12-27 16:06:44.329718','2023-12-27 16:06:44.329718',NULL,NULL),(37,'FKpq7vLg9TS7tPUIdvbEdSvSIWtcbk','2023-12-28 02:07:05.393226','read write',1,2,'2023-12-27 16:07:05.393226','2023-12-27 16:07:05.393226',NULL,NULL),(38,'szCPCsfHqhGEHQOfStKErFFqsbtzBE','2023-12-28 02:08:48.714072','read write',1,2,'2023-12-27 16:08:48.714072','2023-12-27 16:08:48.714072',NULL,NULL),(39,'AMLMObmf9shK0KRTpOVoXYhSutDDpI','2023-12-28 02:09:00.867689','read write',1,2,'2023-12-27 16:09:00.867689','2023-12-27 16:09:00.867689',NULL,NULL),(40,'QgnFNmumUzEbJQOIDaeUYWmey0oIz1','2023-12-28 02:09:17.292775','read write',1,2,'2023-12-27 16:09:17.292775','2023-12-27 16:09:17.292775',NULL,NULL),(41,'zQCiKXN9WtZUL1N1e19SIhx0DP7dDg','2023-12-28 02:09:28.942322','read write',1,2,'2023-12-27 16:09:28.942322','2023-12-27 16:09:28.942322',NULL,NULL),(42,'J9DXfPQ4mHBdmeNcTsPtrqpgZiMzf5','2023-12-28 02:09:51.092780','read write',1,2,'2023-12-27 16:09:51.093780','2023-12-27 16:09:51.093780',NULL,NULL),(43,'qbiSWQaCgqKY4N41mVp1RTeNtx5Ekd','2023-12-28 02:13:19.153602','read write',1,2,'2023-12-27 16:13:19.169228','2023-12-27 16:13:19.169228',NULL,NULL),(44,'3cISffdSrqTGCdzYqQCdC51p8OWBF6','2023-12-28 02:14:13.889137','read write',1,2,'2023-12-27 16:14:13.889137','2023-12-27 16:14:13.889137',NULL,NULL),(45,'kKmSoirA5QGhHSyso7sVBeNnyFhA5Q','2023-12-28 02:14:21.367754','read write',1,3,'2023-12-27 16:14:21.383377','2023-12-27 16:14:21.383377',NULL,NULL),(46,'HcA4YVFDUNi9cffkB1FsBMZZRrOqvl','2023-12-28 21:55:23.683937','read write',1,3,'2023-12-28 11:55:23.684938','2023-12-28 11:55:23.684938',NULL,NULL),(47,'OHAMDQwamYqJxBc9iyus0lmCqmLfAR','2023-12-28 23:59:01.738501','read write',1,3,'2023-12-28 13:59:01.738501','2023-12-28 13:59:01.738501',NULL,NULL),(48,'w3G4qHFcS84ICjLhoNbvzoaeIYj7NV','2023-12-29 00:04:29.769083','read write',1,3,'2023-12-28 14:04:29.769083','2023-12-28 14:04:29.769083',NULL,NULL),(49,'QWxmbvQNxfbCUVmzJP3HQUfKwpTFec','2023-12-29 19:41:57.304305','read write',1,1,'2023-12-29 09:41:57.305308','2023-12-29 09:41:57.305308',NULL,NULL),(50,'TPjJgOXrO3WgtJWDEKeq9k6DoNXKRe','2023-12-31 04:20:37.095852','read write',1,1,'2023-12-30 18:20:37.096861','2023-12-30 18:20:37.096861',NULL,NULL),(51,'gAQOffTrYf3mf9snCsWc3uA4DMGzZP','2023-12-31 05:57:58.597152','read write',1,1,'2023-12-30 19:57:58.598153','2023-12-30 19:57:58.598153',NULL,NULL),(52,'OVee5tfNwBEAKw10yQjzdvxNRK9NJN','2023-12-31 22:59:08.761687','read write',1,1,'2023-12-31 12:59:08.761687','2023-12-31 12:59:08.761687',NULL,NULL),(53,'I1wEKACvlVkBLa7Tu9Ob3yTK3RtPbJ','2024-01-01 12:18:12.672543','read write',1,1,'2024-01-01 02:18:12.672543','2024-01-01 02:18:12.672543',NULL,NULL),(54,'LLsSfra31gaC3q6dr1g3Uu8dpOdlbw','2024-01-01 20:07:13.557598','read write',1,1,'2024-01-01 10:07:13.557598','2024-01-01 10:07:13.557598',NULL,NULL),(55,'FjO1XP9aGTxRRUVFH3jxPZMM683nDP','2024-01-01 22:32:44.272066','read write',1,1,'2024-01-01 12:32:44.272066','2024-01-01 12:32:44.272066',NULL,NULL),(56,'uw7gefdQ5Cxd2SGul6Cv7D4D4tGpPk','2024-01-02 20:00:09.163274','read write',1,1,'2024-01-02 10:00:09.163274','2024-01-02 10:00:09.163274',NULL,NULL),(57,'fUwzcjni1cEE9f5m7UdqOc17iohlyR','2024-01-03 00:13:40.415912','read write',1,1,'2024-01-02 14:13:40.415912','2024-01-02 14:13:40.415912',NULL,NULL),(58,'18fg8PMkx3qNzqMyuQpJouJcFDYrUG','2024-01-03 00:40:27.438401','read write',1,1,'2024-01-02 14:40:27.439405','2024-01-02 14:40:27.439405',NULL,NULL),(59,'zK7ZIMapWF0IItr0ND2MceCnuwHwHC','2024-01-05 00:13:51.442135','read write',1,1,'2024-01-04 14:13:51.443138','2024-01-04 14:13:51.443138',NULL,NULL),(60,'X26uK1DYgNpfBLTV5AqcCjsJecugZS','2024-01-05 00:51:37.567821','read write',1,1,'2024-01-04 14:51:37.567821','2024-01-04 14:51:37.567821',NULL,NULL),(61,'rqv6KDE5RhzTXYsf4eEyT69o6sphfR','2024-01-06 16:30:11.661337','read write',1,1,'2024-01-06 06:30:11.662909','2024-01-06 06:30:11.662909',NULL,NULL),(62,'mTxr0sNsrXa1XLXoxIR50KtLxppi8w','2024-01-06 20:58:01.716005','read write',1,1,'2024-01-06 10:58:01.716005','2024-01-06 10:58:01.716005',NULL,NULL),(63,'ZrrhtbmhQNdW9Nw8mcVhlSIAEV6k1G','2024-01-07 10:33:30.477417','read write',1,1,'2024-01-07 00:33:30.478421','2024-01-07 00:33:30.478421',NULL,NULL),(64,'Gx0hlskFKkjFZL9upb5ClbPD7w3J0z','2024-01-07 11:42:55.248736','read write',1,1,'2024-01-07 01:42:55.248736','2024-01-07 01:42:55.248736',NULL,NULL),(65,'BoTOzmVvUhAIG8WEPnfeQUR58MMxVe','2024-01-07 11:44:04.417546','read write',1,1,'2024-01-07 01:44:04.417546','2024-01-07 01:44:04.417546',NULL,NULL),(66,'H2oDMoEpOp8505yqRrJ9sT3BZqxxfx','2024-01-07 11:46:06.558159','read write',1,1,'2024-01-07 01:46:06.558159','2024-01-07 01:46:06.558159',NULL,NULL),(67,'4mDwqhNvlnDfRXkg7OD0uF7T57APFa','2024-01-07 11:48:11.399213','read write',1,1,'2024-01-07 01:48:11.399213','2024-01-07 01:48:11.399213',NULL,NULL),(68,'2u724D0LWuePNitfsIFN0p0Jgihg9V','2024-01-07 11:48:37.090670','read write',1,1,'2024-01-07 01:48:37.090670','2024-01-07 01:48:37.090670',NULL,NULL),(69,'PcMDovpAdwKeI4RbVVUav2cvga2vSU','2024-01-07 11:49:43.946939','read write',1,1,'2024-01-07 01:49:43.946939','2024-01-07 01:49:43.946939',NULL,NULL),(70,'8o3ZvHYqjTlJh5XqpX02YN3iig3EN3','2024-01-07 12:31:23.626013','read write',1,1,'2024-01-07 02:31:23.626013','2024-01-07 02:31:23.626013',NULL,NULL),(71,'ema3VJ1ivxkcANy3wVntrmgsqbIzUA','2024-01-10 17:35:53.248926','read write',1,1,'2024-01-10 07:35:53.248926','2024-01-10 07:35:53.248926',NULL,NULL),(72,'J9SP0dzsGEg0U7DXiGToOEFw5mKaOZ','2024-01-11 21:29:41.812532','read write',1,1,'2024-01-11 11:29:41.813531','2024-01-11 11:29:41.813531',NULL,NULL),(73,'VvdeHRJLZUKD5lto7w5FxGRRLCcCYh','2024-01-14 11:55:43.842284','read write',1,1,'2024-01-14 01:55:43.842284','2024-01-14 01:55:43.842284',NULL,NULL),(74,'geWWoyEv4jjTwAbkGXthZXkNWGoRso','2024-01-14 11:55:44.140497','read write',1,1,'2024-01-14 01:55:44.140497','2024-01-14 01:55:44.140497',NULL,NULL),(75,'cCQNbpY7eiG33833Omweyz3RXlBbtE','2024-01-19 18:25:33.170135','read write',1,1,'2024-01-19 08:25:33.171137','2024-01-19 08:25:33.171137',NULL,NULL),(76,'EtOvhgaIkF1HG07SDJVxHEvswQMpv1','2024-01-19 18:34:42.226124','read write',1,1,'2024-01-19 08:34:42.226124','2024-01-19 08:34:42.226124',NULL,NULL),(77,'rVO8dpW9rdsvFIjZamOKIz0H1kFgRy','2024-01-19 18:38:03.229239','read write',1,1,'2024-01-19 08:38:03.230282','2024-01-19 08:38:03.230282',NULL,NULL),(78,'vHdpMS5YMDSDC3A6T2JXNS8ckTiuqj','2024-01-19 18:46:43.138453','read write',1,1,'2024-01-19 08:46:43.138453','2024-01-19 08:46:43.138453',NULL,NULL),(79,'XcmFLjqSuLA9Thx8B4tPgRrrZNEcwV','2024-01-19 18:50:42.575050','read write',1,1,'2024-01-19 08:50:42.575050','2024-01-19 08:50:42.575050',NULL,NULL),(80,'TBnN0Lwds4yxoGOvay8cxFacQfNp1E','2024-01-19 18:56:48.468036','read write',1,1,'2024-01-19 08:56:48.469006','2024-01-19 08:56:48.469006',NULL,NULL),(81,'AFGwFJL82zNsSi4X2ZPlUMtd1Ph2Wn','2024-01-20 00:01:29.609234','read write',1,1,'2024-01-19 14:01:29.609234','2024-01-19 14:01:29.609234',NULL,NULL),(82,'Ou9vldW4j8bEuBhydO3qRnzLGLX6Q7','2024-01-20 00:03:55.690573','read write',1,2,'2024-01-19 14:03:55.690573','2024-01-19 14:03:55.690573',NULL,NULL),(83,'FuXkoR8lX6zj0W7Jyv4KHs6nRhOLD0','2024-01-20 02:01:36.235592','read write',1,1,'2024-01-19 16:01:36.236603','2024-01-19 16:01:36.236603',NULL,NULL),(84,'e4Omd8McepZHCUFuyJ5MtdC9jONAff','2024-01-20 02:09:33.495837','read write',1,1,'2024-01-19 16:09:33.498886','2024-01-19 16:09:33.498886',NULL,NULL),(85,'xay6Eko5oj3vfV4n2BhwafSuCsNdsk','2024-01-20 02:11:57.985529','read write',1,1,'2024-01-19 16:11:57.986538','2024-01-19 16:11:57.986538',NULL,NULL),(86,'zyRnEb2KoEonIhsf1YRVE8Ma5xR8J6','2024-01-20 02:13:05.658836','read write',1,1,'2024-01-19 16:13:05.658836','2024-01-19 16:13:05.658836',NULL,NULL),(87,'DaXCYUF3wOHBwlQKTjbpQHCZeEc00Z','2024-01-20 02:16:19.220628','read write',1,1,'2024-01-19 16:16:19.220628','2024-01-19 16:16:19.220628',NULL,NULL),(88,'f56UpDuFyABiNacIhWxC0jiT692SSj','2024-01-20 02:17:07.355560','read write',1,1,'2024-01-19 16:17:07.355560','2024-01-19 16:17:07.355560',NULL,NULL),(89,'uzLpGgWkYH1v61sxr4luY8AHnACbrh','2024-01-20 02:30:58.503329','read write',1,1,'2024-01-19 16:30:58.503329','2024-01-19 16:30:58.503329',NULL,NULL),(90,'DkrbmS7pOXCrSGc7ZwQHO2h1xs6r1p','2024-01-20 02:31:15.387931','read write',1,2,'2024-01-19 16:31:15.387931','2024-01-19 16:31:15.387931',NULL,NULL),(91,'B2XVZLg7rVUJrkA0qVOJGCIinok2ic','2024-01-20 02:32:24.865712','read write',1,1,'2024-01-19 16:32:24.865712','2024-01-19 16:32:24.865712',NULL,NULL),(92,'y7ri0uKkOR3Za1qcPyBiDAWsFrp4N5','2024-01-20 03:05:57.626551','read write',1,1,'2024-01-19 17:05:57.626551','2024-01-19 17:05:57.626551',NULL,NULL),(93,'9vEz07pYQ8hRvA3k8rlzqtcKi3lGiu','2024-01-23 01:01:33.340681','read write',1,1,'2024-01-22 15:01:33.340681','2024-01-22 15:01:33.340681',NULL,NULL);
 /*!40000 ALTER TABLE `oauth2_provider_accesstoken` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `oauth2_provider_application`
---
-
-DROP TABLE IF EXISTS `oauth2_provider_application`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `oauth2_provider_application` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `client_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `redirect_uris` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `client_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `authorization_grant_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `client_secret` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
-  `skip_authorization` tinyint(1) NOT NULL,
-  `created` datetime(6) NOT NULL,
-  `updated` datetime(6) NOT NULL,
-  `algorithm` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `post_logout_redirect_uris` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT (_utf8mb3''),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `client_id` (`client_id`),
-  KEY `oauth2_provider_appl_user_id_79829054_fk_social_me` (`user_id`),
-  KEY `oauth2_provider_application_client_secret_53133678` (`client_secret`),
-  CONSTRAINT `oauth2_provider_appl_user_id_79829054_fk_social_me` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oauth2_provider_application`
@@ -576,36 +192,6 @@ INSERT INTO `oauth2_provider_application` VALUES (1,'zDnklZ6ztQVU0X4DOQEymwV96Mf
 UNLOCK TABLES;
 
 --
--- Table structure for table `oauth2_provider_grant`
---
-
-DROP TABLE IF EXISTS `oauth2_provider_grant`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `oauth2_provider_grant` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expires` datetime(6) NOT NULL,
-  `redirect_uri` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `scope` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `application_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `created` datetime(6) NOT NULL,
-  `updated` datetime(6) NOT NULL,
-  `code_challenge` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code_challenge_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nonce` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `claims` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT (_utf8mb3''),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `code` (`code`),
-  KEY `oauth2_provider_gran_application_id_81923564_fk_oauth2_pr` (`application_id`),
-  KEY `oauth2_provider_grant_user_id_e8f62af8_fk_social_media_user_id` (`user_id`),
-  CONSTRAINT `oauth2_provider_gran_application_id_81923564_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
-  CONSTRAINT `oauth2_provider_grant_user_id_e8f62af8_fk_social_media_user_id` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `oauth2_provider_grant`
 --
 
@@ -613,31 +199,6 @@ LOCK TABLES `oauth2_provider_grant` WRITE;
 /*!40000 ALTER TABLE `oauth2_provider_grant` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oauth2_provider_grant` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `oauth2_provider_idtoken`
---
-
-DROP TABLE IF EXISTS `oauth2_provider_idtoken`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `oauth2_provider_idtoken` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `jti` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expires` datetime(6) NOT NULL,
-  `scope` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created` datetime(6) NOT NULL,
-  `updated` datetime(6) NOT NULL,
-  `application_id` bigint(20) DEFAULT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `jti` (`jti`),
-  KEY `oauth2_provider_idto_application_id_08c5ff4f_fk_oauth2_pr` (`application_id`),
-  KEY `oauth2_provider_idtoken_user_id_dd512b59_fk_social_media_user_id` (`user_id`),
-  CONSTRAINT `oauth2_provider_idto_application_id_08c5ff4f_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
-  CONSTRAINT `oauth2_provider_idtoken_user_id_dd512b59_fk_social_media_user_id` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oauth2_provider_idtoken`
@@ -649,61 +210,14 @@ LOCK TABLES `oauth2_provider_idtoken` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oauth2_provider_refreshtoken`
---
-
-DROP TABLE IF EXISTS `oauth2_provider_refreshtoken`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `oauth2_provider_refreshtoken` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `access_token_id` bigint(20) DEFAULT NULL,
-  `application_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `created` datetime(6) NOT NULL,
-  `updated` datetime(6) NOT NULL,
-  `revoked` datetime(6) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `access_token_id` (`access_token_id`),
-  UNIQUE KEY `oauth2_provider_refreshtoken_token_revoked_af8a5134_uniq` (`token`,`revoked`),
-  KEY `oauth2_provider_refr_application_id_2d1c311b_fk_oauth2_pr` (`application_id`),
-  KEY `oauth2_provider_refr_user_id_da837fce_fk_social_me` (`user_id`),
-  CONSTRAINT `oauth2_provider_refr_access_token_id_775e84e8_fk_oauth2_pr` FOREIGN KEY (`access_token_id`) REFERENCES `oauth2_provider_accesstoken` (`id`),
-  CONSTRAINT `oauth2_provider_refr_application_id_2d1c311b_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
-  CONSTRAINT `oauth2_provider_refr_user_id_da837fce_fk_social_me` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `oauth2_provider_refreshtoken`
 --
 
 LOCK TABLES `oauth2_provider_refreshtoken` WRITE;
 /*!40000 ALTER TABLE `oauth2_provider_refreshtoken` DISABLE KEYS */;
-INSERT INTO `oauth2_provider_refreshtoken` VALUES (1,'NMyUhzV6mjYkxNftvskXpKfk9CiCL3',1,1,1,'2023-12-09 11:40:17.907782','2023-12-09 11:40:17.907782',NULL),(2,'YSwxR6TLyIqRq3KxLyTZabuYAWUfpH',2,1,1,'2023-12-12 08:29:50.353010','2023-12-12 08:29:50.353010',NULL),(3,'8oLFhhMHp6Kgpkks3PBKLYkJNW9qLk',3,1,1,'2023-12-14 10:31:39.606518','2023-12-14 10:31:39.606518',NULL),(4,'4Zwkw2116kr5m2FqDu0Qo75084I3dU',4,1,2,'2023-12-14 11:00:06.415055','2023-12-14 11:00:06.415055',NULL),(5,'Bj3ENhfushzibEblproQeH7RMQGIjP',5,1,2,'2023-12-16 10:40:42.978993','2023-12-16 10:40:42.978993',NULL),(6,'5XY83Ega7mbMJWjBrnACRoBliSTMuy',6,1,2,'2023-12-17 06:57:42.975366','2023-12-17 06:57:42.975366',NULL),(7,'pKedIcXLkO1qSn0dBjJsjuHvd5I59j',7,1,2,'2023-12-17 11:40:41.173460','2023-12-17 11:40:41.173460',NULL),(8,'CtMzegwnz5pwHJT3sYo2GkqndXq6SP',8,1,2,'2023-12-19 02:26:21.022458','2023-12-19 02:26:21.022458',NULL),(9,'giBvoklyyhqmyjIuYCitlEBGJFPLqz',9,1,3,'2023-12-19 04:31:02.442199','2023-12-19 04:31:02.442199',NULL),(10,'LLwcp8SPyHFFf6Na2Ob3oWiSyQ2ZMS',10,1,1,'2023-12-19 04:32:26.038623','2023-12-19 04:32:26.038623',NULL),(11,'qCRGABH7QaXJxYF9YZrUiM6jejhPSe',11,1,2,'2023-12-19 09:35:58.936447','2023-12-19 09:35:58.936447',NULL),(12,'qjvYcBwyn7lJcqepVA3JrOXdcnQOKm',12,1,2,'2023-12-19 09:59:24.368527','2023-12-19 09:59:24.368527',NULL),(13,'Kfq1YFntU9oVY8zx9gTUQf9hwlfOkq',13,1,2,'2023-12-19 10:02:09.478547','2023-12-19 10:02:09.478547',NULL),(14,'z2bLUVG6b2tk7F4tWLgr8dTuI35sG9',14,1,2,'2023-12-19 10:03:28.162946','2023-12-19 10:03:28.162946',NULL),(15,'WRBqy57AelrHZwEl1iFHFzKCM9WRHc',15,1,2,'2023-12-19 10:14:05.310503','2023-12-19 10:14:05.310503',NULL),(16,'iJye7c9b3cszBCmKpkBJcrFmeVaLkL',16,1,1,'2023-12-21 10:11:40.227627','2023-12-21 10:11:40.227627',NULL),(17,'DJ1OVenLVf9bDDOaxZKDHrvPK2ST48',17,1,2,'2023-12-21 11:08:25.649501','2023-12-21 11:08:25.649501',NULL),(18,'TdrlWNqEAYvN2yhWuo45pXLxLSMpaS',18,1,2,'2023-12-23 13:15:14.191374','2023-12-23 13:15:14.191374',NULL),(19,'76ah0jtvjwtOf7LWpS26fAEtfw6qAB',19,1,2,'2023-12-26 08:21:56.971679','2023-12-26 08:21:56.971679',NULL),(20,'fuAHuyZy2amyQ41b323CxEioiRGRsh',20,1,1,'2023-12-26 15:23:23.073371','2023-12-26 15:23:23.074374',NULL),(21,'z4lIaW6HdjIWGlNDJ2b2Mg5Uoj4xe9',21,1,1,'2023-12-26 15:51:04.963469','2023-12-26 15:51:04.963469',NULL),(22,'zON3rbDryro5KUp9YuNf8daE72jZEk',22,1,1,'2023-12-26 15:58:38.380518','2023-12-26 15:58:38.380518',NULL),(23,'KQhbkVDJhb81E332BbqTjke91aDOkX',23,1,1,'2023-12-26 16:09:46.184457','2023-12-26 16:09:46.184457',NULL),(24,'OsKJnVA0sHAYKLW5CglIjtjqm69fUK',24,1,1,'2023-12-26 16:10:46.926080','2023-12-26 16:10:46.926080',NULL),(25,'aalAvlsECLUslulsOjMvunWRgNbjQk',25,1,1,'2023-12-26 16:25:52.316537','2023-12-26 16:25:52.316537',NULL),(26,'kDB05lvbQt1mIIDYb5GI2TqgeundXX',26,1,1,'2023-12-26 16:28:30.594248','2023-12-26 16:28:30.594248',NULL),(27,'qtEyH1FC9qLXaj9cC0e2yC5Wl0CZKD',27,1,1,'2023-12-26 16:33:28.884785','2023-12-26 16:33:28.884785',NULL),(28,'e6BF2wIbNsoyaX2vnvPGHrlIElbtPL',28,1,1,'2023-12-26 16:59:16.480081','2023-12-26 16:59:16.480081',NULL),(29,'AF1uyFwfBwoU7jUdnoLw3pi13akSFe',29,1,1,'2023-12-26 17:02:52.707796','2023-12-26 17:02:52.707796',NULL),(30,'M2qGl0lZRXUER9J7o01rh9aMe6SkZX',30,1,1,'2023-12-26 17:04:47.116364','2023-12-26 17:04:47.116364',NULL),(31,'U03zRev5gfQvQnoS5aniMNas7NkN9f',31,1,1,'2023-12-26 17:06:35.732118','2023-12-26 17:06:35.733131',NULL),(32,'glQH24KQbSyJOlyAWNM4L0wv4AUWPg',32,1,1,'2023-12-26 17:07:31.604057','2023-12-26 17:07:31.604057',NULL),(33,'n6s5dFj8oYdcoWSPCkpvGoVhael6QE',33,1,1,'2023-12-26 17:09:40.463013','2023-12-26 17:09:40.463013',NULL),(34,'dAuThiNocQ35DnMKtDGWgrwrQL1Uc0',34,1,2,'2023-12-27 15:49:56.699522','2023-12-27 15:49:56.699522',NULL),(35,'6XeKHzYnAhGPxmNuU8LloUeHFSi2rx',35,1,2,'2023-12-27 16:06:19.294125','2023-12-27 16:06:19.294125',NULL),(36,'3IiRQIPem0uRMUXrDbkLFtkVjSlY0M',36,1,2,'2023-12-27 16:06:44.329718','2023-12-27 16:06:44.329718',NULL),(37,'H3yMPHcC8oB9wdDxbxVqtcRjBQaXQh',37,1,2,'2023-12-27 16:07:05.408852','2023-12-27 16:07:05.408852',NULL),(38,'41gBnpppOEAG5C5drPlq1ZYixeQ4ja',38,1,2,'2023-12-27 16:08:48.717071','2023-12-27 16:08:48.717071',NULL),(39,'vxNZqP5PDJ4pamQzC1ZkCdAuvNwfLg',39,1,2,'2023-12-27 16:09:00.867689','2023-12-27 16:09:00.867689',NULL),(40,'ObBSxsj9MkXWhnxPgyR5bwablhrbE6',40,1,2,'2023-12-27 16:09:17.292775','2023-12-27 16:09:17.292775',NULL),(41,'boNyLop1UcSfg6VSTqyeJKFus25b0E',41,1,2,'2023-12-27 16:09:28.942322','2023-12-27 16:09:28.942322',NULL),(42,'9G9hqWrpZfMUXxTDLEsPCT9JcWx6U4',42,1,2,'2023-12-27 16:09:51.095784','2023-12-27 16:09:51.095784',NULL),(43,'8Lm3AYoBQyGLMiND7dNKNZz29T70m0',43,1,2,'2023-12-27 16:13:19.169228','2023-12-27 16:13:19.169228',NULL),(44,'d8HH9sw1c7UwyZlBp8ou3Lye2vEAcE',44,1,2,'2023-12-27 16:14:13.889137','2023-12-27 16:14:13.889137',NULL),(45,'MoqSTntrDrp65BoOCdqfJ3tJcOGLKy',45,1,3,'2023-12-27 16:14:21.383377','2023-12-27 16:14:21.383377',NULL),(46,'HrPtTffhVsVtItXSSFKWEDvLH1UW1E',46,1,3,'2023-12-28 11:55:23.710477','2023-12-28 11:55:23.710477',NULL),(47,'ELnIMUXTmHQr9YJD0YAEsh8nSF7c0a',47,1,3,'2023-12-28 13:59:01.738501','2023-12-28 13:59:01.738501',NULL),(48,'85YFAwrKWMfM9GeJQC6qHrMT0Kz38R',48,1,3,'2023-12-28 14:04:29.772081','2023-12-28 14:04:29.772081',NULL),(49,'aWFmi4Ef3JAxkMKplDr4g5J4lf3ZHZ',49,1,1,'2023-12-29 09:41:57.349375','2023-12-29 09:41:57.349375',NULL),(50,'QDRWwQrzev0xZT3ZdXHzGGCeHMd5il',50,1,1,'2023-12-30 18:20:37.123843','2023-12-30 18:20:37.123843',NULL),(51,'zIY58tHmHcV9ccZAwfK8R2S8kfngQL',51,1,1,'2023-12-30 19:57:58.622155','2023-12-30 19:57:58.622155',NULL),(52,'nHvugLEypRVLnC34aFvKchusa4xeXb',52,1,1,'2023-12-31 12:59:08.796691','2023-12-31 12:59:08.796691',NULL),(53,'rdpVE03vmxfRNi9gPlWQwRF1Ea6wPd',53,1,1,'2024-01-01 02:18:12.700555','2024-01-01 02:18:12.700555',NULL),(54,'CKeIoqJkQjqyVrfKkICeWxUY0Kfi0N',54,1,1,'2024-01-01 10:07:13.592597','2024-01-01 10:07:13.592597',NULL),(55,'huXPLUSN9D2AbNRhTZtqIvEbU3J2h6',55,1,1,'2024-01-01 12:32:44.300671','2024-01-01 12:32:44.300671',NULL),(56,'1PFkPdJqeJc2zS4JQal5g4ZhWwSN4s',56,1,1,'2024-01-02 10:00:09.192277','2024-01-02 10:00:09.192277',NULL),(57,'JCLE5sncHVZB1OO5SLdrlrUvl22vTV',57,1,1,'2024-01-02 14:13:40.456220','2024-01-02 14:13:40.456220',NULL),(58,'h3JXdFxnrLi33kzgG27Wg4jM7VnPul',58,1,1,'2024-01-02 14:40:27.441430','2024-01-02 14:40:27.441430',NULL),(59,'rs7iEwT3yFDXsCrOu12O87e4MWGPoH',59,1,1,'2024-01-04 14:13:51.488664','2024-01-04 14:13:51.488664',NULL),(60,'i1rbafJzerWGp4gxLjv7Q9MSlr1Rgn',60,1,1,'2024-01-04 14:51:37.567821','2024-01-04 14:51:37.567821',NULL),(61,'acxOUapRq6Yn7mVGwGxKI6PhMrgT2A',61,1,1,'2024-01-06 06:30:11.710345','2024-01-06 06:30:11.710345',NULL),(62,'TsRecYdNWALKiY2Xw7tfO3DH3OzVWq',62,1,1,'2024-01-06 10:58:01.729085','2024-01-06 10:58:01.729085',NULL),(63,'5rsETzRwSCsH0eQdVaxyiFCpxSAkM1',63,1,1,'2024-01-07 00:33:30.506419','2024-01-07 00:33:30.506419',NULL),(64,'npj5vCmGzz3qsWvL0MhyQDovHb1EpX',64,1,1,'2024-01-07 01:42:55.248736','2024-01-07 01:42:55.248736',NULL),(65,'EmxcGccVbU86PL67JYdzWdrkHRu1YJ',65,1,1,'2024-01-07 01:44:04.417546','2024-01-07 01:44:04.417546',NULL),(66,'HjfhUw5COczs8F7RzSMPEyq2NlS0JM',66,1,1,'2024-01-07 01:46:06.558159','2024-01-07 01:46:06.558159',NULL),(67,'pIHMPu8u6SAEGWcTR73VPZ9RuI2enl',67,1,1,'2024-01-07 01:48:11.399213','2024-01-07 01:48:11.399213',NULL),(68,'ds7KV8R6YqqL3SRY8gaVvJ6XyLn45p',68,1,1,'2024-01-07 01:48:37.090670','2024-01-07 01:48:37.090670',NULL),(69,'fcVhToAT0I2YuFqAzy759Hxkgp8LwZ',69,1,1,'2024-01-07 01:49:43.946939','2024-01-07 01:49:43.946939',NULL),(70,'mEe2TcLMd8BlQW8igwAfVlcD8cmmum',70,1,1,'2024-01-07 02:31:23.641645','2024-01-07 02:31:23.641645',NULL),(71,'aprlazC9pN2Cc5qXnkZLwgnjlHASmO',71,1,1,'2024-01-10 07:35:53.298927','2024-01-10 07:35:53.298927',NULL),(72,'iXeB6MN92a0nxYtVVGLK7FAKNdCJj1',72,1,1,'2024-01-11 11:29:41.855048','2024-01-11 11:29:41.855048',NULL),(73,'wcPSVBbab0mFYxluz6VmGG2aZsPlQp',73,1,1,'2024-01-14 01:55:43.874457','2024-01-14 01:55:43.874457',NULL),(74,'TrbeVS0FZTNm0I0TeVtL3KMLn1jEtW',74,1,1,'2024-01-14 01:55:44.140497','2024-01-14 01:55:44.140497',NULL),(75,'Tsi8dd3cnD4uLqShMWcxhtc5rrG9aR',75,1,1,'2024-01-19 08:25:33.199140','2024-01-19 08:25:33.199140',NULL),(76,'FbJPWSGqoJv3LQGQYRC75tBVb7KHXK',76,1,1,'2024-01-19 08:34:42.237154','2024-01-19 08:34:42.237154',NULL),(77,'C4yfk8SPShpLoWCrhTAuPqCHXF9xGh',77,1,1,'2024-01-19 08:38:03.244482','2024-01-19 08:38:03.244482',NULL),(78,'uiJcbY8P5myRyWN7KAbSrDzkiu2rQd',78,1,1,'2024-01-19 08:46:43.144849','2024-01-19 08:46:43.144849',NULL),(79,'PG8CjmELuvjg2s5o1EKXZ2EL1lU4ph',79,1,1,'2024-01-19 08:50:42.579049','2024-01-19 08:50:42.579049',NULL),(80,'BIf2VvFFuhKaqnP3crnuLFSXH0wY6r',80,1,1,'2024-01-19 08:56:48.472586','2024-01-19 08:56:48.472586',NULL),(81,'fS9by3zocbrvwceQDRFtn2KWuK3wtU',81,1,1,'2024-01-19 14:01:29.615240','2024-01-19 14:01:29.615240',NULL),(82,'Wevn1VGUHZUv7DvYUvodgSQgVNI1r5',82,1,2,'2024-01-19 14:03:55.696732','2024-01-19 14:03:55.696732',NULL),(83,'S78pxWiElwbUpxO4Rcw3nKv3hISguQ',83,1,1,'2024-01-19 16:01:36.245118','2024-01-19 16:01:36.245118',NULL),(84,'UkoULFzp35PsD3mg3toO3VtrhMsgPM',84,1,1,'2024-01-19 16:09:33.498886','2024-01-19 16:09:33.498886',NULL),(85,'g3Lu2RTQevyaXJqSOxLx6ESeactCXK',85,1,1,'2024-01-19 16:11:57.990536','2024-01-19 16:11:57.990536',NULL),(86,'D6GWhVpyb7o09RzjehvcNKmRyhvHsw',86,1,1,'2024-01-19 16:13:05.659870','2024-01-19 16:13:05.659870',NULL),(87,'QNtyYEoOaJFsTbphtmAeA7vnItBB46',87,1,1,'2024-01-19 16:16:19.222178','2024-01-19 16:16:19.222178',NULL),(88,'cAXoga8udJAleeHyOExLG6twYhZCKh',88,1,1,'2024-01-19 16:17:07.360560','2024-01-19 16:17:07.360560',NULL),(89,'SmaBMqSmMLsNGYkcfZtqstrTIzqWEm',89,1,1,'2024-01-19 16:30:58.508369','2024-01-19 16:30:58.508369',NULL),(90,'tLPnI5pyhWlYHEwCiPr3pBsmCfoAxT',90,1,2,'2024-01-19 16:31:15.391929','2024-01-19 16:31:15.391929',NULL),(91,'81k87ZDzaQjIuhwnYtYYt91nMNE7mS',91,1,1,'2024-01-19 16:32:24.869470','2024-01-19 16:32:24.869470',NULL),(92,'UD47wa9V8ckWwO3TPfmD15Zel183cs',92,1,1,'2024-01-19 17:05:57.655550','2024-01-19 17:05:57.655550',NULL);
+INSERT INTO `oauth2_provider_refreshtoken` VALUES (1,'NMyUhzV6mjYkxNftvskXpKfk9CiCL3',1,1,1,'2023-12-09 11:40:17.907782','2023-12-09 11:40:17.907782',NULL),(2,'YSwxR6TLyIqRq3KxLyTZabuYAWUfpH',2,1,1,'2023-12-12 08:29:50.353010','2023-12-12 08:29:50.353010',NULL),(3,'8oLFhhMHp6Kgpkks3PBKLYkJNW9qLk',3,1,1,'2023-12-14 10:31:39.606518','2023-12-14 10:31:39.606518',NULL),(4,'4Zwkw2116kr5m2FqDu0Qo75084I3dU',4,1,2,'2023-12-14 11:00:06.415055','2023-12-14 11:00:06.415055',NULL),(5,'Bj3ENhfushzibEblproQeH7RMQGIjP',5,1,2,'2023-12-16 10:40:42.978993','2023-12-16 10:40:42.978993',NULL),(6,'5XY83Ega7mbMJWjBrnACRoBliSTMuy',6,1,2,'2023-12-17 06:57:42.975366','2023-12-17 06:57:42.975366',NULL),(7,'pKedIcXLkO1qSn0dBjJsjuHvd5I59j',7,1,2,'2023-12-17 11:40:41.173460','2023-12-17 11:40:41.173460',NULL),(8,'CtMzegwnz5pwHJT3sYo2GkqndXq6SP',8,1,2,'2023-12-19 02:26:21.022458','2023-12-19 02:26:21.022458',NULL),(9,'giBvoklyyhqmyjIuYCitlEBGJFPLqz',9,1,3,'2023-12-19 04:31:02.442199','2023-12-19 04:31:02.442199',NULL),(10,'LLwcp8SPyHFFf6Na2Ob3oWiSyQ2ZMS',10,1,1,'2023-12-19 04:32:26.038623','2023-12-19 04:32:26.038623',NULL),(11,'qCRGABH7QaXJxYF9YZrUiM6jejhPSe',11,1,2,'2023-12-19 09:35:58.936447','2023-12-19 09:35:58.936447',NULL),(12,'qjvYcBwyn7lJcqepVA3JrOXdcnQOKm',12,1,2,'2023-12-19 09:59:24.368527','2023-12-19 09:59:24.368527',NULL),(13,'Kfq1YFntU9oVY8zx9gTUQf9hwlfOkq',13,1,2,'2023-12-19 10:02:09.478547','2023-12-19 10:02:09.478547',NULL),(14,'z2bLUVG6b2tk7F4tWLgr8dTuI35sG9',14,1,2,'2023-12-19 10:03:28.162946','2023-12-19 10:03:28.162946',NULL),(15,'WRBqy57AelrHZwEl1iFHFzKCM9WRHc',15,1,2,'2023-12-19 10:14:05.310503','2023-12-19 10:14:05.310503',NULL),(16,'iJye7c9b3cszBCmKpkBJcrFmeVaLkL',16,1,1,'2023-12-21 10:11:40.227627','2023-12-21 10:11:40.227627',NULL),(17,'DJ1OVenLVf9bDDOaxZKDHrvPK2ST48',17,1,2,'2023-12-21 11:08:25.649501','2023-12-21 11:08:25.649501',NULL),(18,'TdrlWNqEAYvN2yhWuo45pXLxLSMpaS',18,1,2,'2023-12-23 13:15:14.191374','2023-12-23 13:15:14.191374',NULL),(19,'76ah0jtvjwtOf7LWpS26fAEtfw6qAB',19,1,2,'2023-12-26 08:21:56.971679','2023-12-26 08:21:56.971679',NULL),(20,'fuAHuyZy2amyQ41b323CxEioiRGRsh',20,1,1,'2023-12-26 15:23:23.073371','2023-12-26 15:23:23.074374',NULL),(21,'z4lIaW6HdjIWGlNDJ2b2Mg5Uoj4xe9',21,1,1,'2023-12-26 15:51:04.963469','2023-12-26 15:51:04.963469',NULL),(22,'zON3rbDryro5KUp9YuNf8daE72jZEk',22,1,1,'2023-12-26 15:58:38.380518','2023-12-26 15:58:38.380518',NULL),(23,'KQhbkVDJhb81E332BbqTjke91aDOkX',23,1,1,'2023-12-26 16:09:46.184457','2023-12-26 16:09:46.184457',NULL),(24,'OsKJnVA0sHAYKLW5CglIjtjqm69fUK',24,1,1,'2023-12-26 16:10:46.926080','2023-12-26 16:10:46.926080',NULL),(25,'aalAvlsECLUslulsOjMvunWRgNbjQk',25,1,1,'2023-12-26 16:25:52.316537','2023-12-26 16:25:52.316537',NULL),(26,'kDB05lvbQt1mIIDYb5GI2TqgeundXX',26,1,1,'2023-12-26 16:28:30.594248','2023-12-26 16:28:30.594248',NULL),(27,'qtEyH1FC9qLXaj9cC0e2yC5Wl0CZKD',27,1,1,'2023-12-26 16:33:28.884785','2023-12-26 16:33:28.884785',NULL),(28,'e6BF2wIbNsoyaX2vnvPGHrlIElbtPL',28,1,1,'2023-12-26 16:59:16.480081','2023-12-26 16:59:16.480081',NULL),(29,'AF1uyFwfBwoU7jUdnoLw3pi13akSFe',29,1,1,'2023-12-26 17:02:52.707796','2023-12-26 17:02:52.707796',NULL),(30,'M2qGl0lZRXUER9J7o01rh9aMe6SkZX',30,1,1,'2023-12-26 17:04:47.116364','2023-12-26 17:04:47.116364',NULL),(31,'U03zRev5gfQvQnoS5aniMNas7NkN9f',31,1,1,'2023-12-26 17:06:35.732118','2023-12-26 17:06:35.733131',NULL),(32,'glQH24KQbSyJOlyAWNM4L0wv4AUWPg',32,1,1,'2023-12-26 17:07:31.604057','2023-12-26 17:07:31.604057',NULL),(33,'n6s5dFj8oYdcoWSPCkpvGoVhael6QE',33,1,1,'2023-12-26 17:09:40.463013','2023-12-26 17:09:40.463013',NULL),(34,'dAuThiNocQ35DnMKtDGWgrwrQL1Uc0',34,1,2,'2023-12-27 15:49:56.699522','2023-12-27 15:49:56.699522',NULL),(35,'6XeKHzYnAhGPxmNuU8LloUeHFSi2rx',35,1,2,'2023-12-27 16:06:19.294125','2023-12-27 16:06:19.294125',NULL),(36,'3IiRQIPem0uRMUXrDbkLFtkVjSlY0M',36,1,2,'2023-12-27 16:06:44.329718','2023-12-27 16:06:44.329718',NULL),(37,'H3yMPHcC8oB9wdDxbxVqtcRjBQaXQh',37,1,2,'2023-12-27 16:07:05.408852','2023-12-27 16:07:05.408852',NULL),(38,'41gBnpppOEAG5C5drPlq1ZYixeQ4ja',38,1,2,'2023-12-27 16:08:48.717071','2023-12-27 16:08:48.717071',NULL),(39,'vxNZqP5PDJ4pamQzC1ZkCdAuvNwfLg',39,1,2,'2023-12-27 16:09:00.867689','2023-12-27 16:09:00.867689',NULL),(40,'ObBSxsj9MkXWhnxPgyR5bwablhrbE6',40,1,2,'2023-12-27 16:09:17.292775','2023-12-27 16:09:17.292775',NULL),(41,'boNyLop1UcSfg6VSTqyeJKFus25b0E',41,1,2,'2023-12-27 16:09:28.942322','2023-12-27 16:09:28.942322',NULL),(42,'9G9hqWrpZfMUXxTDLEsPCT9JcWx6U4',42,1,2,'2023-12-27 16:09:51.095784','2023-12-27 16:09:51.095784',NULL),(43,'8Lm3AYoBQyGLMiND7dNKNZz29T70m0',43,1,2,'2023-12-27 16:13:19.169228','2023-12-27 16:13:19.169228',NULL),(44,'d8HH9sw1c7UwyZlBp8ou3Lye2vEAcE',44,1,2,'2023-12-27 16:14:13.889137','2023-12-27 16:14:13.889137',NULL),(45,'MoqSTntrDrp65BoOCdqfJ3tJcOGLKy',45,1,3,'2023-12-27 16:14:21.383377','2023-12-27 16:14:21.383377',NULL),(46,'HrPtTffhVsVtItXSSFKWEDvLH1UW1E',46,1,3,'2023-12-28 11:55:23.710477','2023-12-28 11:55:23.710477',NULL),(47,'ELnIMUXTmHQr9YJD0YAEsh8nSF7c0a',47,1,3,'2023-12-28 13:59:01.738501','2023-12-28 13:59:01.738501',NULL),(48,'85YFAwrKWMfM9GeJQC6qHrMT0Kz38R',48,1,3,'2023-12-28 14:04:29.772081','2023-12-28 14:04:29.772081',NULL),(49,'aWFmi4Ef3JAxkMKplDr4g5J4lf3ZHZ',49,1,1,'2023-12-29 09:41:57.349375','2023-12-29 09:41:57.349375',NULL),(50,'QDRWwQrzev0xZT3ZdXHzGGCeHMd5il',50,1,1,'2023-12-30 18:20:37.123843','2023-12-30 18:20:37.123843',NULL),(51,'zIY58tHmHcV9ccZAwfK8R2S8kfngQL',51,1,1,'2023-12-30 19:57:58.622155','2023-12-30 19:57:58.622155',NULL),(52,'nHvugLEypRVLnC34aFvKchusa4xeXb',52,1,1,'2023-12-31 12:59:08.796691','2023-12-31 12:59:08.796691',NULL),(53,'rdpVE03vmxfRNi9gPlWQwRF1Ea6wPd',53,1,1,'2024-01-01 02:18:12.700555','2024-01-01 02:18:12.700555',NULL),(54,'CKeIoqJkQjqyVrfKkICeWxUY0Kfi0N',54,1,1,'2024-01-01 10:07:13.592597','2024-01-01 10:07:13.592597',NULL),(55,'huXPLUSN9D2AbNRhTZtqIvEbU3J2h6',55,1,1,'2024-01-01 12:32:44.300671','2024-01-01 12:32:44.300671',NULL),(56,'1PFkPdJqeJc2zS4JQal5g4ZhWwSN4s',56,1,1,'2024-01-02 10:00:09.192277','2024-01-02 10:00:09.192277',NULL),(57,'JCLE5sncHVZB1OO5SLdrlrUvl22vTV',57,1,1,'2024-01-02 14:13:40.456220','2024-01-02 14:13:40.456220',NULL),(58,'h3JXdFxnrLi33kzgG27Wg4jM7VnPul',58,1,1,'2024-01-02 14:40:27.441430','2024-01-02 14:40:27.441430',NULL),(59,'rs7iEwT3yFDXsCrOu12O87e4MWGPoH',59,1,1,'2024-01-04 14:13:51.488664','2024-01-04 14:13:51.488664',NULL),(60,'i1rbafJzerWGp4gxLjv7Q9MSlr1Rgn',60,1,1,'2024-01-04 14:51:37.567821','2024-01-04 14:51:37.567821',NULL),(61,'acxOUapRq6Yn7mVGwGxKI6PhMrgT2A',61,1,1,'2024-01-06 06:30:11.710345','2024-01-06 06:30:11.710345',NULL),(62,'TsRecYdNWALKiY2Xw7tfO3DH3OzVWq',62,1,1,'2024-01-06 10:58:01.729085','2024-01-06 10:58:01.729085',NULL),(63,'5rsETzRwSCsH0eQdVaxyiFCpxSAkM1',63,1,1,'2024-01-07 00:33:30.506419','2024-01-07 00:33:30.506419',NULL),(64,'npj5vCmGzz3qsWvL0MhyQDovHb1EpX',64,1,1,'2024-01-07 01:42:55.248736','2024-01-07 01:42:55.248736',NULL),(65,'EmxcGccVbU86PL67JYdzWdrkHRu1YJ',65,1,1,'2024-01-07 01:44:04.417546','2024-01-07 01:44:04.417546',NULL),(66,'HjfhUw5COczs8F7RzSMPEyq2NlS0JM',66,1,1,'2024-01-07 01:46:06.558159','2024-01-07 01:46:06.558159',NULL),(67,'pIHMPu8u6SAEGWcTR73VPZ9RuI2enl',67,1,1,'2024-01-07 01:48:11.399213','2024-01-07 01:48:11.399213',NULL),(68,'ds7KV8R6YqqL3SRY8gaVvJ6XyLn45p',68,1,1,'2024-01-07 01:48:37.090670','2024-01-07 01:48:37.090670',NULL),(69,'fcVhToAT0I2YuFqAzy759Hxkgp8LwZ',69,1,1,'2024-01-07 01:49:43.946939','2024-01-07 01:49:43.946939',NULL),(70,'mEe2TcLMd8BlQW8igwAfVlcD8cmmum',70,1,1,'2024-01-07 02:31:23.641645','2024-01-07 02:31:23.641645',NULL),(71,'aprlazC9pN2Cc5qXnkZLwgnjlHASmO',71,1,1,'2024-01-10 07:35:53.298927','2024-01-10 07:35:53.298927',NULL),(72,'iXeB6MN92a0nxYtVVGLK7FAKNdCJj1',72,1,1,'2024-01-11 11:29:41.855048','2024-01-11 11:29:41.855048',NULL),(73,'wcPSVBbab0mFYxluz6VmGG2aZsPlQp',73,1,1,'2024-01-14 01:55:43.874457','2024-01-14 01:55:43.874457',NULL),(74,'TrbeVS0FZTNm0I0TeVtL3KMLn1jEtW',74,1,1,'2024-01-14 01:55:44.140497','2024-01-14 01:55:44.140497',NULL),(75,'Tsi8dd3cnD4uLqShMWcxhtc5rrG9aR',75,1,1,'2024-01-19 08:25:33.199140','2024-01-19 08:25:33.199140',NULL),(76,'FbJPWSGqoJv3LQGQYRC75tBVb7KHXK',76,1,1,'2024-01-19 08:34:42.237154','2024-01-19 08:34:42.237154',NULL),(77,'C4yfk8SPShpLoWCrhTAuPqCHXF9xGh',77,1,1,'2024-01-19 08:38:03.244482','2024-01-19 08:38:03.244482',NULL),(78,'uiJcbY8P5myRyWN7KAbSrDzkiu2rQd',78,1,1,'2024-01-19 08:46:43.144849','2024-01-19 08:46:43.144849',NULL),(79,'PG8CjmELuvjg2s5o1EKXZ2EL1lU4ph',79,1,1,'2024-01-19 08:50:42.579049','2024-01-19 08:50:42.579049',NULL),(80,'BIf2VvFFuhKaqnP3crnuLFSXH0wY6r',80,1,1,'2024-01-19 08:56:48.472586','2024-01-19 08:56:48.472586',NULL),(81,'fS9by3zocbrvwceQDRFtn2KWuK3wtU',81,1,1,'2024-01-19 14:01:29.615240','2024-01-19 14:01:29.615240',NULL),(82,'Wevn1VGUHZUv7DvYUvodgSQgVNI1r5',82,1,2,'2024-01-19 14:03:55.696732','2024-01-19 14:03:55.696732',NULL),(83,'S78pxWiElwbUpxO4Rcw3nKv3hISguQ',83,1,1,'2024-01-19 16:01:36.245118','2024-01-19 16:01:36.245118',NULL),(84,'UkoULFzp35PsD3mg3toO3VtrhMsgPM',84,1,1,'2024-01-19 16:09:33.498886','2024-01-19 16:09:33.498886',NULL),(85,'g3Lu2RTQevyaXJqSOxLx6ESeactCXK',85,1,1,'2024-01-19 16:11:57.990536','2024-01-19 16:11:57.990536',NULL),(86,'D6GWhVpyb7o09RzjehvcNKmRyhvHsw',86,1,1,'2024-01-19 16:13:05.659870','2024-01-19 16:13:05.659870',NULL),(87,'QNtyYEoOaJFsTbphtmAeA7vnItBB46',87,1,1,'2024-01-19 16:16:19.222178','2024-01-19 16:16:19.222178',NULL),(88,'cAXoga8udJAleeHyOExLG6twYhZCKh',88,1,1,'2024-01-19 16:17:07.360560','2024-01-19 16:17:07.360560',NULL),(89,'SmaBMqSmMLsNGYkcfZtqstrTIzqWEm',89,1,1,'2024-01-19 16:30:58.508369','2024-01-19 16:30:58.508369',NULL),(90,'tLPnI5pyhWlYHEwCiPr3pBsmCfoAxT',90,1,2,'2024-01-19 16:31:15.391929','2024-01-19 16:31:15.391929',NULL),(91,'81k87ZDzaQjIuhwnYtYYt91nMNE7mS',91,1,1,'2024-01-19 16:32:24.869470','2024-01-19 16:32:24.869470',NULL),(92,'UD47wa9V8ckWwO3TPfmD15Zel183cs',92,1,1,'2024-01-19 17:05:57.655550','2024-01-19 17:05:57.655550',NULL),(93,'3GjwG5exTgWaYPCBScEIpzBB710SYh',93,1,1,'2024-01-22 15:01:33.369683','2024-01-22 15:01:33.369683',NULL);
 /*!40000 ALTER TABLE `oauth2_provider_refreshtoken` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_auth_association`
---
-
-DROP TABLE IF EXISTS `social_auth_association`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_auth_association` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `server_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `handle` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `secret` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `issued` int(11) NOT NULL,
-  `lifetime` int(11) NOT NULL,
-  `assoc_type` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_auth_association_server_url_handle_078befa2_uniq` (`server_url`,`handle`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_auth_association`
@@ -715,26 +229,6 @@ LOCK TABLES `social_auth_association` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_auth_code`
---
-
-DROP TABLE IF EXISTS `social_auth_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_auth_code` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `email` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `verified` tinyint(1) NOT NULL,
-  `timestamp` datetime(6) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_auth_code_email_code_801b2d02_uniq` (`email`,`code`),
-  KEY `social_auth_code_code_a2393167` (`code`),
-  KEY `social_auth_code_timestamp_176b341f` (`timestamp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_auth_code`
 --
 
@@ -742,23 +236,6 @@ LOCK TABLES `social_auth_code` WRITE;
 /*!40000 ALTER TABLE `social_auth_code` DISABLE KEYS */;
 /*!40000 ALTER TABLE `social_auth_code` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_auth_nonce`
---
-
-DROP TABLE IF EXISTS `social_auth_nonce`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_auth_nonce` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `server_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `timestamp` int(11) NOT NULL,
-  `salt` varchar(65) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_auth_nonce_server_url_timestamp_salt_f6284463_uniq` (`server_url`,`timestamp`,`salt`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_auth_nonce`
@@ -770,27 +247,6 @@ LOCK TABLES `social_auth_nonce` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_auth_partial`
---
-
-DROP TABLE IF EXISTS `social_auth_partial`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_auth_partial` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `next_step` smallint(5) unsigned NOT NULL,
-  `backend` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `timestamp` datetime(6) NOT NULL,
-  `data` json NOT NULL DEFAULT (_utf8mb3'{}'),
-  PRIMARY KEY (`id`),
-  KEY `social_auth_partial_token_3017fea3` (`token`),
-  KEY `social_auth_partial_timestamp_50f2119f` (`timestamp`),
-  CONSTRAINT `social_auth_partial_chk_1` CHECK ((`next_step` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_auth_partial`
 --
 
@@ -800,67 +256,14 @@ LOCK TABLES `social_auth_partial` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_auth_usersocialauth`
---
-
-DROP TABLE IF EXISTS `social_auth_usersocialauth`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_auth_usersocialauth` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `provider` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `created` datetime(6) NOT NULL,
-  `modified` datetime(6) NOT NULL,
-  `extra_data` json NOT NULL DEFAULT (_utf8mb3'{}'),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_auth_usersocialauth_provider_uid_e6b5e668_uniq` (`provider`,`uid`),
-  KEY `social_auth_usersoci_user_id_17d28448_fk_social_me` (`user_id`),
-  KEY `social_auth_usersocialauth_uid_796e51dc` (`uid`),
-  CONSTRAINT `social_auth_usersoci_user_id_17d28448_fk_social_me` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_auth_usersocialauth`
 --
 
 LOCK TABLES `social_auth_usersocialauth` WRITE;
 /*!40000 ALTER TABLE `social_auth_usersocialauth` DISABLE KEYS */;
-INSERT INTO `social_auth_usersocialauth` VALUES (1,'google-oauth2','2051050549tuan@ou.edu.vn',34,'2024-01-21 16:14:22.658695','2024-01-21 17:01:06.398977','{\"expires\": 3599, \"auth_time\": 1705856466, \"token_type\": \"Bearer\", \"access_token\": \"ya29.a0AfB_byB9khPcEsaizGWhztQeRYs_vEXybF-mltfNPRO0x74rm4VGEkNLpu0tQh87R3tIClxYgql6cgyPi02y7fTIADLCiVSwA__KYuZvkNjGTzdpfa1XSAIlro4lcswJy2jIUAal_prEKvvX_8MYOZpAGWHkEZ3kxKOkaCgYKAZsSARISFQHGX2Mi3ogtKgI_rtLAfIxxtQR3Gg0171\"}');
+INSERT INTO `social_auth_usersocialauth` VALUES (1,'google-oauth2','2051050549tuan@ou.edu.vn',34,'2024-01-21 16:14:22.658695','2024-01-22 08:10:20.745168','{\"expires\": 3599, \"auth_time\": 1705911020, \"token_type\": \"Bearer\", \"access_token\": \"ya29.a0AfB_byCcB3LKI06wxI62YxWagU_z7YhsBaDf_AAJM_qF0tkuEqwAmXPXITVqLuZ1YRv-QfHODlPa08LyNs4LC1hwrqy_k1HS4s5WK0OD3Z9SzsdYydWI1_dvzueQfUoIIcbQC_qJRmSesy4dfDaFgFIypLeJCsNEOK_laCgYKAcUSARISFQHGX2Mij0B6ifkgo-nkGb6tGiNXhw0171\"}');
 /*!40000 ALTER TABLE `social_auth_usersocialauth` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_account`
---
-
-DROP TABLE IF EXISTS `social_media_account`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_account` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `phone_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `date_of_birth` date DEFAULT NULL,
-  `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cover_avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `role_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
-  `account_status` tinyint(1) NOT NULL,
-  `gender` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `phone_number` (`phone_number`),
-  UNIQUE KEY `user_id` (`user_id`),
-  KEY `social_media_account_role_id_d1ccc1de_fk_social_media_role_id` (`role_id`),
-  CONSTRAINT `social_media_account_role_id_d1ccc1de_fk_social_media_role_id` FOREIGN KEY (`role_id`) REFERENCES `social_media_role` (`id`),
-  CONSTRAINT `social_media_account_user_id_30063586_fk_social_media_user_id` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_account`
@@ -873,27 +276,6 @@ INSERT INTO `social_media_account` VALUES (1,'2023-12-02','2024-01-14','2023-12-
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_alumniaccount`
---
-
-DROP TABLE IF EXISTS `social_media_alumniaccount`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_alumniaccount` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `alumni_account_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `account_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `account_id` (`account_id`),
-  CONSTRAINT `social_media_alumnia_account_id_c7d06ad4_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_alumniaccount`
 --
 
@@ -902,31 +284,6 @@ LOCK TABLES `social_media_alumniaccount` WRITE;
 INSERT INTO `social_media_alumniaccount` VALUES (1,'2023-12-19','2023-12-19','2023-12-19',1,'1298419283',8),(2,'2023-12-19','2023-12-19','2023-12-19',1,'12984193',9),(3,'2023-12-19','2023-12-19',NULL,1,'2309482034',10),(4,'2023-12-19','2023-12-19',NULL,1,'123132',11),(5,'2023-12-19','2023-12-19',NULL,1,'3432',12),(7,'2023-12-28','2023-12-28',NULL,1,'2309482035',20),(8,'2023-12-28','2023-12-28',NULL,1,'12312312',29),(9,'2023-12-28','2023-12-28',NULL,1,'53453',30),(10,'2023-12-28','2023-12-28',NULL,1,'2309482034<',31),(11,'2023-12-28','2023-12-28',NULL,1,'2309482034>',32),(12,'2023-12-28','2023-12-28',NULL,1,'2309482034\'',33),(13,'2023-12-31','2023-12-31',NULL,1,'2309482',34);
 /*!40000 ALTER TABLE `social_media_alumniaccount` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_comment`
---
-
-DROP TABLE IF EXISTS `social_media_comment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_comment` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `comment_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `post_id` bigint(20) NOT NULL,
-  `account_id` bigint(20) DEFAULT NULL,
-  `comment_image_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_comment_post_id_200ffcb6_fk_social_media_post_id` (`post_id`),
-  KEY `social_media_comment_account_id_3fe640d0_fk_social_me` (`account_id`),
-  CONSTRAINT `social_media_comment_account_id_3fe640d0_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
-  CONSTRAINT `social_media_comment_post_id_200ffcb6_fk_social_media_post_id` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_comment`
@@ -939,24 +296,6 @@ INSERT INTO `social_media_comment` VALUES (1,'2023-12-02','2023-12-02','2023-12-
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_confirmstatus`
---
-
-DROP TABLE IF EXISTS `social_media_confirmstatus`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_confirmstatus` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `confirm_status_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_confirmstatus`
 --
 
@@ -965,24 +304,6 @@ LOCK TABLES `social_media_confirmstatus` WRITE;
 INSERT INTO `social_media_confirmstatus` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'Accept'),(2,'2023-12-02','2023-12-02','2023-12-02',1,'Deny'),(3,'2023-12-02','2023-12-02','2023-12-02',1,'Pending');
 /*!40000 ALTER TABLE `social_media_confirmstatus` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_invitationgroup`
---
-
-DROP TABLE IF EXISTS `social_media_invitationgroup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_invitationgroup` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `invitation_group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_invitationgroup`
@@ -995,25 +316,6 @@ INSERT INTO `social_media_invitationgroup` VALUES (1,'2023-12-05','2023-12-12','
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_invitationgroup_accounts`
---
-
-DROP TABLE IF EXISTS `social_media_invitationgroup_accounts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_invitationgroup_accounts` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `invitationgroup_id` bigint(20) NOT NULL,
-  `account_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_media_invitationg_invitationgroup_id_accou_5b65dcb1_uniq` (`invitationgroup_id`,`account_id`),
-  KEY `social_media_invitat_account_id_cd4c65a9_fk_social_me` (`account_id`),
-  CONSTRAINT `social_media_invitat_account_id_cd4c65a9_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
-  CONSTRAINT `social_media_invitat_invitationgroup_id_fe4d591b_fk_social_me` FOREIGN KEY (`invitationgroup_id`) REFERENCES `social_media_invitationgroup` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_invitationgroup_accounts`
 --
 
@@ -1024,60 +326,14 @@ INSERT INTO `social_media_invitationgroup_accounts` VALUES (4,1,1),(5,1,2),(6,1,
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_message`
---
-
-DROP TABLE IF EXISTS `social_media_message`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_message` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `who_sent_id` bigint(20) DEFAULT NULL,
-  `content` varchar(10000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `room_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_message_room_id_74e720e7_fk_social_media_room_id` (`room_id`),
-  KEY `social_media_message_who_sent_id_02116656` (`who_sent_id`),
-  CONSTRAINT `social_media_message_room_id_74e720e7_fk_social_media_room_id` FOREIGN KEY (`room_id`) REFERENCES `social_media_room` (`id`),
-  CONSTRAINT `social_media_message_who_sent_id_02116656_fk_social_me` FOREIGN KEY (`who_sent_id`) REFERENCES `social_media_account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_message`
 --
 
 LOCK TABLES `social_media_message` WRITE;
 /*!40000 ALTER TABLE `social_media_message` DISABLE KEYS */;
-INSERT INTO `social_media_message` VALUES (1,'2024-01-19','2024-01-19',NULL,1,1,'string',5);
+INSERT INTO `social_media_message` VALUES (1,'2024-01-19','2024-01-19',NULL,1,1,'string',5),(2,'2024-01-22','2024-01-22','2024-01-22',1,1,'Ê',5),(3,'2024-01-22','2024-01-22','2024-01-22',1,2,'Sao',5),(4,'2024-01-22','2024-01-22','2024-01-22',1,1,'Biết chuyện gì chưa',5),(5,'2024-01-22','2024-01-22','2024-01-22',1,2,'Không nói sao biết',5);
 /*!40000 ALTER TABLE `social_media_message` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_post`
---
-
-DROP TABLE IF EXISTS `social_media_post`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_post` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `post_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `comment_lock` tinyint(1) NOT NULL,
-  `account_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_post_account_id_40a73edf_fk_social_media_account_id` (`account_id`),
-  CONSTRAINT `social_media_post_account_id_40a73edf_fk_social_media_account_id` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_post`
@@ -1090,27 +346,6 @@ INSERT INTO `social_media_post` VALUES (1,'2023-12-02','2023-12-02','2023-12-02'
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_postimage`
---
-
-DROP TABLE IF EXISTS `social_media_postimage`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_postimage` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `post_image_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `post_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_postimage_post_id_c78cdf02_fk_social_media_post_id` (`post_id`),
-  CONSTRAINT `social_media_postimage_post_id_c78cdf02_fk_social_media_post_id` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_postimage`
 --
 
@@ -1119,29 +354,6 @@ LOCK TABLES `social_media_postimage` WRITE;
 INSERT INTO `social_media_postimage` VALUES (1,'2023-12-05','2023-12-05','2023-12-05',1,'images/post_images/2023/12/FURINA.png',9),(2,'2023-12-05','2023-12-05','2023-12-05',1,'images/post_images/2023/12/Screenshot_2023-11-09_011731_qYfvcnH.png',9),(3,'2023-12-05','2023-12-05','2023-12-05',1,'images/post_images/2023/12/Screenshot_2023-12-02_163517_859smi0.png',9),(4,'2023-12-10','2023-12-10','2023-12-10',0,'images/post_images/2023/12/2172227.jpg',11),(5,'2023-12-10','2023-12-10','2023-12-10',0,'images/post_images/2023/12/2172227.jpg',11),(6,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/Screenshot_2023-12-02_163517_gIEG6wZ.png',11),(7,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(8,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(9,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/Screenshot_2023-12-10_195600.png',11),(10,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(11,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(12,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(13,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(14,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/Screenshot_2023-12-10_195600_hE8Apix.png',11),(15,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(16,'2023-12-10','2023-12-10','2023-12-10',1,'images/post_images/2023/12/2172227.jpg',11),(42,'2023-12-23','2023-12-23',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703342212/pphulgax6qbzuawood8s.jpg',1),(43,'2023-12-23','2023-12-23',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703342421/vf5yo2ot1w9gymv5zgrc.jpg',2),(44,'2023-12-23','2023-12-23',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703342629/iuekurb6dwmu9hejnfxo.jpg',2),(45,'2023-12-23','2023-12-23',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703342759/cxxgh6zdqrsdeztgxoqn.jpg',2),(46,'2023-12-23','2023-12-23',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703343120/yc8sz1urdoimvlxn7p2t.jpg',2),(47,'2023-12-23','2023-12-23',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703343412/l8auoh4jer9q9qyocumz.jpg',2),(48,'2023-12-26','2023-12-26',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703579523/owjypecxe1ltli5ndc0r.jpg',3),(49,'2023-12-26','2023-12-26',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703579523/owjypecxe1ltli5ndc0r.jpg',3),(50,'2023-12-26','2023-12-26',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703579523/owjypecxe1ltli5ndc0r.jpg',3),(51,'2023-12-26','2023-12-26',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703579827/hbjhsueboll1dd4ig4wh.png',3),(52,'2023-12-26','2023-12-26',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1703579880/rixj2dvjkjapnugdn4g8.jpg',3),(53,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540032/dwwawdxeihr8udnwdfb4.jpg',47),(54,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540577/thk7qajf3udkxlqnbisl.jpg',47),(55,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540578/uxfsxfdsybdwrpo9sd9n.jpg',47),(56,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540666/urceoec1ftduww287dik.jpg',47),(57,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540667/stjg9gkusaihzlsjjsic.jpg',47),(58,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540668/lnxi6rmqrei1frkankth.jpg',47),(59,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540771/ugl4se6ffcoupx9syoer.jpg',47),(60,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540772/oybmhozyrazb2i5k7eau.jpg',47),(61,'2024-01-06','2024-01-06',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704540773/txbe2taqooct0cy8zxf5.jpg',47),(62,'2024-01-07','2024-01-07',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704599173/vqhieflmnewqxvf8gpvc.jpg',47),(63,'2024-01-07','2024-01-07',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704599174/luese3fgzhrazdrbvzrf.jpg',47),(64,'2024-01-07','2024-01-07',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1704599175/zrwmoseiewvhdovj0msk.jpg',47),(65,'2024-01-14','2024-01-14',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1705197829/j9xig11brn5m3ezakgtd.jpg',50),(66,'2024-01-14','2024-01-14',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1705197830/uni5nf562kdltj8k4ij2.jpg',50),(67,'2024-01-14','2024-01-14',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1705197832/lh4eyvji0cuzmxnohaw6.jpg',50),(68,'2024-01-14','2024-01-14',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1705197833/rnst9fyui2oi4ivqrzc6.jpg',50),(69,'2024-01-14','2024-01-14',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1705197834/m5zdrw4bd6vlbts3w6st.jpg',50),(70,'2024-01-14','2024-01-14',NULL,1,'https://res.cloudinary.com/dhwuwy0to/image/upload/v1705197835/npe2xnknfwvcgfcdcqx0.jpg',50);
 /*!40000 ALTER TABLE `social_media_postimage` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_postinvitation`
---
-
-DROP TABLE IF EXISTS `social_media_postinvitation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_postinvitation` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `event_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `start_time` datetime(6) NOT NULL,
-  `end_time` datetime(6) NOT NULL,
-  `post_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `post_id` (`post_id`),
-  CONSTRAINT `social_media_postinv_post_id_d49969f2_fk_social_me` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_postinvitation`
@@ -1154,25 +366,6 @@ INSERT INTO `social_media_postinvitation` VALUES (1,'2023-12-05','2023-12-14','2
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_postinvitation_accounts`
---
-
-DROP TABLE IF EXISTS `social_media_postinvitation_accounts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_postinvitation_accounts` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `postinvitation_id` bigint(20) NOT NULL,
-  `account_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_media_postinvitat_postinvitation_id_accoun_68235e57_uniq` (`postinvitation_id`,`account_id`),
-  KEY `social_media_postinv_account_id_a29d298c_fk_social_me` (`account_id`),
-  CONSTRAINT `social_media_postinv_account_id_a29d298c_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
-  CONSTRAINT `social_media_postinv_postinvitation_id_fca7cc95_fk_social_me` FOREIGN KEY (`postinvitation_id`) REFERENCES `social_media_postinvitation` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_postinvitation_accounts`
 --
 
@@ -1181,32 +374,6 @@ LOCK TABLES `social_media_postinvitation_accounts` WRITE;
 INSERT INTO `social_media_postinvitation_accounts` VALUES (11,1,4),(7,1,5),(8,1,7),(14,2,4),(15,2,5),(16,2,7),(18,6,1),(19,7,1);
 /*!40000 ALTER TABLE `social_media_postinvitation_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_postreaction`
---
-
-DROP TABLE IF EXISTS `social_media_postreaction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_postreaction` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `post_id` bigint(20) NOT NULL,
-  `reaction_id` bigint(20) NOT NULL,
-  `account_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_postrea_post_id_33171a86_fk_social_me` (`post_id`),
-  KEY `social_media_postrea_reaction_id_b79c36c9_fk_social_me` (`reaction_id`),
-  KEY `social_media_postrea_account_id_64ecc229_fk_social_me` (`account_id`),
-  CONSTRAINT `social_media_postrea_account_id_64ecc229_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
-  CONSTRAINT `social_media_postrea_post_id_33171a86_fk_social_me` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`),
-  CONSTRAINT `social_media_postrea_reaction_id_b79c36c9_fk_social_me` FOREIGN KEY (`reaction_id`) REFERENCES `social_media_reaction` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_postreaction`
@@ -1219,30 +386,6 @@ INSERT INTO `social_media_postreaction` VALUES (1,'2023-12-02','2023-12-02','202
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_postsurvey`
---
-
-DROP TABLE IF EXISTS `social_media_postsurvey`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_postsurvey` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `post_survey_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `start_time` datetime(6) NOT NULL,
-  `end_time` datetime(6) NOT NULL,
-  `post_id` bigint(20) NOT NULL,
-  `is_closed` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `post_id` (`post_id`),
-  CONSTRAINT `social_media_postsurvey_post_id_8b5475b0_fk_social_media_post_id` FOREIGN KEY (`post_id`) REFERENCES `social_media_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_postsurvey`
 --
 
@@ -1251,24 +394,6 @@ LOCK TABLES `social_media_postsurvey` WRITE;
 INSERT INTO `social_media_postsurvey` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'Khảo sát GPA','2023-12-02 13:11:23.000000','2023-12-02 13:11:24.000000',8,0),(2,'2023-12-16','2023-12-16','2023-12-16',1,'Khảo sát về độ tiện dụng của Swagger','2023-12-16 10:38:28.415000','2023-12-16 10:38:28.415000',14,1),(6,'2023-12-21','2023-12-21',NULL,1,'Khảo sát chất lượng giảng viên','2023-12-21 12:00:00.000000','2023-12-21 12:00:00.000000',19,0),(7,'2023-12-21','2023-12-21',NULL,1,'Khảo sát chất lượng giảng viên 2','2023-12-21 12:00:00.000000','2023-12-21 12:00:00.000000',20,0),(8,'2023-12-21','2023-12-21',NULL,1,'Khảo sát chất lượng giảng viên C','2023-12-21 10:46:28.771000','2023-12-21 10:46:28.771000',21,0),(9,'2023-12-21','2023-12-31',NULL,1,'Khảo sát chất lượng giảng viên D real','2023-12-21 10:46:28.000000','2023-12-21 10:46:28.000000',22,0),(10,'2023-12-26','2023-12-26',NULL,1,'Alo','2023-12-26 16:28:00.000000','2023-12-26 16:28:00.000000',28,0),(11,'2023-12-26','2023-12-26',NULL,1,'Alo','2023-12-26 16:28:00.000000','2023-12-26 16:28:00.000000',29,0),(12,'2023-12-26','2023-12-26',NULL,1,'Alo1','2023-12-26 16:59:00.000000','2023-12-26 16:59:00.000000',30,0),(13,'2023-12-27','2023-12-27',NULL,1,'Alo1','2023-12-26 16:59:00.000000','2023-12-26 16:59:00.000000',31,0),(14,'2023-12-27','2023-12-27',NULL,1,'Alo1','2023-12-26 16:59:00.000000','2023-12-26 16:59:00.000000',32,0),(15,'2023-12-27','2023-12-27',NULL,1,'Alo1','2023-12-26 16:59:00.000000','2023-12-26 16:59:00.000000',33,0),(16,'2023-12-29','2023-12-31',NULL,1,'Khảo sát chất lượng giảng viên D1','2023-12-21 10:46:28.000000','2023-12-21 10:46:28.000000',34,0),(17,'2023-12-29','2023-12-31',NULL,1,'Khảo sát chất lượng giảng viên D2','2023-12-21 10:46:28.000000','2023-12-21 10:46:28.000000',35,0),(18,'2023-12-29','2023-12-29',NULL,1,'Khảo sát chất lượng giảng viên E','2023-12-21 10:46:28.771000','2023-12-21 10:46:28.771000',36,0),(19,'2023-12-29','2023-12-29',NULL,1,'Khảo sát chất lượng giảng viên E','2023-12-21 10:46:28.771000','2023-12-21 10:46:28.771000',37,0),(20,'2023-12-29','2023-12-29',NULL,1,'Khảo sát chất lượng giảng viên E','2023-12-21 10:46:28.771000','2023-12-21 10:46:28.771000',38,0),(21,'2023-12-29','2023-12-29',NULL,1,'Khảo sát chất lượng giảng viên E','2023-12-21 10:46:28.771000','2023-12-21 10:46:28.771000',39,0),(22,'2023-12-29','2023-12-29',NULL,1,'Khảo sát chất lượng giảng viên E','2023-12-21 10:46:28.771000','2023-12-21 10:46:28.771000',40,0),(23,'2024-01-01','2024-01-01',NULL,1,'Khảo sát nhạc Tết','2024-01-01 02:27:16.000000','2024-01-01 02:27:18.000000',41,0);
 /*!40000 ALTER TABLE `social_media_postsurvey` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_reaction`
---
-
-DROP TABLE IF EXISTS `social_media_reaction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_reaction` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `reaction_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_reaction`
@@ -1281,24 +406,6 @@ INSERT INTO `social_media_reaction` VALUES (1,'2023-12-02','2023-12-02','2023-12
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_role`
---
-
-DROP TABLE IF EXISTS `social_media_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_role` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_role`
 --
 
@@ -1309,61 +416,14 @@ INSERT INTO `social_media_role` VALUES (1,'2023-12-02','2023-12-02','2023-12-02'
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_room`
---
-
-DROP TABLE IF EXISTS `social_media_room`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_room` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `first_user_id` bigint(20) DEFAULT NULL,
-  `second_user_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_media_room_first_user_id_second_user_id_53274e82_uniq` (`first_user_id`,`second_user_id`),
-  KEY `social_media_room_second_user_id_5ec03e85_fk_social_me` (`second_user_id`),
-  CONSTRAINT `social_media_room_first_user_id_c2e77fd7_fk_social_me` FOREIGN KEY (`first_user_id`) REFERENCES `social_media_account` (`id`),
-  CONSTRAINT `social_media_room_second_user_id_5ec03e85_fk_social_me` FOREIGN KEY (`second_user_id`) REFERENCES `social_media_account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_room`
 --
 
 LOCK TABLES `social_media_room` WRITE;
 /*!40000 ALTER TABLE `social_media_room` DISABLE KEYS */;
-INSERT INTO `social_media_room` VALUES (5,'2024-01-19','2024-01-19','2024-01-19',1,1,2),(6,'2024-01-19','2024-01-19','2024-01-19',1,2,3),(7,'2024-01-19','2024-01-19',NULL,1,4,2);
+INSERT INTO `social_media_room` VALUES (5,'2024-01-19','2024-01-19','2024-01-19',1,1,2,'2024-01-22 14:56:56.625322',0),(6,'2024-01-19','2024-01-19','2024-01-19',1,2,3,'2024-01-22 14:56:56.625322',0),(7,'2024-01-19','2024-01-19',NULL,1,4,2,'2024-01-22 14:56:56.625322',0);
 /*!40000 ALTER TABLE `social_media_room` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_surveyanswer`
---
-
-DROP TABLE IF EXISTS `social_media_surveyanswer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_surveyanswer` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `answer_value` varchar(10000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `survey_question_id` bigint(20) NOT NULL,
-  `survey_response_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_surveya_survey_question_id_1dafa1b7_fk_social_me` (`survey_question_id`),
-  KEY `social_media_surveya_survey_response_id_91ba8f7c_fk_social_me` (`survey_response_id`),
-  CONSTRAINT `social_media_surveya_survey_question_id_1dafa1b7_fk_social_me` FOREIGN KEY (`survey_question_id`) REFERENCES `social_media_surveyquestion` (`id`),
-  CONSTRAINT `social_media_surveya_survey_response_id_91ba8f7c_fk_social_me` FOREIGN KEY (`survey_response_id`) REFERENCES `social_media_surveyresponse` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_surveyanswer`
@@ -1376,32 +436,6 @@ INSERT INTO `social_media_surveyanswer` VALUES (4,'2023-12-02','2023-12-17','202
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_surveyquestion`
---
-
-DROP TABLE IF EXISTS `social_media_surveyquestion`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_surveyquestion` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `question_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `question_order` int(11) NOT NULL,
-  `post_survey_id` bigint(20) NOT NULL,
-  `survey_question_type_id` bigint(20) NOT NULL,
-  `is_required` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_surveyq_survey_question_type_29e9c43e_fk_social_me` (`survey_question_type_id`),
-  KEY `social_media_surveyq_post_survey_id_b5e1b2c4_fk_social_me` (`post_survey_id`),
-  CONSTRAINT `social_media_surveyq_post_survey_id_b5e1b2c4_fk_social_me` FOREIGN KEY (`post_survey_id`) REFERENCES `social_media_postsurvey` (`id`),
-  CONSTRAINT `social_media_surveyq_survey_question_type_29e9c43e_fk_social_me` FOREIGN KEY (`survey_question_type_id`) REFERENCES `social_media_surveyquestiontype` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_surveyquestion`
 --
 
@@ -1410,28 +444,6 @@ LOCK TABLES `social_media_surveyquestion` WRITE;
 INSERT INTO `social_media_surveyquestion` VALUES (1,'2023-12-02','2023-12-02','2023-12-02',1,'GPA của bạn là bao nhiêu ( checkbox question )?',0,1,3,0),(2,'2023-12-02','2023-12-02','2023-12-02',1,'Tại sao bạn được GPA như zậy? (multi choice)',0,1,1,0),(3,'2023-12-02','2023-12-02','2023-12-02',1,'Bạn có cảm nghĩ gì về GPA bạn đạt được? (input text)',0,1,2,0),(4,'2023-12-16','2023-12-16','2023-12-16',1,'Xài swagger có tuyệt không?',1,2,1,1),(5,'2023-12-17','2023-12-17','2023-12-17',1,'Những lý do nào mà bạn thích swagger?',0,2,3,1),(12,'2023-12-21','2023-12-21',NULL,1,'Giảng viên A thế nào',1,6,1,1),(13,'2023-12-21','2023-12-21',NULL,1,'Bạn thích điều gì ở giảng viên A',2,6,3,1),(14,'2023-12-21','2023-12-21',NULL,1,'Giảng viên B thế nào',1,7,1,1),(15,'2023-12-21','2023-12-21',NULL,1,'Bạn thích điều gì ở giảng viên B',2,7,3,1),(16,'2023-12-21','2023-12-21',NULL,1,'Giảng viên C thế nào',1,8,1,1),(17,'2023-12-21','2023-12-21',NULL,1,'Bạn thích điều gì ở giảng viên C',2,8,3,1),(18,'2023-12-21','2023-12-21',NULL,1,'Giảng viên D thế nào',1,9,1,1),(19,'2023-12-21','2023-12-21',NULL,1,'Bạn thích điều gì ở giảng viên D',2,9,3,1),(20,'2023-12-29','2023-12-29',NULL,1,'Giảng viên D thế nào',1,16,1,1),(21,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên D',2,16,3,1),(22,'2023-12-29','2023-12-29',NULL,1,'Giảng viên D thế nào',1,17,1,1),(23,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên D',2,17,3,1),(24,'2023-12-29','2023-12-29',NULL,1,'Giảng viên E thế nào',1,18,1,1),(25,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên E',2,18,3,1),(26,'2023-12-29','2023-12-29',NULL,1,'Giảng viên E thế nào',1,19,1,1),(27,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên E',2,19,3,1),(28,'2023-12-29','2023-12-29',NULL,1,'Giảng viên E thế nào>',1,20,1,1),(29,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên E',2,20,3,1),(30,'2023-12-29','2023-12-29',NULL,1,'Giảng viên E thế nào>',1,21,1,1),(31,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên E',2,21,3,1),(32,'2023-12-29','2023-12-29',NULL,1,'Giảng viên E thế nào',1,22,1,1),(33,'2023-12-29','2023-12-29',NULL,1,'Bạn thích điều gì ở giảng viên E',2,22,3,1),(34,'2024-01-01','2024-01-01',NULL,1,'Bạn thích bài hát nào?',1,23,3,0),(35,'2024-01-01','2024-01-01',NULL,1,'Bài muốn lì xì bao nhiêu?',2,23,1,0),(36,'2024-01-01','2024-01-01',NULL,1,'Cảm nghĩ của bạn khi qua năm mới?',3,23,2,0),(37,'2024-01-01','2024-01-01',NULL,1,'Bạn nghĩ gì về việc đi chùa?',4,23,2,0);
 /*!40000 ALTER TABLE `social_media_surveyquestion` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_surveyquestionoption`
---
-
-DROP TABLE IF EXISTS `social_media_surveyquestionoption`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_surveyquestionoption` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `question_option_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `question_option_order` int(11) NOT NULL,
-  `survey_question_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_surveyq_survey_question_id_da5c9957_fk_social_me` (`survey_question_id`),
-  CONSTRAINT `social_media_surveyq_survey_question_id_da5c9957_fk_social_me` FOREIGN KEY (`survey_question_id`) REFERENCES `social_media_surveyquestion` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_surveyquestionoption`
@@ -1444,25 +456,6 @@ INSERT INTO `social_media_surveyquestionoption` VALUES (1,'2023-12-02','2023-12-
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_surveyquestionoption_survey_answers`
---
-
-DROP TABLE IF EXISTS `social_media_surveyquestionoption_survey_answers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_surveyquestionoption_survey_answers` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `surveyquestionoption_id` bigint(20) NOT NULL,
-  `surveyanswer_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_media_surveyquest_surveyquestionoption_id__8d4a8b2c_uniq` (`surveyquestionoption_id`,`surveyanswer_id`),
-  KEY `social_media_surveyq_surveyanswer_id_bca37255_fk_social_me` (`surveyanswer_id`),
-  CONSTRAINT `social_media_surveyq_surveyanswer_id_bca37255_fk_social_me` FOREIGN KEY (`surveyanswer_id`) REFERENCES `social_media_surveyanswer` (`id`),
-  CONSTRAINT `social_media_surveyq_surveyquestionoption_5bbecb6f_fk_social_me` FOREIGN KEY (`surveyquestionoption_id`) REFERENCES `social_media_surveyquestionoption` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_surveyquestionoption_survey_answers`
 --
 
@@ -1471,24 +464,6 @@ LOCK TABLES `social_media_surveyquestionoption_survey_answers` WRITE;
 INSERT INTO `social_media_surveyquestionoption_survey_answers` VALUES (1,1,4),(2,2,4),(3,3,4),(4,5,5),(5,9,7),(6,10,9),(9,10,10),(7,11,9),(10,11,10),(8,12,9),(11,32,13),(15,32,15),(19,32,17),(23,32,19),(12,34,14),(16,34,16),(20,34,18),(24,34,20),(13,35,14),(17,35,16),(21,35,18),(25,35,20),(14,36,14),(18,36,16),(22,36,18),(26,36,20),(28,79,21),(32,79,26),(27,80,21),(30,80,22),(33,81,26),(29,82,21),(31,85,25);
 /*!40000 ALTER TABLE `social_media_surveyquestionoption_survey_answers` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_surveyquestiontype`
---
-
-DROP TABLE IF EXISTS `social_media_surveyquestiontype`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_surveyquestiontype` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `question_type_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_surveyquestiontype`
@@ -1501,29 +476,6 @@ INSERT INTO `social_media_surveyquestiontype` VALUES (1,'2023-12-02','2023-12-02
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_surveyresponse`
---
-
-DROP TABLE IF EXISTS `social_media_surveyresponse`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_surveyresponse` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_date` date DEFAULT NULL,
-  `updated_date` date DEFAULT NULL,
-  `deleted_date` date DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `post_survey_id` bigint(20) NOT NULL,
-  `account_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `social_media_surveyr_post_survey_id_4c3aec1c_fk_social_me` (`post_survey_id`),
-  KEY `social_media_surveyr_account_id_0098cd24_fk_social_me` (`account_id`),
-  CONSTRAINT `social_media_surveyr_account_id_0098cd24_fk_social_me` FOREIGN KEY (`account_id`) REFERENCES `social_media_account` (`id`),
-  CONSTRAINT `social_media_surveyr_post_survey_id_4c3aec1c_fk_social_me` FOREIGN KEY (`post_survey_id`) REFERENCES `social_media_postsurvey` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_surveyresponse`
 --
 
@@ -1534,60 +486,14 @@ INSERT INTO `social_media_surveyresponse` VALUES (1,'2023-12-02','2023-12-02','2
 UNLOCK TABLES;
 
 --
--- Table structure for table `social_media_user`
---
-
-DROP TABLE IF EXISTS `social_media_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_user` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `password` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_login` datetime(6) DEFAULT NULL,
-  `is_superuser` tinyint(1) NOT NULL,
-  `username` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `is_staff` tinyint(1) NOT NULL,
-  `is_active` tinyint(1) NOT NULL,
-  `date_joined` datetime(6) NOT NULL,
-  `confirm_status_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
-  KEY `social_media_user_confirm_status_id_2faf8343_fk_social_me` (`confirm_status_id`),
-  CONSTRAINT `social_media_user_confirm_status_id_2faf8343_fk_social_me` FOREIGN KEY (`confirm_status_id`) REFERENCES `social_media_confirmstatus` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `social_media_user`
 --
 
 LOCK TABLES `social_media_user` WRITE;
 /*!40000 ALTER TABLE `social_media_user` DISABLE KEYS */;
-INSERT INTO `social_media_user` VALUES (1,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=','2024-01-21 16:14:37.662000',1,'admin','Tuan','Tran','tuantran@gmail.com',1,1,'2023-12-01 18:04:49.275061',1),(2,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=',NULL,0,'tuan1','Tuan','Tran','tuan1@gmail.com',0,1,'2023-12-02 08:39:37.000000',1),(3,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=',NULL,0,'tuan2','Tuan 2','Tran','tuan2@gmail.com',0,1,'2023-12-02 09:37:01.000000',1),(4,'123',NULL,0,'tuan3','Tuan 3','Tran','tuan3@gmail.com',0,1,'2023-12-02 09:40:58.000000',1),(5,'123456',NULL,0,'tuanpasswordfails','Tuan 4','password','tuan4@gmail.com',0,1,'2023-12-07 10:34:31.000000',1),(6,'123456',NULL,0,'tuanpassword1','Tuan 5','Tran','tuan5@gmail.com',0,1,'2023-12-07 10:50:19.000000',1),(7,'pbkdf2_sha256$600000$YkfAul7vg60OJHoQqLFFko$L75Dbc72umE1LYSuy7SEMoVJsHb+CDQT6srpddZxaI4=',NULL,0,'postman','postman','postman','postman@gmail.com',0,1,'2023-12-07 15:30:00.123456',1),(8,'pbkdf2_sha256$600000$vlqLe1BNU6f0YF1TdG6Kan$WHVSVcbHaZ07dg1Ha4cq/GTLqjJUZmHjB1ij44gzhUQ=',NULL,0,'tuan6','Tuan 6','Tuan','tuan6@example.com',0,1,'2023-12-10 11:42:43.323435',1),(9,'pbkdf2_sha256$600000$6iyM47wsGvy9txISvvRGkB$HgxapVMM08GYlIrOuhR33iGxTlCnbo87PFI3nNjJx4Y=',NULL,0,'tuan7','Tuan 7','Tran','',0,1,'2023-12-10 11:44:01.087788',1),(10,'password',NULL,0,'username','first_name','last_name','email@gmail.com',0,1,'2023-12-19 11:57:33.728490',1),(11,'pbkdf2_sha256$600000$uaJ7nQdrlc6IncdN955uzX$aGWFGd1h+FnMZpixTu7DrwMfpwanaJ3Sapucinxbhgk=',NULL,0,'username1','first_name','last_name','email@gmail.com',0,1,'2023-12-19 12:07:24.260463',1),(12,'pbkdf2_sha256$600000$mYGjYnyjJy1DHeFxccXV8z$4031NTk+hrz166ibil4DfwN5SltoLUacaRsXox15ptc=',NULL,0,'username3','first_name','last_name','email@gmail.com',0,1,'2023-12-19 12:25:40.355863',3),(13,'pbkdf2_sha256$600000$UUWQcoS1P9QcZ577p4Y7vP$kF67MbEGHVvFhIyl40k6jTIQUcD+q6yXLKK38eO/UPc=',NULL,0,'12312','string','string','string',0,1,'2023-12-19 12:32:00.927257',3),(14,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'43535','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(15,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'435357','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(16,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'435358','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(17,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'435359','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(20,'pbkdf2_sha256$600000$wp7QUCfSFsb8gnRQFJWlJl$ZNawP/31SWr1EGKkw1O7rik+ukxSfgwyVODmAuEj7eM=',NULL,0,'username4','first_name','last_name','email@gmail.com',0,1,'2023-12-28 12:16:38.671909',3),(21,'pbkdf2_sha256$600000$wp7QUCfSFsb8gnRQFJWlJl$ZNawP/31SWr1EGKkw1O7rik+ukxSfgwyVODmAuEj7eM=',NULL,0,'username5','first_name','last_name','email@gmail.com',0,1,'2023-12-28 12:16:38.671909',3),(25,'pbkdf2_sha256$600000$xAFgnX6BxTcfsm4TtBs6gw$fUOR8D35c4Foypckn8iGzlJZy5torqB79m7fw0eo9L0=',NULL,0,'username6','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:37:20.393913',3),(26,'pbkdf2_sha256$600000$M8ryyiLMybgOobfR2TQFqG$WNPHAbP0MHoUIzdg8eAYP6MSDGSWaBo1BH1ZKCuxBgw=',NULL,0,'username7','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:42:06.973048',3),(27,'pbkdf2_sha256$600000$OpxVMYIXPtnCMbn9zQ0Zhb$bnbwJCZZSL7kcRSDfnX+T2wrgil7Qr4NOh9eCfwRIr0=',NULL,0,'username8','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:47:05.798022',3),(28,'pbkdf2_sha256$600000$lOGLTL9CaxIra3whK6J72W$tKEOZjnPBqWJvBtG3VS9Ygo6OUEH3qWKL+EnxMd/o3I=',NULL,0,'username10','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:50:50.452850',3),(29,'pbkdf2_sha256$600000$kMpxIWaxEPXEb6abD4L49r$yXFIJ6XPL0sE7Qa7sAcgqi0ToA0IpKldEn8RGrw5xNQ=',NULL,0,'username11','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:59:59.344804',3),(30,'pbkdf2_sha256$600000$BnVBIbWcFOXxZ9c9TxODPb$M4VHtEQwWUuYavGax/QldI5Ozrrtt//bDxIJlPFWBM8=',NULL,0,'username13','first_name','last_name','email@gmail.com',0,1,'2023-12-31 15:37:42.916676',3),(32,'pbkdf2_sha256$600000$I1kht3DgNsslBJwA4b4MIp$a3vpO/fthQCH64yHErrTeG3p+8SgQfM5Yk+Igm1EyO4=',NULL,0,'lec123','lec','lec','lec@gmail.com',0,1,'2024-01-18 11:39:53.180269',2),(33,'pbkdf2_sha256$600000$rvQSZbuSVIdfYfrMSpDK5q$vlUjZ4oUJovgcI/e8JLT45fDl8tHFKT1aG7xloRRFgw=',NULL,0,'string','string','string','string',0,1,'2024-01-19 08:41:39.338439',1),(34,'!IiDIqP3Gy1cqwcjJhW6fEnJgNzxpOSc9e7AnSTZW','2024-01-21 17:01:06.420975',0,'2051050549tuan','Tuấn','Trần Đăng','2051050549tuan@ou.edu.vn',0,1,'2024-01-21 16:14:22.635691',3);
+INSERT INTO `social_media_user` VALUES (1,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=','2024-01-22 08:15:31.088360',1,'admin','Tuan','Tran','tuantran@gmail.com',1,1,'2023-12-01 18:04:49.275061',1),(2,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=',NULL,0,'tuan1','Tuan','Tran','tuan1@gmail.com',0,1,'2023-12-02 08:39:37.000000',1),(3,'pbkdf2_sha256$600000$2wYAvGMI58wUR4jfbF9Hs5$jxG3DTdYTZemo5oKYIgzmVSW91FdhbxowqxVuEZo5X8=',NULL,0,'tuan2','Tuan 2','Tran','tuan2@gmail.com',0,1,'2023-12-02 09:37:01.000000',1),(4,'123',NULL,0,'tuan3','Tuan 3','Tran','tuan3@gmail.com',0,1,'2023-12-02 09:40:58.000000',1),(5,'123456',NULL,0,'tuanpasswordfails','Tuan 4','password','tuan4@gmail.com',0,1,'2023-12-07 10:34:31.000000',1),(6,'123456',NULL,0,'tuanpassword1','Tuan 5','Tran','tuan5@gmail.com',0,1,'2023-12-07 10:50:19.000000',1),(7,'pbkdf2_sha256$600000$YkfAul7vg60OJHoQqLFFko$L75Dbc72umE1LYSuy7SEMoVJsHb+CDQT6srpddZxaI4=',NULL,0,'postman','postman','postman','postman@gmail.com',0,1,'2023-12-07 15:30:00.123456',1),(8,'pbkdf2_sha256$600000$vlqLe1BNU6f0YF1TdG6Kan$WHVSVcbHaZ07dg1Ha4cq/GTLqjJUZmHjB1ij44gzhUQ=',NULL,0,'tuan6','Tuan 6','Tuan','tuan6@example.com',0,1,'2023-12-10 11:42:43.323435',1),(9,'pbkdf2_sha256$600000$6iyM47wsGvy9txISvvRGkB$HgxapVMM08GYlIrOuhR33iGxTlCnbo87PFI3nNjJx4Y=',NULL,0,'tuan7','Tuan 7','Tran','',0,1,'2023-12-10 11:44:01.087788',1),(10,'password',NULL,0,'username','first_name','last_name','email@gmail.com',0,1,'2023-12-19 11:57:33.728490',1),(11,'pbkdf2_sha256$600000$uaJ7nQdrlc6IncdN955uzX$aGWFGd1h+FnMZpixTu7DrwMfpwanaJ3Sapucinxbhgk=',NULL,0,'username1','first_name','last_name','email@gmail.com',0,1,'2023-12-19 12:07:24.260463',1),(12,'pbkdf2_sha256$600000$mYGjYnyjJy1DHeFxccXV8z$4031NTk+hrz166ibil4DfwN5SltoLUacaRsXox15ptc=',NULL,0,'username3','first_name','last_name','email@gmail.com',0,1,'2023-12-19 12:25:40.355863',3),(13,'pbkdf2_sha256$600000$UUWQcoS1P9QcZ577p4Y7vP$kF67MbEGHVvFhIyl40k6jTIQUcD+q6yXLKK38eO/UPc=',NULL,0,'12312','string','string','string',0,1,'2023-12-19 12:32:00.927257',3),(14,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'43535','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(15,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'435357','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(16,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'435358','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(17,'pbkdf2_sha256$600000$VdpHrMrltbNF5kc8mVRHuJ$QSBFKkNrLtCKrZNQG1SsLX2YSq558Mq8DTI+sXhKJJE=',NULL,0,'435359','string','string','string',0,1,'2023-12-19 12:33:59.352775',3),(20,'pbkdf2_sha256$600000$wp7QUCfSFsb8gnRQFJWlJl$ZNawP/31SWr1EGKkw1O7rik+ukxSfgwyVODmAuEj7eM=',NULL,0,'username4','first_name','last_name','email@gmail.com',0,1,'2023-12-28 12:16:38.671909',3),(21,'pbkdf2_sha256$600000$wp7QUCfSFsb8gnRQFJWlJl$ZNawP/31SWr1EGKkw1O7rik+ukxSfgwyVODmAuEj7eM=',NULL,0,'username5','first_name','last_name','email@gmail.com',0,1,'2023-12-28 12:16:38.671909',3),(25,'pbkdf2_sha256$600000$xAFgnX6BxTcfsm4TtBs6gw$fUOR8D35c4Foypckn8iGzlJZy5torqB79m7fw0eo9L0=',NULL,0,'username6','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:37:20.393913',3),(26,'pbkdf2_sha256$600000$M8ryyiLMybgOobfR2TQFqG$WNPHAbP0MHoUIzdg8eAYP6MSDGSWaBo1BH1ZKCuxBgw=',NULL,0,'username7','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:42:06.973048',3),(27,'pbkdf2_sha256$600000$OpxVMYIXPtnCMbn9zQ0Zhb$bnbwJCZZSL7kcRSDfnX+T2wrgil7Qr4NOh9eCfwRIr0=',NULL,0,'username8','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:47:05.798022',3),(28,'pbkdf2_sha256$600000$lOGLTL9CaxIra3whK6J72W$tKEOZjnPBqWJvBtG3VS9Ygo6OUEH3qWKL+EnxMd/o3I=',NULL,0,'username10','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:50:50.452850',3),(29,'pbkdf2_sha256$600000$kMpxIWaxEPXEb6abD4L49r$yXFIJ6XPL0sE7Qa7sAcgqi0ToA0IpKldEn8RGrw5xNQ=',NULL,0,'username11','first_name','last_name','email@gmail.com',0,1,'2023-12-28 13:59:59.344804',3),(30,'pbkdf2_sha256$600000$BnVBIbWcFOXxZ9c9TxODPb$M4VHtEQwWUuYavGax/QldI5Ozrrtt//bDxIJlPFWBM8=',NULL,0,'username13','first_name','last_name','email@gmail.com',0,1,'2023-12-31 15:37:42.916676',3),(32,'pbkdf2_sha256$600000$I1kht3DgNsslBJwA4b4MIp$a3vpO/fthQCH64yHErrTeG3p+8SgQfM5Yk+Igm1EyO4=',NULL,0,'lec123','lec','lec','lec@gmail.com',0,1,'2024-01-18 11:39:53.180269',2),(33,'pbkdf2_sha256$600000$rvQSZbuSVIdfYfrMSpDK5q$vlUjZ4oUJovgcI/e8JLT45fDl8tHFKT1aG7xloRRFgw=',NULL,0,'string','string','string','string',0,1,'2024-01-19 08:41:39.338439',1),(34,'!IiDIqP3Gy1cqwcjJhW6fEnJgNzxpOSc9e7AnSTZW','2024-01-22 08:10:20.762841',0,'2051050549tuan','Tuấn','Trần Đăng','2051050549tuan@ou.edu.vn',0,1,'2024-01-21 16:14:22.635691',3);
 /*!40000 ALTER TABLE `social_media_user` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_user_groups`
---
-
-DROP TABLE IF EXISTS `social_media_user_groups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_user_groups` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_media_user_groups_user_id_group_id_38ce0124_uniq` (`user_id`,`group_id`),
-  KEY `social_media_user_groups_group_id_90fc3bd1_fk_auth_group_id` (`group_id`),
-  CONSTRAINT `social_media_user_gr_user_id_e05fbb9c_fk_social_me` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`),
-  CONSTRAINT `social_media_user_groups_group_id_90fc3bd1_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_user_groups`
@@ -1597,25 +503,6 @@ LOCK TABLES `social_media_user_groups` WRITE;
 /*!40000 ALTER TABLE `social_media_user_groups` DISABLE KEYS */;
 /*!40000 ALTER TABLE `social_media_user_groups` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `social_media_user_user_permissions`
---
-
-DROP TABLE IF EXISTS `social_media_user_user_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `social_media_user_user_permissions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `permission_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `social_media_user_user_p_user_id_permission_id_272c2dba_uniq` (`user_id`,`permission_id`),
-  KEY `social_media_user_us_permission_id_35577a9c_fk_auth_perm` (`permission_id`),
-  CONSTRAINT `social_media_user_us_permission_id_35577a9c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
-  CONSTRAINT `social_media_user_us_user_id_cb9d5f23_fk_social_me` FOREIGN KEY (`user_id`) REFERENCES `social_media_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `social_media_user_user_permissions`
@@ -1635,4 +522,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-22  0:08:00
+-- Dump completed on 2024-01-22 22:18:26
