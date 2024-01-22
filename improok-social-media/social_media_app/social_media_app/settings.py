@@ -268,9 +268,9 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_URL = 'login'
+# LOGIN_URL = 'login'
 # LOGIN_REDIRECT_URL = 'home'
-LOGOUT_URL = 'logout'
+# LOGOUT_URL = 'logout'
 # LOGOUT_REDIRECT_URL = 'login'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '503521058443-e7ib2bc0p7p2inbh7b7rtpf0a6eftohg.apps.googleusercontent.com'

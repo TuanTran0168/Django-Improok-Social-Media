@@ -352,11 +352,15 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
     def get_user_by_status(self, request):
         try:
             confirm_status_id = request.query_params.get('confirm_status_id')
-            users = User.objects.filter(confirm_status_id=confirm_status_id).all()
-            paginator = MyPageSize()
-            paginated = paginator.paginate_queryset(users, request)
+            users = User.objects.filter(confirm_status_id=confirm_status_id).values_list('id', flat=True)
 
-            serializer = UserSerializer(paginated, many=True, context={'request': request})
+            accounts = Account.objects.filter(id__in=users)
+
+            paginator = MyPageSize()
+            paginated = paginator.paginate_queryset(accounts, request)
+
+            # Có mấy cái serializer cũ dùng lại tiện ghê :)))
+            serializer = AccountSerializerForUser(paginated, many=True, context={'request': request})
             return paginator.get_paginated_response(serializer.data)
         except ValueError as e:
             error_message = str(e)
@@ -364,8 +368,6 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # return Response(UserSerializer(user, many=True).data, status=status.HTTP_200_OK)
 
 
 # -Post-
@@ -405,15 +407,26 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     # post/{post_id}/comments/
     # Nếu xài cái def comments(self, request, pk) luôn thì khỏi url_path
     # Nhức nhức cái đầu ghê :v
+    # @action(methods=['GET'], detail=True, url_path='comments')
+    # @method_decorator(decorator=header_authorization, name='get_comments')
+    # def get_comments(self, request, pk):
+    #     comments = self.get_object().comment_set.filter(active=True).all()
+    #
+    #     # Nhớ .data chứ không nó lỗi
+    #     # Thả request dô cho cái CommentSerializer bên kia nó nhận nó gắn static cho image
+    #     return Response(CommentSerializerForPost(comments, many=True, context={'request': request}).data,
+    #                     status=status.HTTP_200_OK)
+
     @action(methods=['GET'], detail=True, url_path='comments')
     @method_decorator(decorator=header_authorization, name='get_comments')
     def get_comments(self, request, pk):
-        comments = self.get_object().comment_set.filter(active=True).all()
+        comments = self.get_object().comment_set.filter(active=True).order_by('-created_date').all()
 
-        # Nhớ .data chứ không nó lỗi
-        # Thả request dô cho cái CommentSerializer bên kia nó nhận nó gắn static cho image
-        return Response(CommentSerializerForPost(comments, many=True, context={'request': request}).data,
-                        status=status.HTTP_200_OK)
+        paginator = MyPageSize()
+        paginated = paginator.paginate_queryset(comments, request)
+
+        serializer = CommentSerializerForPost(paginated, many=True, context={'request': request})
+        return paginator.get_paginated_response(serializer.data)
 
     @action(methods=['GET'], detail=True, url_path='post-images')
     @method_decorator(decorator=header_authorization, name='get_post_images')
@@ -1433,7 +1446,7 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 
     @action(methods=['GET'], detail=True, url_path='messages')
     def messages(self, request, pk):
-        messages = Message.objects.filter(room_id=pk).all()
+        messages = Message.objects.filter(room_id=pk).order_by('-created_date').all()
         paginator = MyPageSize()
         paginated = paginator.paginate_queryset(messages, request)
 

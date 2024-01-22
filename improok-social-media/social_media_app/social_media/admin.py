@@ -229,3 +229,10 @@ my_admin_site.register(PeriodicTasks)
 from django_celery_results.models import TaskResult, GroupResult
 my_admin_site.register(TaskResult)
 my_admin_site.register(GroupResult)
+
+from social_django.models import UserSocialAuth, Association, Code, Nonce, Partial
+my_admin_site.register(UserSocialAuth)
+my_admin_site.register(Association)
+my_admin_site.register(Code)
+my_admin_site.register(Nonce)
+my_admin_site.register(Partial)

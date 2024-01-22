@@ -200,6 +200,8 @@ class Room(BaseModel):
     # id sender + id receiver => room Id
     first_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='first_user_room', null=True)
     second_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='second_user_room', null=True)
+    received_message_date = models.DateTimeField(auto_now=True)
+    seen = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ['first_user', 'second_user']
