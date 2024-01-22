@@ -1,0 +1,16 @@
+body {
+    background: red;
+}
+
+.big-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 32px;
+    margin-bottom: 3%;
+}
+
+.top-stats {
+    display: flex;
+    justify-content: space-around;
+}
+

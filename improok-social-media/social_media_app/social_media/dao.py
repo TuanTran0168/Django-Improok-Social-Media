@@ -42,15 +42,31 @@ def load_posts(params={}):
     return query
 
 
-def count_posts_by_account():
+def count_posts_by_account(params={}):
     # post__id là trong Post có id của Account (ở models)
     # Nên dùng post__id để truy vấn post_id từ Account (Trong Account không hề có id của Post)
 
     # user__username là user.username/userId.username như hồi ở Java :)))
     # user là khóa ngoại của User trong Account (ở models)
     query = Account.objects.annotate(count=Count('post__id')).values('id', 'phone_number', 'user__username',
+                                                                     'user__first_name', 'user__last_name',
                                                                      'count').order_by('-count')
-    return query
+
+    start_date = params.get('start_date')
+    end_date = params.get('end_date')
+
+    print(start_date)
+    print(end_date)
+
+    if start_date and end_date:
+        query = query.filter(post__created_date__range=(start_date, end_date))
+    elif start_date:
+        query = query.filter(post__created_date__gte=start_date)
+    elif end_date:
+        query = query.filter(post__created_date__lte=end_date)
+
+    print(query[:5].query)
+    return query[:5]
 
 
 def count_answer_by_question(question_id):
@@ -72,3 +88,28 @@ def get_answer_by_question_id(question_id):
     query = SurveyAnswer.objects.filter(survey_question_id=question_id).values('survey_question_id', 'answer_value')
 
     return query
+
+
+def count_comment_by_user(params={}):
+    query = User.objects.annotate(comment_count=Count('account__comment')) \
+        .values('id', 'last_name', 'first_name', 'comment_count') \
+        .order_by('-comment_count')
+
+    start_date = params.get('start_date')
+    end_date = params.get('end_date')
+
+    print(start_date)
+    print(end_date)
+
+    if start_date:
+        query = query.filter(account__comment__created_date__gte=start_date)
+
+    elif end_date:
+        query = query.filter(account__comment__created_date__lte=end_date)
+
+    elif start_date and end_date:
+        query = query.filter(account__comment__created_date__range=(start_date, end_date))
+
+    print(query[:5].query)
+
+    return query[:5]

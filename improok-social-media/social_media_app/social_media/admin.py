@@ -17,14 +17,23 @@ class SocialMediaAppAdminSite(admin.AdminSite):
 
     def get_urls(self):
         return [
-                   path('stats-admin/', self.stats_view)  # Cái này là url
+                   path('stats-admin/', self.stats_view_user)  # Cái này là url
                ] + super().get_urls()
 
     @staticmethod
-    def stats_view(request):
+    def stats_view_user(request):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
+        params = {
+            'start_date': start_date,
+            'end_date': end_date
+        }
+
         # Cái này dẫn tới folder templates/
         return TemplateResponse(request, 'admin/stats.html', {
-            'stats': dao.count_posts_by_account()
+            'stats_count_posts_by_account': dao.count_posts_by_account(params),
+            'stats_count_comment_by_user': dao.count_comment_by_user(params)
         })
 
 
