@@ -32,8 +32,8 @@ class SocialMediaAppAdminSite(admin.AdminSite):
 
         # Cái này dẫn tới folder templates/
         return TemplateResponse(request, 'admin/stats.html', {
-            'stats_count_posts_by_account': dao.count_posts_by_account(params),
-            'stats_count_comment_by_user': dao.count_comment_by_user(params)
+            'top_accounts_post': dao.top_accounts_post(params),
+            'top_accounts_comment': dao.top_accounts_comment(params)
         })
 
 

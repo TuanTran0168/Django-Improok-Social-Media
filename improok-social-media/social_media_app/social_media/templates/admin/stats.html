@@ -7,7 +7,6 @@
 {% endblock %}
 
 {% block content %}
-
 <h1 class="big-title">THỐNG KÊ MẠNG XÃ HỘI TRỰC TUYẾN</h1>
 
 <form method="get">
@@ -35,7 +34,7 @@
     let labels_1 = [];
     let values_1 = [];
 
-    {% for s in stats_count_posts_by_account %}
+    {% for s in top_accounts_post %}
         values_1.push({{ s.count }})
         labels_1.push('{{ s.user__first_name }}' + ' ' + '{{ s.user__last_name }}')
     {% endfor %}
@@ -43,9 +42,9 @@
     let labels_2 = [];
     let values_2 = [];
 
-    {% for s in stats_count_comment_by_user %}
+    {% for s in top_accounts_comment %}
         values_2.push({{ s.comment_count }})
-        labels_2.push('{{ s.first_name }}' + ' ' + '{{ s.last_name }}')
+        labels_2.push('{{ s.user__first_name }}' + ' ' + '{{ s.user__last_name }}')
     {% endfor %}
 
     window.onload = () => {

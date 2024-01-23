@@ -91,7 +91,7 @@ def get_answer_by_question_id(question_id):
 
 
 def count_comment_by_user(params={}):
-    query = User.objects.annotate(comment_count=Count('account__comment')) \
+    query = User.objects.annotate(comment_count=Count('account')) \
         .values('id', 'last_name', 'first_name', 'comment_count') \
         .order_by('-comment_count')
 
@@ -110,6 +110,62 @@ def count_comment_by_user(params={}):
     elif start_date and end_date:
         query = query.filter(account__comment__created_date__range=(start_date, end_date))
 
+    print(query[:5].query)
+
+    return query[:5]
+
+
+def top_accounts_post(params={}):
+    print("======= top_accounts_post =========")
+    query = Account.objects.all()
+    start_date = params.get('start_date')
+    end_date = params.get('end_date')
+
+    print(start_date)
+    print(end_date)
+
+    if start_date and len(start_date) > 0 and len(end_date) == 0:
+        query = query.filter(post__created_date__gte=start_date)
+        print("1")
+
+    elif end_date and len(end_date) > 0 and len(start_date) == 0:
+        query = query.filter(post__created_date__lte=end_date)
+        print("2")
+
+    elif start_date and end_date and len(start_date) > 0 and len(end_date) > 0:
+        query = query.filter(post__created_date__range=(start_date, end_date))
+        print("3")
+
+    query = query.annotate(count=Count('post')).values('user_id', 'user__first_name', 'user__first_name',
+                                                       'count').order_by('-count')
+    print(query[:5].query)
+    return query[:5]
+
+
+def top_accounts_comment(params={}):
+    print("======= top_accounts_comment =========")
+    query = Account.objects.all()
+
+    start_date = params.get('start_date')
+    end_date = params.get('end_date')
+
+    print(start_date)
+    print(end_date)
+
+    if start_date and len(start_date) > 0 and len(end_date) == 0:
+        query = query.filter(comment__created_date__gte=start_date)
+        print("1")
+
+    elif end_date and len(end_date) > 0 and len(start_date) == 0:
+        query = query.filter(comment__created_date__lte=end_date)
+        print("2")
+
+    elif start_date and end_date and len(start_date) > 0 and len(end_date) > 0:
+        query = query.filter(comment__created_date__range=(start_date, end_date))
+        print("3")
+
+    query = query.annotate(comment_count=Count('comment')).values('id', 'user__first_name', 'user__last_name',
+                                                                  'comment_count').order_by('-comment_count')[:5]
     print(query[:5].query)
 
     return query[:5]
