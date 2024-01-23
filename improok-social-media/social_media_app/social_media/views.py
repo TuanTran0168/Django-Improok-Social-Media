@@ -1446,7 +1446,7 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
 
     @action(methods=['GET'], detail=True, url_path='messages')
     def messages(self, request, pk):
-        messages = Message.objects.filter(room_id=pk).order_by('-created_date').all()
+        messages = Message.objects.filter(room_id=pk).order_by('created_date').all()
         paginator = MyPageSize()
         paginated = paginator.paginate_queryset(messages, request)
 

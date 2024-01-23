@@ -136,7 +136,7 @@ def top_accounts_post(params={}):
         query = query.filter(post__created_date__range=(start_date, end_date))
         print("3")
 
-    query = query.annotate(count=Count('post')).values('user_id', 'user__first_name', 'user__first_name',
+    query = query.annotate(count=Count('post')).values('user_id', 'user__first_name', 'user__last_name',
                                                        'count').order_by('-count')
     print(query[:5].query)
     return query[:5]
