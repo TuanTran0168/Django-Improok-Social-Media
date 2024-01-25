@@ -17,7 +17,8 @@ class SocialMediaAppAdminSite(admin.AdminSite):
 
     def get_urls(self):
         return [
-                   path('stats-admin/', self.stats_view_user)  # Cái này là url
+                   path('stats-admin/', self.stats_view_user),  # Cái này là url
+                   path('stats-post/', self.stats_view_post)
                ] + super().get_urls()
 
     @staticmethod
@@ -34,6 +35,21 @@ class SocialMediaAppAdminSite(admin.AdminSite):
         return TemplateResponse(request, 'admin/stats.html', {
             'top_accounts_post': dao.top_accounts_post(params),
             'top_accounts_comment': dao.top_accounts_comment(params)
+        })
+
+    @staticmethod
+    def stats_view_post(request):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
+        params = {
+            'start_date': start_date,
+            'end_date': end_date
+        }
+
+        # Cái này dẫn tới folder templates/
+        return TemplateResponse(request, 'admin/stats_post.html', {
+            'top_posts_reaction': dao.top_posts_reaction(params),
         })
 
 

@@ -1,0 +1,27 @@
+body {
+    background: lightblue !important;
+}
+
+.big-title {
+    text-align: center;
+    font-weight: 500;
+    font-size: 32px;
+    margin-bottom: 3%;
+    color: black;
+}
+
+form.form {
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 2%;
+}
+label{
+    width:10%
+}
+input{
+    width:20%;
+}
+button{
+    width:10%;
+}

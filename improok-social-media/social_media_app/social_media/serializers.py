@@ -739,6 +739,18 @@ class SurveyAnswerSerializer(serializers.ModelSerializer):
 # -Room-
 # class AccountSerializerForRoom(serializers.ModelSerializer):
 
+class CreateRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['first_user', 'second_user']
+
+
+class UpdateRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['seen']
+
+
 class RoomSerializer(serializers.ModelSerializer):
     # Các field serializer ra cho client React giống với Comment nên xài lại luôn
     first_user = AccountSerializerForComment()

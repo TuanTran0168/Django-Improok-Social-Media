@@ -169,3 +169,9 @@ def top_accounts_comment(params={}):
     print(query[:5].query)
 
     return query[:5]
+
+
+def top_posts_reaction(params={}):
+    query = Post.objects.annotate(reaction_count=Count('postreaction')).order_by('-reaction_count')[:5]
+    print(query.query)
+    return query

@@ -9,7 +9,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Count, Q
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema, get_serializer_class
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import NotFound
@@ -37,7 +37,7 @@ from .serializers import UserSerializer, RoleSerializer, PostSerializer, Account
     SurveyAnswerSerializerForRelated, SurveyResponseSerializer, CreateSurveyResponseSerializer, \
     CreateSurveyAnswerSerializer, UpdateSurveyAnswerSerializer, TempSerializer, PostReactionSerializerForAccount, \
     CommentSerializerForPost, PostSerializerForList, RetrieveInvitationGroupSerializer, SurveyQuestionTypeSerializer, \
-    AccountSerializerForUser, RoomSerializer, MessageSerializer
+    AccountSerializerForUser, RoomSerializer, MessageSerializer, CreateRoomSerializer, UpdateRoomSerializer
 from .swagger_decorators import header_authorization, delete_accounts_from_invitation_group, \
     add_or_update_accounts_from_invitation_group, add_or_update_accounts_from_post_invitation, \
     delete_accounts_from_post_invitation, send_email, warning_api, \
@@ -1415,12 +1415,21 @@ class SurveyAnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retri
 
 
 # -Room-
-class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView):
+class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView,
+                  generics.UpdateAPIView):
     queryset = Room.objects.filter(active=True).all()
     serializer_class = RoomSerializer
     pagination_class = MyPageSize
 
     # permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateRoomSerializer
+        if self.action in ['partial_update']:
+            return UpdateRoomSerializer
+        return self.serializer_class
+
     def create(self, request, *args, **kwargs):
         # Lấy dữ liệu từ request.data
         first_user_id = request.data.get('first_user')
