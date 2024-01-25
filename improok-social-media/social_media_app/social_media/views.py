@@ -354,7 +354,7 @@ class UserViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIVi
             confirm_status_id = request.query_params.get('confirm_status_id')
             users = User.objects.filter(confirm_status_id=confirm_status_id).values_list('id', flat=True)
 
-            accounts = Account.objects.filter(id__in=users)
+            accounts = Account.objects.filter(user_id__in=users)
 
             paginator = MyPageSize()
             paginated = paginator.paginate_queryset(accounts, request)
