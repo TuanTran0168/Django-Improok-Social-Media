@@ -127,6 +127,7 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             with transaction.atomic():
                 invitation_group = self.get_object()
                 list_account_id = request.data.get('list_account_id', [])
+                list_account_id = set(list_account_id)
                 # Truy vấn mấy tài khoản cần thêm này ra
                 # Nếu mấy cái mới lấy ra mà không trùng với danh sách cần thêm thì khỏi :)))
                 accounts = Account.objects.filter(id__in=list_account_id)
@@ -1190,6 +1191,7 @@ class PostInvitationViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Ret
             with transaction.atomic():
                 post_invitation = self.get_object()
                 list_account_id = request.data.get('list_account_id', [])
+                list_account_id = set(list_account_id)
                 accounts = Account.objects.filter(id__in=list_account_id)
                 if len(accounts) != len(list_account_id):
                     missing_ids = set(list_account_id) - set(accounts.values_list('id', flat=True))
