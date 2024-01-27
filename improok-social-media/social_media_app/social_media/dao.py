@@ -172,6 +172,62 @@ def top_accounts_comment(params={}):
 
 
 def top_posts_reaction(params={}):
-    query = Post.objects.annotate(reaction_count=Count('postreaction')).order_by('-reaction_count')[:5]
+    query = Post.objects.all()
+
+    start_date = params.get('start_date')
+    end_date = params.get('end_date')
+
+    print(start_date)
+    print(end_date)
+
+    if start_date and len(start_date) > 0 and len(end_date) == 0:
+        query = query.filter(created_date__gte=start_date)
+        print("1")
+
+    elif end_date and len(end_date) > 0 and len(start_date) == 0:
+        query = query.filter(created_date__lte=end_date)
+        print("2")
+
+    elif start_date and end_date and len(start_date) > 0 and len(end_date) > 0:
+        query = query.filter(created_date__range=(start_date, end_date))
+        print("3")
+
+    query = query.annotate(reaction_count=Count('postreaction')).values('id', 'post_content',
+                                                                        'account_id__user__first_name',
+                                                                        'account_id__user__last_name',
+                                                                        'reaction_count') \
+                .order_by('-reaction_count')[:5]
+
+    print(query.query)
+    return query
+
+
+def top_posts_comment(params={}):
+    query = Post.objects.all()
+
+    start_date = params.get('start_date')
+    end_date = params.get('end_date')
+
+    print(start_date)
+    print(end_date)
+
+    if start_date and len(start_date) > 0 and len(end_date) == 0:
+        query = query.filter(created_date__gte=start_date)
+        print("1")
+
+    elif end_date and len(end_date) > 0 and len(start_date) == 0:
+        query = query.filter(created_date__lte=end_date)
+        print("2")
+
+    elif start_date and end_date and len(start_date) > 0 and len(end_date) > 0:
+        query = query.filter(created_date__range=(start_date, end_date))
+        print("3")
+
+    query = query.annotate(reaction_count=Count('comment')).values('id', 'post_content',
+                                                                        'account_id__user__first_name',
+                                                                        'account_id__user__last_name',
+                                                                        'reaction_count') \
+                .order_by('-reaction_count')[:5]
+
     print(query.query)
     return query

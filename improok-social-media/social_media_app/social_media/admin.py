@@ -50,6 +50,7 @@ class SocialMediaAppAdminSite(admin.AdminSite):
         # Cái này dẫn tới folder templates/
         return TemplateResponse(request, 'admin/stats_post.html', {
             'top_posts_reaction': dao.top_posts_reaction(params),
+            'top_posts_comment': dao.top_posts_comment(params)
         })
 
 

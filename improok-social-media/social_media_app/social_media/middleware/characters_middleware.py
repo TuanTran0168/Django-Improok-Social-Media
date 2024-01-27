@@ -86,7 +86,7 @@ class BlockInvalidCharactersMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.method == 'POST':
+        if request.method in ['POST', 'PUT', 'PATCH']:
             if request.content_type == 'application/json':
                 try:
                     data = json.loads(request.body)
@@ -109,6 +109,16 @@ class BlockInvalidCharactersMiddleware:
                         return HttpResponseBadRequest('Đã phát hiện các ký tự không hợp lệ trong dữ liệu form-data!\n'
                                                       'Bao gồm: ' + pattern_string,
                                                       status=400)
+        elif request.method == 'GET':
+            if request.content_type == 'application/json':
+                try:
+                    data = json.loads(request.body)
+                    print(data)
+                except json.decoder.JSONDecodeError:
+                    return HttpResponseBadRequest('Định dạng JSON không hợp lệ!.', status=400)
+            else:
+                print(request.GET.items())
+                print(request.GET.dict())
 
         response = self.get_response(request)
         return response

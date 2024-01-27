@@ -18,39 +18,58 @@
     <input type="date" id="end_date" name="end_date">
 
     <button type="submit">Lọc</button>
-
 </form>
 
-    <table class="table table-hover table-primary">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-          <td>Larry the Bird</td>
-          <td>@twitter</td>
-            <td>@twitter</td>
-        </tr>
-      </tbody>
-</table>
+<div class="main-stats">
+
+    <table class="table table-hover table-primary my-table-stats-post">
+        <thead>
+            <tr>
+              <th scope="col">Mã bài viết</th>
+              <th scope="col">Nội dung bài viết</th>
+              <th scope="col">Chủ bài viết</th>
+              <th scope="col">Số lượt tương tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in top_posts_reaction %}
+            <tr>
+                <th scope="row">{{s.id}}</th>
+                <td>{{s.post_content}}</td>
+                <td>{{s.account_id__user__first_name}} {{s.account_id__user__last_name}}</td>
+                <td>{{s.reaction_count}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-hover table-primary my-table-stats-post">
+        <thead>
+            <tr>
+              <th scope="col">Mã bài viết</th>
+              <th scope="col">Nội dung bài viết</th>
+              <th scope="col">Chủ bài viết</th>
+              <th scope="col">Số lượt bình luận</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in top_posts_comment %}
+            <tr>
+                <th scope="row">{{s.id}}</th>
+                <td>{{s.post_content}}</td>
+                <td>{{s.account_id__user__first_name}} {{s.account_id__user__last_name}}</td>
+                <td>{{s.reaction_count}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="button-href my-button">
+    <a href="/admin/stats-admin/" class="button-href">
+        <button type="submit" class="button">Thống kê người dùng</button>
+    </a>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

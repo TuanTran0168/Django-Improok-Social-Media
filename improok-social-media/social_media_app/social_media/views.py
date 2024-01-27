@@ -1462,18 +1462,21 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
         serializer = MessageSerializer(paginated, many=True)
         return paginator.get_paginated_response(serializer.data)
 
-    @action(methods=['GET'], detail=False, url_path='find_room')
+    @action(methods=['POST'], detail=False, url_path='find_room')
     def find_room(self, request):
         try:
             first_user_id = request.data.get('first_user')
             second_user_id = request.data.get('second_user')
 
-            room = Room.objects.filter(
-                Q(first_user_id=first_user_id, second_user_id=second_user_id) |
-                Q(first_user_id=second_user_id, second_user_id=first_user_id)
-            )
+            if first_user_id and second_user_id:
+                room = Room.objects.filter(
+                    Q(first_user_id=first_user_id, second_user_id=second_user_id) |
+                    Q(first_user_id=second_user_id, second_user_id=first_user_id)
+                )
 
-            return Response(RoomSerializer(room, many=True).data)
+                return Response(RoomSerializer(room, many=True).data)
+            else:
+                return Response({'error': 'Thiếu 1 trong 2 id'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
