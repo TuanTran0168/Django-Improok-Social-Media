@@ -1,7 +1,7 @@
 import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer
-
+from .security.security_data import decode_aes
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -21,6 +21,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
+
+        print("-----------------------------DECODE---------------------")
+        print(decode_aes(message['content']))
+        print("-----------------------------END DECODE---------------------")
+
+        message['content'] = decode_aes(message['content'])
 
         # Send message to room group
         await self.channel_layer.group_send(
