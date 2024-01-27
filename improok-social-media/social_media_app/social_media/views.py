@@ -24,7 +24,7 @@ from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus
     SurveyQuestionType, Room, Message
 from .paginators import PostPagination, MyPageSize
 from .permissions import CommentOwner, PostOwner, IsAdmin, PostReactionOwner
-from .security.hash_data import encode_aes, decode_aes
+from .security.security_data import encode_aes, decode_aes
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
@@ -1483,11 +1483,19 @@ class RoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
     @action(methods=['GET'], detail=True, url_path='messages')
     def messages(self, request, pk):
         messages = Message.objects.filter(room_id=pk).order_by('created_date').all()
+
         paginator = MyPageSize()
         paginated = paginator.paginate_queryset(messages, request)
 
         serializer = MessageSerializer(paginated, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serialized_data = serializer.data
+
+        for message in serialized_data:
+            content = message['content']
+            decoded_content = decode_aes(content)
+            message['content'] = decoded_content
+
+        return paginator.get_paginated_response(serialized_data)
 
     @action(methods=['POST'], detail=False, url_path='find_room')
     def find_room(self, request):
