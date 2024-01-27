@@ -5,6 +5,7 @@ from _cffi_backend import typeof
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
+from django.core.signing import Signer
 from django.db import transaction, IntegrityError
 from django.db.models import Count, Q
 from django.utils.decorators import method_decorator
@@ -23,6 +24,7 @@ from .models import Role, User, Post, Account, PostImage, Comment, ConfirmStatus
     SurveyQuestionType, Room, Message
 from .paginators import PostPagination, MyPageSize
 from .permissions import CommentOwner, PostOwner, IsAdmin, PostReactionOwner
+from .security.hash_data import encode_aes, decode_aes
 from .serializers import UserSerializer, RoleSerializer, PostSerializer, AccountSerializer, PostImageSerializer, \
     CommentSerializer, CreateAccountSerializer, CreateUserSerializer, UpdateUserSerializer, CreatePostSerializer, \
     UpdatePostSerializer, CreatePostImageSerializer, UpdatePostImageSerializer, CreateCommentSerializer, \
@@ -44,7 +46,7 @@ from .swagger_decorators import header_authorization, delete_accounts_from_invit
     add_or_update_survey_question_option_to_survey_answer, add_or_update_survey_answer_to_survey_question_option, \
     params_for_post_reaction, params_for_account_reacted_to_the_post, create_alumni_account, create_post_survey, \
     create_post_invitation, answer_post_survey, search_user, check_survey_completed, create_lecturer_account, \
-    get_user_by_status
+    get_user_by_status, search_invitation_group_cache
 
 from django_redis import get_redis_connection
 
@@ -160,6 +162,29 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
         except Exception as e:
             error_message = str(e)
             return Response({'error: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['GET'], detail=False, url_path='search_group_cache')
+    @method_decorator(decorator=search_invitation_group_cache, name='search_group_cache')
+    def search_group_cache(self, request):
+        try:
+            invitation_group_name = self.request.query_params.get('invitation_group_name')
+            cached_data = redis_connection.get(
+                'search_group_cache:' + invitation_group_name if invitation_group_name is not None else '')
+            print("Đây là data từ cache Redis: ")
+            print(cached_data)
+            if cached_data:
+                return Response(json.loads(cached_data), status=status.HTTP_200_OK)
+
+            invitation_groups = InvitationGroup.objects.filter(invitation_group_name__icontains=invitation_group_name)
+            print(invitation_groups)
+
+            redis_connection.set('search_group_cache:' + invitation_group_name,
+                                 json.dumps(InvitationGroupSerializer(invitation_groups, many=True).data), ex=300)
+
+            return Response(InvitationGroupSerializer(invitation_groups, many=True).data, status=status.HTTP_200_OK)
+        except Exception as e:
+            error_message = str(e)
+            return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # -User-
@@ -1488,7 +1513,27 @@ class MessageViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     queryset = Message.objects.filter(active=True).all()
     serializer_class = MessageSerializer
     pagination_class = MyPageSize
+
     # permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        print(queryset)
+
+        serializer = MessageSerializer(queryset, many=True).data
+
+        for message in serializer:
+            print(message['content'])
+            message['content'] = decode_aes(message['content'])
+
+        return Response(serializer)
+
+    def perform_create(self, serializer):
+        data = self.request.data
+        raw_content = data.get('content')
+        encode_message = encode_aes(raw_content)
+        print(encode_message)
+        return serializer.save(content=encode_message)
 
 
 # -other views-

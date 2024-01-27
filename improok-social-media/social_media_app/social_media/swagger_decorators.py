@@ -449,6 +449,24 @@ search_user = swagger_auto_schema(
     ]
 )
 
+search_invitation_group_cache = swagger_auto_schema(
+    manual_parameters=[
+        openapi.Parameter(
+            name='Authorization',
+            in_=openapi.IN_HEADER,
+            type=openapi.TYPE_STRING,
+            description='Token for authentication (Nhớ thêm Bearer nha)',
+            required=True
+        ),
+        openapi.Parameter(
+            name='invitation_group_name',
+            in_=openapi.IN_QUERY,
+            description='Invitation Group Name parameter (Example: Tuan Tran)',
+            type=openapi.TYPE_STRING
+        )
+    ]
+)
+
 check_survey_completed = swagger_auto_schema(
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
