@@ -179,10 +179,23 @@ class InvitationGroupViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Re
             invitation_groups = InvitationGroup.objects.filter(invitation_group_name__icontains=invitation_group_name)
             print(invitation_groups)
 
-            redis_connection.set('search_group_cache:' + invitation_group_name,
-                                 json.dumps(InvitationGroupSerializer(invitation_groups, many=True).data), ex=300)
+            data = []
 
-            return Response(InvitationGroupSerializer(invitation_groups, many=True).data, status=status.HTTP_200_OK)
+            for group in invitation_groups:
+                group_data = InvitationGroupSerializer(group).data
+                accounts = group.accounts.all()
+                accounts_data = AccountSerializerForUser(accounts, many=True).data
+                group_data['accounts_info'] = accounts_data
+                data.append(group_data)
+
+                print(accounts)
+
+            print(data)
+
+            redis_connection.set('search_group_cache:' + invitation_group_name,
+                                 json.dumps(data), ex=300)
+
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             error_message = str(e)
             return Response({'error kìa: ': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
