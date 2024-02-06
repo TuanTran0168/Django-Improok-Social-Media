@@ -27,8 +27,7 @@ class IPFilterMiddleWare(object):
         # allowed_ips = ALLOWED_HOSTS
 
         allowed_ips = [
-            '127.0.0.1',
-            '172.16.17.234'
+            '192.168.1.5'
         ]
 
         ip = request.META.get('REMOTE_ADDR')  # Get client IP
