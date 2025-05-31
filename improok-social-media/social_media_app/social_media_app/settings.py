@@ -155,7 +155,8 @@ INSTALLED_APPS = [
     'channels',
     'channels_redis',
     'celery',
-    'social_django'
+    'social_django',
+    'silk'
 ]
 
 MIDDLEWARE = [
@@ -172,6 +173,7 @@ MIDDLEWARE = [
     'social_media.middleware.ip_middleware.IPFilterMiddleWare',
     'social_media.middleware.characters_middleware.BlockInvalidCharactersMiddleware',
     'social_media.middleware.oauth2_middleware.Oauth2MiddleWare',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 JAZZMIN_SETTINGS = {
